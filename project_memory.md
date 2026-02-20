@@ -2,7 +2,7 @@
 
 **Purpose:** Quick-reference file for key decisions, patterns, and context that should persist across sessions.
 
-**Last Updated:** 2026-02-19
+**Last Updated:** 2026-02-20
 
 ---
 
@@ -60,11 +60,38 @@
 7. Content moderation tools for admin
 8. GDPR-aware — extra care with minors' data
 
+## Project Status Flow
+
+```
+draft → pending_verification → pending_consent → live → funded → completed
+         ↑ (changes requested)    ↑ (declined)
+              → draft                  → draft
+```
+
+## Key Architecture Patterns (Phase 2)
+
+- Server actions in `src/app/dashboard/projects/actions.ts` handle all project CRUD + verification + consent
+- Query functions in `src/lib/queries/projects.ts` for reusable database reads
+- Status helpers in `src/lib/project-status.ts` for status-based logic
+- Project creation uses a 6-step client-side wizard (single page with step state)
+- Notifications created in server actions (stored in notifications table)
+- Teacher list fetched via API route `/api/teachers` (needed for client component)
+
 ## Current Phase
 
-- **Phase 1: Foundation & Auth** — IN PROGRESS
-- Status: Starting scaffolding and auth setup
+- **Phase 1: Foundation & Auth** — COMPLETE (deployed)
+- **Phase 2: Project Creation & Verification** — COMPLETE
+- **Phase 3: Public Discovery & Project Pages** — NEXT
+- Status: Ready for Phase 3 (needs Joseph approval)
+
+## Deployment
+
+- **Live URL:** https://futurepreneurs-sigma.vercel.app/
+- **GitHub:** https://github.com/Stratton1/futurepreneurs
+- **Vercel team:** team_ZI5YAx1Srbvg1a3Ggm329fOD
 
 ## Blockers / Open Questions
 
 - None currently
+- Stripe account needed for Phase 4
+- Resend account needed for Phase 6

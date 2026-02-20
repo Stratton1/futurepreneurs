@@ -2,7 +2,7 @@
 
 **Purpose:** Chronological record of everything built, changed, or decided during development.
 
-**Last Updated:** 2026-02-19
+**Last Updated:** 2026-02-20
 
 ---
 
@@ -95,3 +95,107 @@
 ### Verification
 - TypeScript compilation: **PASS** (zero errors)
 - All files present and correctly structured
+- Deployed to Vercel: https://futurepreneurs-sigma.vercel.app/
+- Joseph approved Phase 1
+
+---
+
+## Phase 2 — Project Creation & Verification
+
+### Entry: Phase 2 Complete
+- **Date:** 2026-02-20
+- **Status:** Complete
+- **Goal:** Students can create projects, teachers can verify, parents can consent, projects go live
+
+### What was built
+1. **New UI components:**
+   - Textarea component (label, error, hint, auto-resize)
+   - ProgressSteps component (numbered step indicator with completion states)
+   - ImageUpload component (drag-and-drop, preview thumbnails, file validation)
+   - ProjectStatusBadge component (colour-coded status pills for all 7 project statuses)
+
+2. **Project status helper functions:**
+   - canEdit, canSubmitForVerification, canVerify, canConsent, isPubliclyVisible, canFund, canRequestDrawdown
+   - Status transition functions (after verification, after consent, on changes requested)
+
+3. **Database query layer:**
+   - getProjectById (with milestones, student, mentor)
+   - getStudentProjects (all projects for a student)
+   - getProjectsPendingVerification (for teacher dashboard)
+   - getProjectsPendingConsent (for parent dashboard)
+   - getTeachersAtSchool (for mentor selection)
+   - getTeacherMentoredProjects (all projects a teacher mentors)
+
+4. **Project server actions (10 actions):**
+   - createProject — full validation, creates project + milestones, saves as draft
+   - updateProject — edit draft projects only
+   - submitForVerification — changes status, notifies teacher
+   - approveProject — teacher approves, moves to pending_consent, notifies student + parent
+   - requestChanges — teacher sends feedback, project returns to draft
+   - rejectProject — teacher rejects with reason, project cancelled
+   - giveConsent — parent approves, project goes live, notifies student + teacher
+   - declineConsent — parent declines with reason, project returns to draft
+   - linkParentToProject — student invites parent by email
+   - API route for fetching teachers at student's school
+
+5. **Student project creation form (6-step wizard):**
+   - Step 1: Basics (title, category, short description)
+   - Step 2: Details (full description, image upload, video URL)
+   - Step 3: Funding (goal amount with £10,000 cap)
+   - Step 4: Milestones (add/remove milestones, amounts must equal goal)
+   - Step 5: Mentor (select teacher from school)
+   - Step 6: Review (preview all fields before creating)
+   - Validation at every step, success confirmation
+
+6. **Student My Projects page:**
+   - Lists all projects with status badges
+   - Edit and Submit buttons for drafts
+   - Invite Parent button for projects awaiting consent
+   - Empty state for new students
+
+7. **Teacher verification flow:**
+   - List of pending projects with student info and details
+   - Individual project review page (full details, milestones, funding)
+   - Approve / Request Changes / Reject actions with feedback forms
+   - All mentored projects overview
+
+8. **Parental consent flow:**
+   - List of projects awaiting consent
+   - Individual project review page (details, milestones, mentor info)
+   - Give Consent / Decline actions
+   - Explanatory text about what consent means
+
+9. **Student invite parent page:**
+   - Enter parent email to link them to a project
+   - Validates parent account exists
+
+10. **Dashboard updated:**
+    - Role-specific quick action cards (My Projects, Verify Projects, Consent Requests, Browse Projects)
+    - Removed "coming soon" placeholder
+
+### Files created (16 new files)
+- `src/components/ui/textarea.tsx` — Textarea component
+- `src/components/ui/progress-steps.tsx` — Step indicator component
+- `src/components/ui/image-upload.tsx` — Image upload with drag-and-drop
+- `src/components/features/project-status-badge.tsx` — Status badge component
+- `src/lib/project-status.ts` — Project status helper functions
+- `src/lib/queries/projects.ts` — Database query functions
+- `src/app/dashboard/projects/actions.ts` — All project server actions
+- `src/app/dashboard/projects/page.tsx` — Student My Projects page
+- `src/app/dashboard/projects/submit-button.tsx` — Submit for verification button
+- `src/app/dashboard/projects/new/page.tsx` — 6-step project creation form
+- `src/app/dashboard/projects/[id]/invite-parent/page.tsx` — Invite parent page
+- `src/app/dashboard/verify/page.tsx` — Teacher verification list
+- `src/app/dashboard/verify/[id]/page.tsx` — Project verification detail page
+- `src/app/dashboard/verify/[id]/verification-actions.tsx` — Approve/reject/request changes
+- `src/app/dashboard/consent/page.tsx` — Parent consent list
+- `src/app/dashboard/consent/[id]/page.tsx` — Consent detail page
+- `src/app/dashboard/consent/[id]/consent-actions.tsx` — Give/decline consent
+- `src/app/api/teachers/route.ts` — API route for teacher list
+
+### Files modified (1 file)
+- `src/app/dashboard/page.tsx` — Added role-specific quick actions, removed placeholder
+
+### Verification
+- TypeScript compilation: **PASS** (zero errors)
+- All 16 new files + 1 modified file present and correctly structured
