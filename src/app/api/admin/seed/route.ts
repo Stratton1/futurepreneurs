@@ -10,10 +10,31 @@ export async function POST() {
   try {
     const supabase = createAdminClient();
 
+    // ── 0. Seed schools if they don't exist ──
+    const schoolsToSeed = [
+      { name: 'Riverside Academy', email_domain: 'riverside.sch.uk', city: 'London', county: 'Greater London' },
+      { name: 'Oakwood High School', email_domain: 'oakwood.sch.uk', city: 'Manchester', county: 'Greater Manchester' },
+      { name: "St Mary's School", email_domain: 'stmarys.ac.uk', city: 'Birmingham', county: 'West Midlands' },
+      { name: 'Greenfield Comprehensive', email_domain: 'greenfield.sch.uk', city: 'Leeds', county: 'West Yorkshire' },
+      { name: 'The Bridge School', email_domain: 'bridgeschool.sch.uk', city: 'Bristol', county: 'Bristol' },
+    ];
+
+    for (const school of schoolsToSeed) {
+      const { data: existing } = await supabase
+        .from('schools')
+        .select('id')
+        .eq('name', school.name)
+        .maybeSingle();
+
+      if (!existing) {
+        await supabase.from('schools').insert(school);
+      }
+    }
+
     // ── 1. Fetch existing schools ──
     const { data: schools } = await supabase.from('schools').select('id, name, email_domain');
     if (!schools || schools.length < 3) {
-      return NextResponse.json({ error: 'Need at least 3 schools seeded first' }, { status: 400 });
+      return NextResponse.json({ error: 'School seeding failed — not enough schools found' }, { status: 500 });
     }
 
     const schoolMap: Record<string, { id: string; domain: string }> = {};
