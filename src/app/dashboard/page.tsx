@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { signOut } from '@/app/(auth)/actions';
 import { USER_ROLE_LABELS } from '@/lib/constants';
 import Link from 'next/link';
-import { FolderPlus, ClipboardCheck, ShieldCheck, Heart } from 'lucide-react';
+import { FolderPlus, ClipboardCheck, ShieldCheck, Heart, User } from 'lucide-react';
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -46,6 +46,8 @@ export default async function DashboardPage() {
   };
 
   const actions = quickActions[profile.role] || [];
+  // Add profile link for all roles
+  actions.push({ label: 'My Profile', href: '/dashboard/profile', icon: User, description: 'Manage your profile and family connections' });
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">

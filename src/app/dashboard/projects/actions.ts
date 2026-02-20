@@ -237,14 +237,40 @@ export async function approveProject(projectId: string) {
     link: `/dashboard/projects`,
   });
 
-  // Find parent consent records and notify
-  const { data: consents } = await supabase
+  // Auto-create consent record from student's linked parent if none exist
+  const { data: existingConsents } = await supabase
     .from('parental_consents')
     .select('parent_id')
     .eq('project_id', projectId);
 
-  if (consents) {
-    for (const consent of consents) {
+  if (!existingConsents || existingConsents.length === 0) {
+    // Look up the student's linked parent
+    const { data: studentProfile } = await supabase
+      .from('user_profiles')
+      .select('parent_id')
+      .eq('id', project.student_id)
+      .single();
+
+    if (studentProfile?.parent_id) {
+      await supabase.from('parental_consents').insert({
+        student_id: project.student_id,
+        parent_id: studentProfile.parent_id,
+        project_id: projectId,
+        status: 'pending',
+      });
+
+      // Notify the parent
+      await supabase.from('notifications').insert({
+        user_id: studentProfile.parent_id,
+        type: 'consent_request',
+        title: 'Consent needed',
+        message: `"${project.title}" needs your consent to go live.`,
+        link: `/dashboard/consent/${projectId}`,
+      });
+    }
+  } else {
+    // Notify existing linked parents
+    for (const consent of existingConsents) {
       await supabase.from('notifications').insert({
         user_id: consent.parent_id,
         type: 'consent_request',

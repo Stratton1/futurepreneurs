@@ -31,6 +31,7 @@ export interface UserProfile {
   full_name: string;
   role: UserRole;
   school_id: string | null;
+  parent_id: string | null;
   avatar_url: string | null;
   bio: string | null;
   is_verified: boolean;
