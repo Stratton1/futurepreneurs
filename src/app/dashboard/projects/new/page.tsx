@@ -47,6 +47,10 @@ export default function NewProjectPage() {
     { title: '', description: '', amount: 0 },
   ]);
   const [mentorId, setMentorId] = useState('');
+  const [mentorName, setMentorName] = useState('');
+  const [mentorEmail, setMentorEmail] = useState('');
+  const [mentorSearchError, setMentorSearchError] = useState('');
+  const [mentorSearching, setMentorSearching] = useState(false);
   const [teachers, setTeachers] = useState<{ id: string; full_name: string }[]>([]);
   const [teachersLoaded, setTeachersLoaded] = useState(false);
 
@@ -63,6 +67,30 @@ export default function NewProjectPage() {
       // Teachers will be empty, user will see a message
     }
     setTeachersLoaded(true);
+  };
+
+  const findTeacherByEmail = async () => {
+    if (!mentorEmail.trim()) return;
+    setMentorSearching(true);
+    setMentorSearchError('');
+    try {
+      const res = await fetch('/api/teachers/find', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: mentorEmail.trim() }),
+      });
+      const data = await res.json();
+      if (data.found) {
+        setMentorId(data.teacher.id);
+        setMentorName(data.teacher.full_name);
+        setMentorSearchError('');
+      } else {
+        setMentorSearchError(data.error || 'Teacher not found');
+      }
+    } catch {
+      setMentorSearchError('Something went wrong. Please try again.');
+    }
+    setMentorSearching(false);
   };
 
   const addMilestone = () => {
@@ -89,7 +117,7 @@ export default function NewProjectPage() {
       case 1: return description.trim().length >= 50;
       case 2: return goalNum > 0 && goalNum <= MAX_FUNDING_GOAL;
       case 3: return milestones.every(m => m.title.trim() && m.amount > 0) && Math.abs(milestoneTotal - goalNum) < 0.01;
-      case 4: return mentorId !== '';
+      case 4: return true; // Mentor is optional — can be added later
       case 5: return true;
       default: return false;
     }
@@ -123,7 +151,7 @@ export default function NewProjectPage() {
         ...m,
         amount: Number(m.amount),
       })),
-      mentorId,
+      mentorId: mentorId || undefined,
     });
 
     if (result.error) {
@@ -303,19 +331,89 @@ export default function NewProjectPage() {
             <strong>Choose your mentor:</strong> Your teacher will review your project, approve it, and help you manage your funding through milestones.
           </div>
 
-          {teachers.length > 0 ? (
-            <Select
-              label="Select your teacher/mentor"
-              id="mentorId"
-              value={mentorId}
-              onChange={(e) => setMentorId(e.target.value)}
-              placeholder="Choose a teacher at your school"
-              options={teachers.map((t) => ({ value: t.id, label: t.full_name }))}
-            />
-          ) : (
-            <div className="bg-amber-50 rounded-xl p-4 text-sm text-amber-800">
-              No teachers from your school have signed up yet. Ask a teacher to create an account on Futurepreneurs, then come back to this step.
+          {/* Show selected mentor if found via email */}
+          {mentorId && mentorName && (
+            <div className="bg-emerald-50 rounded-xl p-4 text-sm text-emerald-800 flex items-center justify-between">
+              <span>Selected mentor: <strong>{mentorName}</strong></span>
+              <button
+                type="button"
+                onClick={() => { setMentorId(''); setMentorName(''); setMentorEmail(''); }}
+                className="text-emerald-600 hover:underline text-xs"
+              >
+                Change
+              </button>
             </div>
+          )}
+
+          {!mentorId && (
+            <>
+              {/* Option A: Select from dropdown */}
+              {teachers.length > 0 && (
+                <Select
+                  label="Select a teacher from your school"
+                  id="mentorId"
+                  value={mentorId}
+                  onChange={(e) => {
+                    setMentorId(e.target.value);
+                    const t = teachers.find(t => t.id === e.target.value);
+                    if (t) setMentorName(t.full_name);
+                  }}
+                  placeholder="Choose a teacher"
+                  options={teachers.map((t) => ({ value: t.id, label: t.full_name }))}
+                />
+              )}
+
+              {teachers.length > 0 && (
+                <div className="flex items-center gap-3 text-sm text-gray-400">
+                  <div className="flex-1 h-px bg-gray-200" />
+                  or
+                  <div className="flex-1 h-px bg-gray-200" />
+                </div>
+              )}
+
+              {/* Option B: Enter teacher email */}
+              <div>
+                <label htmlFor="mentorEmail" className="block text-sm font-medium text-gray-700 mb-1">
+                  Find a teacher by email
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    id="mentorEmail"
+                    type="email"
+                    placeholder="teacher@school.sch.uk"
+                    value={mentorEmail}
+                    onChange={(e) => setMentorEmail(e.target.value)}
+                    className="flex-1 rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={findTeacherByEmail}
+                    isLoading={mentorSearching}
+                    disabled={!mentorEmail.trim()}
+                  >
+                    Find
+                  </Button>
+                </div>
+                {mentorSearchError && (
+                  <p className="text-sm text-red-600 mt-2">{mentorSearchError}</p>
+                )}
+                <p className="text-xs text-gray-500 mt-1">
+                  Enter your teacher&apos;s email address. They must already have a Futurepreneurs account.
+                </p>
+              </div>
+
+              {/* Option C: Skip for now */}
+              <div className="flex items-center gap-3 text-sm text-gray-400">
+                <div className="flex-1 h-px bg-gray-200" />
+                or
+                <div className="flex-1 h-px bg-gray-200" />
+              </div>
+
+              <div className="bg-amber-50 rounded-xl p-4 text-sm text-amber-800">
+                <strong>Don&apos;t have a mentor yet?</strong> No worries — you can skip this step and add a teacher later from your project dashboard. Your project will be saved as a draft until a teacher is assigned and verifies it.
+              </div>
+            </>
           )}
         </div>
       )}
@@ -333,7 +431,7 @@ export default function NewProjectPage() {
             <div><span className="font-medium text-gray-500">Milestones:</span> <span className="text-gray-900">{milestones.length}</span></div>
             {images.length > 0 && <div><span className="font-medium text-gray-500">Images:</span> <span className="text-gray-900">{images.length} uploaded</span></div>}
             {videoUrl && <div><span className="font-medium text-gray-500">Video:</span> <span className="text-gray-900">Yes</span></div>}
-            <div><span className="font-medium text-gray-500">Mentor:</span> <span className="text-gray-900">{teachers.find(t => t.id === mentorId)?.full_name || 'Selected'}</span></div>
+            <div><span className="font-medium text-gray-500">Mentor:</span> <span className={mentorId ? 'text-gray-900' : 'text-amber-600'}>{mentorId ? (mentorName || teachers.find(t => t.id === mentorId)?.full_name || 'Selected') : 'Not selected — you can add one later'}</span></div>
           </div>
 
           <div className="bg-emerald-50 rounded-xl p-4 text-sm text-emerald-800">

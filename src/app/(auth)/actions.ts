@@ -73,9 +73,9 @@ export async function signUp(formData: SignUpData) {
   }
 
   // Create the user profile
-  // For students, look up their school from the email domain
+  // For students and teachers, look up their school from the email domain
   let schoolId = null;
-  if (role === 'student') {
+  if (role === 'student' || role === 'teacher') {
     const domain = email.split('@')[1]?.toLowerCase();
     const { data: school } = await supabase
       .from('schools')

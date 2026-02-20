@@ -20,7 +20,7 @@ interface CreateProjectData {
   videoUrl?: string;
   images: string[];
   milestones: MilestoneInput[];
-  mentorId: string;
+  mentorId?: string;
 }
 
 /** Create a new project (saves as draft) */
@@ -56,10 +56,6 @@ export async function createProject(data: CreateProjectData) {
     return { error: `Milestone amounts (£${milestoneTotal.toFixed(2)}) must add up to your funding goal (£${data.goalAmount.toFixed(2)})` };
   }
 
-  if (!data.mentorId) {
-    return { error: 'Please select a teacher/mentor' };
-  }
-
   const supabase = await createClient();
 
   // Insert project
@@ -67,7 +63,7 @@ export async function createProject(data: CreateProjectData) {
     .from('projects')
     .insert({
       student_id: user.id,
-      mentor_id: data.mentorId,
+      mentor_id: data.mentorId || null,
       title: data.title.trim(),
       short_description: data.shortDescription.trim(),
       description: data.description.trim(),

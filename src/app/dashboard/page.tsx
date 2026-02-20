@@ -41,7 +41,7 @@ export default async function DashboardPage() {
       { label: 'Consent Requests', href: '/dashboard/consent', icon: ShieldCheck, description: 'Review and consent to your child\'s projects' },
     ],
     investor: [
-      { label: 'Browse Projects', href: '/', icon: Heart, description: 'Find projects to support' },
+      { label: 'Browse Projects', href: '/dashboard/browse', icon: Heart, description: 'Find projects to support' },
     ],
   };
 
