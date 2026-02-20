@@ -73,6 +73,18 @@ export default async function ConsentProjectPage({ params }: Props) {
         {project.status === 'pending_consent' && (
           <ConsentActions projectId={project.id} />
         )}
+
+        {project.status === 'live' && (
+          <section className="bg-emerald-50 rounded-xl border border-emerald-200 p-5">
+            <h2 className="font-semibold text-emerald-900 mb-2">Already live</h2>
+            <p className="text-sm text-emerald-800">
+              This project has already received consent and is live on the platform. You may have given consent already, or another guardian has.
+            </p>
+            <Link href="/dashboard/consent" className="inline-block mt-3 text-sm font-medium text-emerald-600 hover:text-emerald-700">
+              ← Back to consent requests
+            </Link>
+          </section>
+        )}
       </div>
     </div>
   );

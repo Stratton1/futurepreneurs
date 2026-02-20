@@ -1,8 +1,14 @@
 import { GraduationCap, MapPin } from 'lucide-react';
+import { AvatarDisplay } from './avatar-display';
+import type { AvatarConfig } from '@/types/database';
 
 interface StudentProfileCardProps {
+  /** Fallback name (e.g. full_name) when displayHandle not set */
   name: string;
+  /** Public display handle (e.g. BrightSpark42); shown instead of name when set */
+  displayHandle?: string | null;
   avatarUrl?: string | null;
+  avatarConfig?: AvatarConfig | null;
   bio?: string | null;
   schoolName?: string | null;
   schoolCity?: string | null;
@@ -10,29 +16,25 @@ interface StudentProfileCardProps {
 
 export function StudentProfileCard({
   name,
+  displayHandle,
   avatarUrl,
+  avatarConfig,
   bio,
   schoolName,
   schoolCity,
 }: StudentProfileCardProps) {
+  const displayName = displayHandle?.trim() || name;
   return (
     <div className="bg-white rounded-2xl border border-gray-100 p-5">
       <div className="flex items-center gap-3 mb-3">
-        {avatarUrl ? (
-          <img
-            src={avatarUrl}
-            alt={name}
-            className="w-12 h-12 rounded-full object-cover"
-          />
-        ) : (
-          <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center">
-            <span className="text-lg font-bold text-emerald-700">
-              {name.charAt(0).toUpperCase()}
-            </span>
-          </div>
-        )}
+        <AvatarDisplay
+          avatarConfig={avatarConfig}
+          avatarUrl={avatarUrl}
+          name={displayName}
+          size="md"
+        />
         <div>
-          <h3 className="font-semibold text-gray-900">{name}</h3>
+          <h3 className="font-semibold text-gray-900">{displayName}</h3>
           <p className="text-xs text-gray-500">Young Entrepreneur</p>
         </div>
       </div>

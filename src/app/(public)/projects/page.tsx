@@ -105,7 +105,7 @@ export default async function BrowseProjectsPage({ searchParams }: BrowsePagePro
                       totalRaised={project.total_raised as number}
                       backerCount={project.backer_count as number}
                       images={project.images as string[]}
-                      studentName={student?.full_name as string || 'Student'}
+                      studentName={(student?.display_handle as string) || (student?.full_name as string) || 'Student'}
                       schoolName={school?.name as string | null}
                     />
                   </AnimateIn>

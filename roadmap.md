@@ -48,53 +48,53 @@
 - [x] How It Works, About, FAQ, Contact pages
 - [x] Animated, polished design with custom typography (Outfit)
 
-### Phase 4 — Payments & Funding (IN PROGRESS)
+### Phase 4 — Payments & Funding (DONE)
 
 - [x] Stripe account setup (test mode keys, webhook configured)
-- [ ] Stripe integration (card, Apple Pay, Google Pay)
-- [ ] Backing/donation flow
-- [ ] All-or-nothing logic (funds held until goal reached)
-- [ ] Real-time funding progress updates
-- [ ] Guest checkout (back without an account)
-- [ ] Platform fee (2.5%) applied on successful projects
+- [x] Stripe integration (card, Apple Pay, Google Pay)
+- [x] Backing/donation flow
+- [x] All-or-nothing logic (funds held until goal reached)
+- [x] Real-time funding progress updates
+- [x] Guest checkout (back without an account)
+- [x] Platform fee (2.5%) applied on successful projects
 
-### Phase 5 — Milestone Drawdowns (PLANNED)
+### Phase 5 — Milestone Drawdowns (DONE)
 
-- [ ] Drawdown request flow (student requests against a milestone)
-- [ ] Teacher/mentor approval flow
-- [ ] Parent visibility of drawdown activity
-- [ ] Audit trail for all drawdown actions
-- [ ] Fund disbursement via Stripe
+- [x] Drawdown request flow (student requests against a milestone)
+- [x] Teacher/mentor approval flow
+- [x] Parent visibility of drawdown activity
+- [x] Audit trail for all drawdown actions
+- [x] Fund disbursement via Stripe
 
-### Phase 6 — Dashboards & Notifications (PLANNED)
+### Phase 6 — Dashboards & Notifications (DONE)
 
-- [ ] Student dashboard
-- [ ] Teacher dashboard
-- [ ] Parent dashboard
-- [ ] Investor/backer dashboard
-- [ ] Admin dashboard (users, projects, payments, moderation, fees)
-- [ ] Email notifications for key events
-- [ ] On-platform notification centre
+- [x] Student dashboard
+- [x] Teacher dashboard
+- [x] Parent dashboard
+- [x] Investor/backer dashboard (including “Backed projects” page)
+- [x] Admin dashboard (overview, users, projects, reports)
+- [x] Email notifications for key events (Resend)
+- [x] On-platform notification centre
 
-### Phase 7 — Trust, Safety & Polish (PLANNED)
+### Phase 7 — Trust, Safety & Polish (DONE)
 
-- [ ] Content moderation tools (flag/remove projects)
-- [ ] Reporting system
-- [ ] Terms of service and privacy policy pages
-- [ ] Contact/support page
-- [ ] Social sharing
-- [ ] Mobile responsiveness polish
-- [ ] Performance and accessibility audit
+- [x] Content moderation tools (resolve/dismiss reports, remove project)
+- [x] Reporting system (Report project UI + createReport action)
+- [x] Terms of service and privacy policy pages
+- [x] Contact/support page
+- [x] Social sharing
+- [x] Mobile responsiveness polish
+- [x] Performance and accessibility audit
 
 ---
 
 ## Part 2: Post-MVP Roadmap
 
-### Epic 1: Safe Identity & Gamification
+### Epic 1: Safe Identity & Gamification (DONE)
 
-- [ ] **Zero-PII Avatars** — A fun avatar builder (choose hairstyles, colours, accessories) that lets students personalise their profile without uploading real photographs, protecting personally identifiable information.
-- [ ] **Safe Usernames** — An automated generator that creates safe, anonymous user handles (e.g. "BrightSpark42", "IdeaMaker77") so students never need to use their real name publicly.
-- [ ] **Trophy Room** — A digital portfolio and achievement wall where students can display skill badges (e.g. "First Project", "Fully Funded", "Milestone Master") and funding milestones, encouraging progress and celebrating success.
+- [x] **Zero-PII Avatars** — Avatar builder (hairstyles, colours, accessories); AvatarDisplay from config/URL/initial; profile integration; StudentProfileCard and public queries use avatar_config.
+- [x] **Safe Usernames** — Auto-generated display handles (e.g. BrightSpark42); assign on first profile load for students; regenerate in profile; public project card and detail use display_handle.
+- [x] **Trophy Room** — Badges: First Project, Fully Funded, Milestone Master; user_badges table; award on project create, webhook funded, drawdown approval; /dashboard/trophy-room page; backfill script.
 
 ### Epic 2: Educational Hub & Onboarding
 
@@ -109,13 +109,100 @@
 - [ ] **Group / Club Fundraising Mode** — Dedicated project pages for school clubs, sports teams, or student groups to raise funds together under a single campaign with shared management tools.
 - [ ] **Multi-User / One Project** — Collaboration tools allowing multiple students to safely co-manage a single campaign — shared editing, split responsibilities, and joint milestone tracking.
 
-### Epic 4: Safe Funding & Financial Mechanics
+### Epic 4: Youth-Centric Digital Wallet & Card System (FUTURE)
 
-- [ ] **Safe Funding & Financial Mechanics** — Enhanced payment gateway designed for custodial accounts and minor KYC (Know Your Customer) restrictions, ensuring all fund flows are compliant with regulations for under-18s.
-- [ ] **"Materials, Not Cash" Fulfillment** — An option to route raised funds directly to verified vendors (e.g. Amazon, craft suppliers) to purchase supplies on the student's behalf, rather than paying cash to minors.
-- [ ] **Stretch Goals** — Allowing projects to set secondary funding targets (e.g. "If we hit £600, we will also buy a logo design") that unlock automatically if the initial goal is met early.
-- [ ] **Corporate Matching Grants Integration** — Automated matching from corporate sponsors who pledge to double contributions to qualifying student projects, increasing funding impact.
-- [ ] **Youth Grant Matching Integration** — Integration with youth entrepreneurship grant programmes (e.g. Prince's Trust, Young Enterprise) that can top up or match student-raised funds.
+> **Model:** Zero-Trust Spending — every transaction requires explicit approval from BOTH the student's Parent AND their verified Mentor before funds deploy. Fully COPPA and GDPR-K compliant. Custodial Account model where a verified adult holds legal liability, but the minor gets an empowering, educational dashboard.
+
+#### 4.1 System Architecture & Tech Stack
+
+- [ ] **Stripe Connect (Custom Accounts)** — Each project gets a Connected Account (owned by the custodial adult) with platform-controlled payouts. Enables fund holding, routing, and compliance.
+- [ ] **Stripe Treasury (Wallet)** — Embedded financial accounts linked to each custodial Connected Account, providing balance tracking, fund segregation per project, and programmatic fund movement.
+- [ ] **Stripe Issuing (Virtual Cards)** — Virtual debit cards issued per-project that are only funded on demand after dual approval. Cards can be frozen/unfrozen programmatically per transaction.
+- [ ] **KYC/KYB Provider Integration** — Stripe Identity for Adult KYC (Gov ID, proof of address) on the custodial parent. Minor verification via school-issued email + Student ID upload + teacher attestation. Proof of Relationship captured via parental consent flow (shared surname, school records, or signed declaration).
+
+**Proposed data model additions:**
+
+```
+custodial_accounts
+  id, parent_id (FK → user_profiles), student_id (FK → user_profiles),
+  stripe_connected_account_id, stripe_treasury_financial_account_id,
+  kyc_status (pending | adult_verified | minor_verified | fully_verified),
+  relationship_verified, created_at, updated_at
+
+wallet_balances
+  id, custodial_account_id, project_id, available_balance, held_balance,
+  total_disbursed, currency (GBP), updated_at
+
+issued_cards
+  id, custodial_account_id, project_id, stripe_card_id,
+  card_status (active | frozen | cancelled), last_four,
+  spending_limit_daily, spending_limit_weekly, created_at
+```
+
+#### 4.2 Custodial Onboarding Flow (Minor KYC)
+
+- [ ] **Step 1 — Parent Initiates** — Parent signs up, completes Adult KYC via Stripe Identity (Gov ID scan, address verification). System creates a Stripe Connected Account with the parent as the beneficial owner.
+- [ ] **Step 2 — Student Links** — Student signs up with school email. Parent receives a "link your child" request. Parent confirms the relationship (name, date of birth, school). System creates the custodial link.
+- [ ] **Step 3 — Minor Verification** — Student uploads school ID or teacher provides attestation via the Teacher Dashboard. System stores verification status without retaining raw PII images (hash + verified flag only, GDPR-K minimisation).
+- [ ] **Step 4 — Treasury & Card Provisioning** — Once both KYC tiers pass, system creates a Stripe Treasury Financial Account under the Connected Account and provisions a virtual Stripe Issuing card. Card starts in `frozen` state (unfrozen only during approved transactions).
+- [ ] **Step 5 — Dual-Account Ready** — Parent sees full financial controls in their dashboard. Student sees a read-only "Tween Wallet" view showing balance, micro-goals, and a "Request Purchase" button.
+
+#### 4.3 Dual-Approval Spending Matrix (Parent & Mentor)
+
+- [ ] **Purchase Request Flow** — Student submits a purchase request (vendor, amount, reason, linked milestone). Request enters `pending_parent` status. Push notification + email sent to Parent.
+- [ ] **Parent Approval** — Parent reviews request in their dashboard. If approved, status moves to `pending_mentor`. Push notification + email sent to Mentor. If declined, status moves to `declined_parent` with reason.
+- [ ] **Mentor Approval** — Mentor reviews request in their dashboard. If approved, status moves to `approved`. If declined, status moves to `declined_mentor` with reason.
+- [ ] **Transaction Execution** — On dual approval, system programmatically: (1) unfreezes the virtual card, (2) funds the card for the exact approved amount from the Treasury balance, (3) sets a 30-minute spending window, (4) auto-refreezes the card after window expires or transaction completes.
+- [ ] **Escrow Hold Pattern** — For online purchases, system creates a Stripe Authorization Hold for the exact amount. Funds are captured only when the merchant settles. If not settled within 7 days, the hold is released back to the Treasury balance.
+
+**Proposed data model:**
+
+```
+spending_requests
+  id, custodial_account_id, project_id, milestone_id (nullable),
+  student_id, parent_id, mentor_id,
+  vendor_name, vendor_mcc (Merchant Category Code), amount, currency,
+  reason, receipt_url (nullable),
+  status (pending_parent | pending_mentor | approved | declined_parent |
+          declined_mentor | funded | completed | expired),
+  parent_decision_at, mentor_decision_at, funded_at, completed_at,
+  stripe_authorization_id, created_at
+
+approval_logs
+  id, spending_request_id, approver_id, approver_role (parent | mentor),
+  decision (approved | declined), reason (nullable), decided_at
+```
+
+**Key API endpoints:**
+
+```
+POST   /api/wallet/spending-request      — Student submits a purchase request
+PATCH  /api/wallet/spending-request/:id   — Parent or Mentor approves/declines
+GET    /api/wallet/spending-requests       — List requests (filtered by role)
+POST   /api/wallet/fund-card              — Internal: fund card after dual approval
+POST   /api/webhooks/stripe-issuing       — Stripe Issuing webhook (authorization, capture, decline)
+```
+
+#### 4.4 Automated Spending Guardrails
+
+- [ ] **Vendor Whitelisting via MCC** — Virtual card configured with Stripe Issuing Spending Controls to only authorise transactions at approved Merchant Category Codes (e.g. 5411 Grocery, 5942 Book Stores, 5944 Craft Supplies). Blocked categories include: gambling, alcohol, tobacco, adult content, cash advances, money transfers.
+- [ ] **Per-Vendor Allowlists** — Optional per-project vendor allowlist where the teacher pre-approves specific merchants (e.g. "Amazon", "Hobbycraft") by name. Transactions at unlisted vendors trigger an additional review step.
+- [ ] **Velocity Limits** — Configurable daily cap (default £50/day), weekly cap (default £200/week), and single-transaction cap (default £100). Limits set by Parent in their dashboard, with Mentor able to request increases.
+- [ ] **Cooling-Off Period** — All spending requests have a mandatory 1-hour delay between approval and card funding, giving either approver time to reverse their decision.
+- [ ] **Receipt Upload Requirement** — After each purchase, student must upload a photo of the receipt within 48 hours. Failure to upload triggers a card freeze until resolved.
+
+#### 4.5 Platform Dashboards (Wallet Views)
+
+- [ ] **The Tween Wallet (Student View)** — A friendly, read-only dashboard showing: current project balance, funding progress, micro-goal tracker ("£15 more until baking trays!"), pending/completed purchase requests, a big "Request a Purchase" button, and a visual spending history timeline. No direct spending capability — all purchases go through the request flow.
+- [ ] **Parent Financial Dashboard** — Full 360° control centre showing: all linked children's wallets, pending approval requests with one-tap approve/decline, complete transaction history with receipts, spending analytics (by category, over time), card controls (freeze/unfreeze, adjust limits), and downloadable CSV statements.
+- [ ] **Mentor Financial Dashboard** — Project-focused view showing: all mentored students' wallets, pending approval queue (only requests already parent-approved), milestone-to-spending alignment check ("Is this purchase aligned with Milestone 2?"), and a flag button for suspicious requests.
+- [ ] **Admin Financial Dashboard** — Platform-wide view with: aggregate wallet balances, flagged transactions, KYC status overview, fee tracking, and compliance audit logs.
+
+#### 4.6 Transition to Adulthood (Age 18+)
+
+- [ ] **Birthday Tracking** — System stores date of birth (encrypted at rest) and runs a daily cron job checking for users approaching 18.
+- [ ] **90-Day Transition Flow** — At 17 years 9 months, student receives a "Growing Up" notification explaining upcoming changes. At 18, the system: (1) removes dual-approval requirement, (2) converts custodial Connected Account to an independent account, (3) runs full Adult KYC on the now-adult user, (4) preserves all transaction history, (5) notifies parent that oversight has ended.
+- [ ] **Graduated Independence** — Optional "training wheels" mode where 18+ users can voluntarily keep mentor oversight for their first independent project.
 
 ### Epic 5: Oversight, Privacy & Verification
 
@@ -127,6 +214,12 @@
 
 - [ ] **The "Circle of Gratitude" Impact Reports** — A structured, guided template for students to post updates and photos showing backers exactly how their funds were used, what was achieved, and what they learned along the way.
 - [ ] **In-App Mentorship Chat** — Safely moderated, text-based channels where students can get advice from verified alumni, local business owners, or professional mentors — with all messages reviewed for safety.
+
+### Epic 7: Additional Funding Mechanics
+
+- [ ] **Stretch Goals** — Allowing projects to set secondary funding targets (e.g. "If we hit £600, we will also buy a logo design") that unlock automatically if the initial goal is met early.
+- [ ] **Corporate Matching Grants Integration** — Automated matching from corporate sponsors who pledge to double contributions to qualifying student projects, increasing funding impact.
+- [ ] **Youth Grant Matching Integration** — Integration with youth entrepreneurship grant programmes (e.g. Prince's Trust, Young Enterprise) that can top up or match student-raised funds.
 
 ---
 
@@ -151,3 +244,4 @@
 4. **Transparency** — Parents and backers can see everything, always
 5. **Fun and encouraging** — The tone, design, and experience should make young people feel empowered, not intimidated
 6. **COPPA & GDPR-K compliant** — No collection of unnecessary personal data from minors; parental consent at every stage; right to deletion; data minimisation throughout
+7. **Zero-Trust Spending** — Every transaction requires dual approval (Parent + Mentor) before funds can be deployed; no exceptions for any amount

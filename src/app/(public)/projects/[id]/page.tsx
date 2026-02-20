@@ -1,11 +1,14 @@
 import { notFound } from 'next/navigation';
-import { Shield, GraduationCap, Heart, ExternalLink, Target } from 'lucide-react';
+import { Shield, GraduationCap, ExternalLink, Target } from 'lucide-react';
 import { getPublicProjectById } from '@/lib/queries/public-projects';
+import { getCurrentUser } from '@/lib/supabase/auth-helpers';
 import { FundingProgressBar } from '@/components/features/funding-progress-bar';
 import { ImageGallery } from '@/components/features/image-gallery';
 import { MilestoneList } from '@/components/features/milestone-list';
 import { StudentProfileCard } from '@/components/features/student-profile-card';
 import { ShareButtons } from '@/components/features/share-buttons';
+import { BackProjectForm } from '@/components/features/back-project-form';
+import { ReportProjectButton } from './report-project-button';
 import { CURRENCY_SYMBOL } from '@/lib/constants';
 import Link from 'next/link';
 import type { Metadata } from 'next';
@@ -38,7 +41,10 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
   const { id } = await params;
-  const project = await getPublicProjectById(id);
+  const [project, currentUser] = await Promise.all([
+    getPublicProjectById(id),
+    getCurrentUser(),
+  ]);
 
   if (!project) {
     notFound();
@@ -99,7 +105,12 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 <p className="text-lg text-gray-600 mb-4">{project.short_description}</p>
               )}
 
-              <ShareButtons title={project.title} url={projectUrl} />
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <ShareButtons title={project.title} url={projectUrl} />
+                {currentUser && project.status !== 'draft' && (
+                  <ReportProjectButton projectId={project.id} />
+                )}
+              </div>
             </div>
 
             {/* Description */}
@@ -170,16 +181,25 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 size="lg"
               />
 
-              {!isFunded && (
+              {!isFunded && project.status === 'live' && (
                 <div className="mt-6">
-                  <button
-                    className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-3 px-6 rounded-xl transition-colors text-lg flex items-center justify-center gap-2"
-                  >
-                    <Heart className="h-5 w-5" />
-                    Back This Project
-                  </button>
+                  <BackProjectForm
+                    projectId={project.id}
+                    projectTitle={project.title}
+                    goalAmount={project.goal_amount}
+                    totalRaised={project.total_raised}
+                    currentUser={
+                      currentUser
+                        ? {
+                            id: currentUser.id,
+                            full_name: currentUser.full_name,
+                            email: currentUser.email,
+                          }
+                        : undefined
+                    }
+                  />
                   <p className="text-xs text-gray-400 text-center mt-2">
-                    Payments coming soon. All-or-nothing funding.
+                    All-or-nothing funding. Pay with card, Apple Pay, or Google Pay.
                   </p>
                 </div>
               )}
@@ -201,7 +221,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             {project.student && (
               <StudentProfileCard
                 name={project.student.full_name}
+                displayHandle={project.student.display_handle ?? null}
                 avatarUrl={project.student.avatar_url}
+                avatarConfig={project.student.avatar_config ?? null}
                 bio={project.student.bio}
                 schoolName={project.student.school?.name}
                 schoolCity={project.student.school?.city}

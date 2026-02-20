@@ -2,7 +2,7 @@
 
 **Purpose:** Quick-reference file for key decisions, patterns, and context that should persist across sessions.
 
-**Last Updated:** 2026-02-20 (Phase 3 deployed, Stripe keys configured)
+**Last Updated:** 2026-02-20 (Phase 6 & 7 complete)
 
 ---
 
@@ -87,7 +87,37 @@ draft → pending_verification → pending_consent → live → funded → compl
 - Accordion component for FAQ page
 - All public pages are server components; interactive elements (search, filters, gallery, accordion, share) are client components
 
-## Stripe Integration (Phase 4 prep)
+## Key Architecture Patterns (Phase 4)
+
+- Checkout: POST /api/checkout creates pending backing + Stripe Checkout Session; redirect to sessionUrl. Webhook handles checkout.session.completed (backing → held, project totals updated; if goal met → project funded, backings → collected), charge.refunded, payment_intent.payment_failed.
+- Back-project form: client component with native dialog; amount presets + custom, name, email, anonymous; optional currentUser for prefilling and backerId. Platform fee 2.5% copy in form; fee applied at disbursement (Phase 5).
+- Success page: /projects/[id]/back/success with session_id; thank-you or error message, link back to project.
+
+## Key Architecture Patterns (Phase 5)
+
+- Drawdowns: student creates request (project funded, milestone has remaining); teacher approves/rejects via /dashboard/drawdowns. Parent sees read-only list on same route. RLS on drawdown_requests; server actions use admin client and enforce role/ownership.
+- Queries: getDrawdownRequestsByProject, getPendingDrawdownsForTeacher, getDrawdownsForParent; getMilestoneRemaining / getApprovedAmountForMilestone for eligibility.
+- Milestone status: pending → approved (first approved drawdown) → disbursed (when approved sum ≥ milestone amount). stripe_transfer_id reserved for Epic 4.
+
+## Key Architecture Patterns (Phase 6)
+
+- Notifications: getNotificationsForUser, markNotificationRead, markAllNotificationsRead in `src/lib/queries/notifications.ts`. Notification centre at /dashboard/notifications; Notifications card on dashboard home for all roles.
+- Backings: getBackingsForUser in `src/lib/queries/backings.ts`; RLS allows SELECT where backer_id = auth.uid(). Investor “Backed projects” at /dashboard/backed.
+- Admin: /admin layout checks role === 'admin' else redirect. Overview (counts), Users, Projects, Reports pages; all use createAdminClient() for RLS bypass.
+- Resend: sendNotificationEmail(userId, subject, html) in `src/lib/email/resend.ts`; called after each in-app notification in project and drawdown actions. No send if RESEND_API_KEY missing.
+
+## Key Architecture Patterns (Phase 7)
+
+- Reports: RLS allows INSERT where reporter_id = auth.uid(). createReport(projectId, reason, details) in project page actions; Report project UI (modal) for logged-in users on public project page.
+- Admin moderation: resolveReport, dismissReport, removeProject in `src/app/admin/reports/actions.ts`; Remove project sets status to cancelled and notifies student.
+
+## Key Architecture Patterns (Epic 1)
+
+- **Avatars:** user_profiles.avatar_config (JSONB): hairStyle, hairColor, skinTone, accessories. AvatarDisplay renders from config, else avatar_url, else initial. AvatarBuilder on profile for students; updateAvatarConfig action.
+- **Display handles:** user_profiles.display_handle (unique). generateDisplayHandle() in safe-username.ts; assign on first profile load for students; regenerate in DisplayHandleSection. Public project card/detail and StudentProfileCard use display_handle for student name.
+- **Badges:** user_badges (user_id, badge_type, project_id). awardFirstProject (on first project), awardFullyFunded (webhook when goal met), awardMilestoneMaster (first drawdown approved). getBadgesForUser for Trophy Room. RLS: users SELECT own badges; inserts via admin client.
+
+## Stripe Integration (Phase 4)
 
 - **Stripe account:** Created (test mode)
 - **Publishable key:** configured in .env.local and Vercel
@@ -103,8 +133,12 @@ draft → pending_verification → pending_consent → live → funded → compl
 - **Phase 1: Foundation & Auth** — COMPLETE (deployed)
 - **Phase 2: Project Creation & Verification** — COMPLETE (deployed)
 - **Phase 3: Public Discovery & Project Pages** — COMPLETE (deployed)
-- **Phase 4: Payments & Funding** — READY TO START (Stripe keys configured)
-- Status: Stripe account created, webhook set up, keys in .env.local + Vercel. Ready to build Phase 4.
+- **Phase 4: Payments & Funding** — COMPLETE (back form, Stripe Checkout, success page, guest checkout, Apple/Google Pay)
+- **Phase 5: Milestone Drawdowns** — COMPLETE (request, approve/reject, parent view, audit trail, disbursement recorded)
+- **Phase 6: Dashboards & Notifications** — COMPLETE (notification centre, backed page, admin dashboard, Resend email)
+- **Phase 7: Trust, Safety & Polish** — COMPLETE (report project, admin moderation, RLS reports/backings, polish, docs)
+- **Epic 1: Safe Identity & Gamification** — COMPLETE (zero-PII avatars, safe usernames, Trophy Room)
+- **Next:** Epic 2 (Educational Hub) or launch prep
 
 ## Deployment
 
@@ -114,5 +148,4 @@ draft → pending_verification → pending_consent → live → funded → compl
 
 ## Blockers / Open Questions
 
-- None currently — Stripe is ready
-- Resend account needed for Phase 6
+- None currently — Stripe and Resend (Phase 6) integrated; optional RESEND_FROM in .env for production sender

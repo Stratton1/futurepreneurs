@@ -320,3 +320,166 @@
 
 ### Next steps
 - Build Phase 4: Payments & Funding (awaiting Joseph approval)
+
+---
+
+## Phase 4 — Payments & Funding
+
+### Entry: Phase 4 Complete
+- **Date:** 2026-02-20
+- **Status:** Complete
+- **Goal:** Backers can fund projects via Stripe; funds held until goal is met; guest checkout; platform fee documented.
+
+### What was built
+1. **Checkout API** — Enabled Apple Pay and Google Pay in Stripe Checkout (`payment_method_types: ['card', 'apple_pay', 'google_pay']`).
+2. **Back-project form (client component)** — Modal with amount presets (£10, £25, £50, £100) + custom amount, name, email, optional "Back as anonymous". Prefills for logged-in users. POST /api/checkout then redirect to Stripe Checkout. Loading state and API error display. Platform fee copy: "A 2.5% platform fee applies when the project is fully funded."
+3. **Project page** — Replaced placeholder "Back This Project" button with BackProjectForm; fetches current user and passes to form for prefilling and backerId. Only shown when project status is live and not funded. Copy updated to "All-or-nothing funding. Pay with card, Apple Pay, or Google Pay."
+4. **Success page** — `/projects/[id]/back/success` with thank-you message (or "Something went wrong" if no session_id), project title, and "View project" / "Browse more projects" links.
+5. **Cancel flow** — No change; existing cancel_url returns user to project page.
+
+### Files created
+- `src/components/features/back-project-form.tsx` — Client form + native dialog modal
+- `src/app/(public)/projects/[id]/back/success/page.tsx` — Thank-you page after payment
+
+### Files modified
+- `src/app/api/checkout/route.ts` — Added apple_pay, google_pay to payment_method_types
+- `src/app/(public)/projects/[id]/page.tsx` — getCurrentUser, BackProjectForm, status check for live
+
+### Verification
+- Backing flow: form → checkout API → Stripe Checkout → webhook updates backing + project totals; goal met → project funded, backings collected.
+- Guest checkout supported (backer_id optional); logged-in users can prefill and link backing to account.
+- Platform fee 2.5% documented in form; actual deduction at disbursement (Phase 5).
+
+---
+
+## Phase 5 — Milestone Drawdowns
+
+### Entry: Phase 5 Complete
+- **Date:** 2026-02-20
+- **Status:** Complete
+- **Goal:** Students can request drawdowns, teachers can approve/reject, parents can see activity; disbursement recorded (stripe_transfer_id reserved for Epic 4).
+
+### What was built
+1. **RLS** — Migration `002_drawdown_rls.sql`: students SELECT/INSERT for own projects; teachers SELECT/UPDATE for mentored projects; parents SELECT for consented/linked projects.
+2. **Query layer** — `src/lib/queries/drawdowns.ts`: getDrawdownRequestsByProject, getPendingDrawdownsForTeacher, getDrawdownsForParent, getApprovedAmountForMilestone, getMilestoneRemaining.
+3. **Server actions** — `src/app/dashboard/drawdowns/actions.ts`: createDrawdownRequest (student), approveDrawdownRequest, rejectDrawdownRequest (teacher); eligibility checks, milestone status updates, notifications.
+4. **Student** — `/dashboard/projects/[id]/drawdowns`: milestones with remaining amount, drawdown list per milestone, request form (amount, reason). My Projects: "Drawdowns" link for funded/completed projects.
+5. **Teacher** — `/dashboard/drawdowns`: pending drawdown list with Approve/Reject (optional reason); notifications on new request.
+6. **Parent** — Same route, read-only "Drawdown activity" table (project, student, milestone, amount, status, dates).
+7. **Dashboard home** — Role links: Student "Drawdowns", Teacher "Drawdown Requests", Parent "Drawdown Activity".
+8. **Audit trail** — requested_by, requested_at, approved_by, approved_at, status shown in all UIs; stripe_transfer_id left null for Epic 4.
+
+### Files created
+- `supabase/migrations/002_drawdown_rls.sql`
+- `src/lib/queries/drawdowns.ts`
+- `src/app/dashboard/drawdowns/actions.ts`
+- `src/app/dashboard/drawdowns/page.tsx` (teacher + parent)
+- `src/app/dashboard/drawdowns/drawdown-approval-actions.tsx`
+- `src/app/dashboard/projects/[id]/drawdowns/page.tsx`
+- `src/app/dashboard/projects/[id]/drawdowns/drawdown-request-form.tsx`
+
+### Files modified
+- `src/app/dashboard/projects/page.tsx` — Drawdowns link for funded/completed projects
+- `src/app/dashboard/page.tsx` — Drawdown/Drawdown requests/Drawdown activity links by role
+
+---
+
+## Phase 6 — Dashboards & Notifications
+
+### Entry: Phase 6 Complete
+- **Date:** 2026-02-20
+- **Status:** Complete
+- **Goal:** Every role has a functional dashboard; notification centre; investor “Backed projects”; admin dashboard; Resend email for key events.
+
+### What was built
+1. **RLS** — Migration `003_reports_backings_rls.sql`: reports INSERT where reporter_id = auth.uid(); backings SELECT where backer_id = auth.uid().
+2. **Query layers** — `src/lib/queries/notifications.ts`: getNotificationsForUser, getUnreadNotificationCount, markNotificationRead, markAllNotificationsRead. `src/lib/queries/backings.ts`: getBackingsForUser (with project title/status).
+3. **Notification centre** — `/dashboard/notifications`: list (newest first), link to target, mark-as-read and mark-all-read. Notifications card on dashboard home for all roles.
+4. **Investor “Backed projects”** — `/dashboard/backed`: list backings with project title, amount, status, date. “Backed projects” quick action for investor role.
+5. **Admin dashboard** — `/admin` layout (role check, redirect non-admin). Overview page (counts: users, projects, live/funded, backings, reports pending). Users, Projects, Reports pages (lists via admin client). Admin nav: Overview, Users, Projects, Reports.
+6. **Resend email** — `src/lib/email/resend.ts`: send helper, notificationEmailHtml, sendNotificationEmail(userId, subject, html). Email sent after in-app notification in project actions (verification_request, project_approved, consent_request, changes_requested, project_rejected, project_live, consent_declined) and drawdown actions (drawdown_request, drawdown_approved, drawdown_rejected). No send if RESEND_API_KEY missing (dev-friendly).
+
+### Files created
+- `supabase/migrations/003_reports_backings_rls.sql`
+- `src/lib/queries/notifications.ts`
+- `src/lib/queries/backings.ts`
+- `src/app/dashboard/notifications/page.tsx`
+- `src/app/dashboard/notifications/notifications-list.tsx`
+- `src/app/dashboard/notifications/actions.ts`
+- `src/app/dashboard/backed/page.tsx`
+- `src/app/admin/layout.tsx`
+- `src/app/admin/page.tsx`
+- `src/app/admin/users/page.tsx`
+- `src/app/admin/projects/page.tsx`
+- `src/app/admin/reports/page.tsx`
+- `src/app/admin/reports/actions.ts`
+- `src/app/admin/reports/report-actions.tsx`
+- `src/lib/email/resend.ts`
+
+### Files modified
+- `src/app/dashboard/page.tsx` — Notifications card for all roles; Backed projects card for investor
+- `src/app/dashboard/projects/actions.ts` — sendNotificationEmail after each notification insert
+- `src/app/dashboard/drawdowns/actions.ts` — sendNotificationEmail after each notification insert
+
+---
+
+## Phase 7 — Trust, Safety & Polish
+
+### Entry: Phase 7 Complete
+- **Date:** 2026-02-20
+- **Status:** Complete
+- **Goal:** Reporting, admin moderation, RLS for reports/backings, static pages and sharing in place, mobile/a11y polish, docs updated.
+
+### What was built
+1. **Report project** — “Report project” link on project page (logged-in only). Modal with reason dropdown (inappropriate_content, misleading_or_false, spam, harassment_or_bullying, copyright, other) and optional details. createReport(projectId, reason, details) server action; insert into reports; RLS allows INSERT where reporter_id = auth.uid().
+2. **Admin moderation** — resolveReport(reportId), dismissReport(reportId), removeProject(projectId, reason?) in `src/app/admin/reports/actions.ts`. Admin reports page: Resolve, Dismiss, Remove project (with optional reason); remove sets project status to cancelled and notifies student.
+3. **Static pages & sharing** — Terms, Privacy, Contact already present; ShareButtons on project page. No change.
+4. **Mobile/a11y polish** — Touch targets and focus/aria improvements on key flows (dashboard cards min-height, report modal aria-labelledby, focus visible on buttons). Phase 7 polish documented in build_log.
+5. **Docs** — roadmap.md: Phase 6 and 7 marked DONE. build_log.md: Phase 6 and 7 entries. project_memory.md: Phase 6/7 patterns and current phase updated.
+
+### Files created
+- `src/app/(public)/projects/[id]/actions.ts` — createReport
+- `src/app/(public)/projects/[id]/report-project-button.tsx` — Report project modal + form
+
+### Files modified
+- `src/app/(public)/projects/[id]/page.tsx` — ReportProjectButton when logged in and project not draft
+- `roadmap.md` — Phase 6 and 7 DONE
+- `build_log.md` — Phase 6 and 7 entries
+- `project_memory.md` — Phase 6/7 patterns, current phase
+
+---
+
+## Epic 1 — Safe Identity & Gamification
+
+### Entry: Epic 1 Complete
+- **Date:** 2026-02-20
+- **Status:** Complete
+- **Goal:** Zero-PII avatars, safe usernames (display handles), Trophy Room badges.
+
+### What was built
+1. **Zero-PII Avatars** — Migration 004: avatar_config JSONB on user_profiles. AvatarDisplay component (config vs URL vs initial). AvatarBuilder client (hair style/colour, skin tone, accessories); updateAvatarConfig profile action. Profile page avatar section for students; StudentProfileCard and public project queries include avatar_config.
+2. **Safe Usernames** — Migration 005: display_handle TEXT UNIQUE. safe-username.ts: generateDisplayHandle() with word lists and uniqueness check. Profile: auto-assign on first load for students; DisplayHandleSection with Regenerate. Public: project card and detail use display_handle for student name; StudentProfileCard accepts displayHandle.
+3. **Trophy Room** — Migration 006: user_badges (user_id, badge_type, project_id, earned_at). badges.ts: BADGE_TYPES, awardFirstProject, awardFullyFunded, awardMilestoneMaster, getBadgesForUser. Awards wired: createProject → first_project; Stripe webhook goal met → fully_funded; approveDrawdownRequest → milestone_master. /dashboard/trophy-room page and BadgeCard component; Trophy Room quick action for students. scripts/backfill-badges.ts for existing data.
+
+### Files created
+- `supabase/migrations/004_avatar_config.sql`, `005_display_handle.sql`, `006_user_badges.sql`
+- `src/components/features/avatar-display.tsx`, `avatar-builder.tsx`, `badge-card.tsx`
+- `src/app/dashboard/profile/display-handle-section.tsx`
+- `src/lib/safe-username.ts`, `src/lib/badges.ts`
+- `src/app/dashboard/trophy-room/page.tsx`
+- `scripts/backfill-badges.ts`
+
+### Files modified
+- `src/types/database.ts` — AvatarConfig, avatar_config, display_handle
+- `src/app/dashboard/profile/page.tsx` — avatar section, display handle section, auto-assign handle
+- `src/app/dashboard/profile/actions.ts` — updateAvatarConfig, assignOrRegenerateDisplayHandle
+- `src/components/features/student-profile-card.tsx` — avatarConfig, displayHandle, AvatarDisplay
+- `src/lib/queries/public-projects.ts` — student avatar_config, display_handle
+- `src/app/(public)/projects/[id]/page.tsx` — StudentProfileCard displayHandle, avatarConfig
+- `src/app/(public)/projects/page.tsx` — studentName from display_handle
+- `src/app/dashboard/page.tsx` — Trophy Room link for students
+- `src/app/dashboard/projects/actions.ts` — awardFirstProject after project create
+- `src/app/api/webhooks/stripe/route.ts` — awardFullyFunded when goal met
+- `src/app/dashboard/drawdowns/actions.ts` — awardMilestoneMaster on approve
+- `roadmap.md` — Epic 1 DONE
+- `build_log.md`, `project_memory.md` — Epic 1 entries

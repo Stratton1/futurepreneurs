@@ -5,10 +5,22 @@ import { USER_ROLE_LABELS } from '@/lib/constants';
 import { User, School, Users, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { RelationshipSection } from './relationship-section';
+import { AvatarDisplay } from '@/components/features/avatar-display';
+import { AvatarBuilder } from '@/components/features/avatar-builder';
+import { DisplayHandleSection } from './display-handle-section';
+import { generateDisplayHandle } from '@/lib/safe-username';
 
 export default async function ProfilePage() {
-  const user = await getCurrentUser();
+  let user = await getCurrentUser();
   if (!user) redirect('/login');
+
+  // Auto-assign display handle for students who don't have one yet
+  if (user.role === 'student' && !user.display_handle) {
+    const adminClient = createAdminClient();
+    const handle = await generateDisplayHandle();
+    await adminClient.from('user_profiles').update({ display_handle: handle }).eq('id', user.id);
+    user = await getCurrentUser() ?? user;
+  }
 
   // Use admin client for cross-user profile lookups (RLS only allows viewing own profile)
   const adminClient = createAdminClient();
@@ -80,11 +92,34 @@ export default async function ProfilePage() {
 
       <h1 className="text-2xl font-bold text-gray-900 mb-6">My Profile</h1>
 
+      {/* Avatar (students: zero-PII builder; others: optional display) */}
+      {(user.role === 'student' || user.avatar_config) && (
+        <section className="bg-white rounded-xl border border-gray-200 p-5 mb-6">
+          <h2 className="font-semibold text-gray-900 mb-4">Your avatar</h2>
+          <p className="text-sm text-gray-500 mb-4">
+            Personalise how you appear on your projects. No photos — just choose your style.
+          </p>
+          <AvatarBuilder
+            initialConfig={user.avatar_config ?? null}
+            onSaved={() => {}}
+          />
+        </section>
+      )}
+
       {/* Basic Info */}
       <section className="bg-white rounded-xl border border-gray-200 p-5 mb-6">
         <h2 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
           <User className="h-5 w-5 text-emerald-500" /> About You
         </h2>
+        <div className="flex items-center gap-4 mb-4">
+          <AvatarDisplay
+            avatarConfig={user.avatar_config ?? undefined}
+            avatarUrl={user.avatar_url}
+            name={user.full_name}
+            size="lg"
+          />
+          <div className="text-sm text-gray-500">Preview</div>
+        </div>
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div className="bg-gray-50 rounded-xl p-4">
             <span className="text-gray-500">Name</span>
@@ -115,6 +150,17 @@ export default async function ProfilePage() {
           </div>
         )}
       </section>
+
+      {/* Display handle (students only) — public name on projects */}
+      {user.role === 'student' && (
+        <section className="bg-white rounded-xl border border-gray-200 p-5 mb-6">
+          <h2 className="font-semibold text-gray-900 mb-2">Your public name</h2>
+          <p className="text-sm text-gray-500 mb-4">
+            This is how you appear on project pages (e.g. &quot;by BrightSpark42&quot;). No real name is shown.
+          </p>
+          <DisplayHandleSection initialHandle={user.display_handle ?? null} />
+        </section>
+      )}
 
       {/* Relationships */}
       <section className="bg-white rounded-xl border border-gray-200 p-5 mb-6">

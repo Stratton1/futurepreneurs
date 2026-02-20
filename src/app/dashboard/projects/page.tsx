@@ -74,6 +74,11 @@ export default async function MyProjectsPage() {
                       <Button variant="secondary" size="sm" asChild>Invite Parent</Button>
                     </Link>
                   )}
+                  {(project.status === 'funded' || project.status === 'completed') && (
+                    <Link href={`/dashboard/projects/${project.id}/drawdowns`}>
+                      <Button variant="outline" size="sm" asChild>Drawdowns</Button>
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>

@@ -25,6 +25,14 @@ export interface School {
   updated_at: string;
 }
 
+/** Built avatar options (zero-PII); no photo upload. */
+export interface AvatarConfig {
+  hairStyle?: string;
+  hairColor?: string;
+  skinTone?: string;
+  accessories?: string[];
+}
+
 export interface UserProfile {
   id: string;
   email: string;
@@ -33,6 +41,8 @@ export interface UserProfile {
   school_id: string | null;
   parent_id: string | null;
   avatar_url: string | null;
+  avatar_config: AvatarConfig | null;
+  display_handle: string | null;
   bio: string | null;
   is_verified: boolean;
   is_active: boolean;

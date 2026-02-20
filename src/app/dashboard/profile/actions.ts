@@ -3,6 +3,43 @@
 import { createAdminClient } from '@/lib/supabase/server';
 import { getCurrentUser } from '@/lib/supabase/auth-helpers';
 import { revalidatePath } from 'next/cache';
+import type { AvatarConfig } from '@/types/database';
+import { generateDisplayHandle } from '@/lib/safe-username';
+
+/** Assign or regenerate display handle for current user (student). Returns new handle or error. */
+export async function assignOrRegenerateDisplayHandle(): Promise<{ handle?: string; error?: string }> {
+  const user = await getCurrentUser();
+  if (!user || user.role !== 'student') return { error: 'Only students have a display handle' };
+
+  const handle = await generateDisplayHandle();
+  const adminClient = createAdminClient();
+  const { error } = await adminClient
+    .from('user_profiles')
+    .update({ display_handle: handle })
+    .eq('id', user.id);
+
+  if (error) return { error: 'Failed to set display handle' };
+  revalidatePath('/dashboard/profile');
+  revalidatePath('/dashboard');
+  return { handle };
+}
+
+/** Update built avatar config (zero-PII). Students and any role with avatar builder. */
+export async function updateAvatarConfig(config: AvatarConfig | null) {
+  const user = await getCurrentUser();
+  if (!user) return { error: 'Not signed in' };
+
+  const adminClient = createAdminClient();
+  const { error } = await adminClient
+    .from('user_profiles')
+    .update({ avatar_config: config as Record<string, unknown> })
+    .eq('id', user.id);
+
+  if (error) return { error: 'Failed to save avatar' };
+  revalidatePath('/dashboard/profile');
+  revalidatePath('/dashboard');
+  return { success: true };
+}
 
 /** Student links a parent by email */
 export async function linkParent(parentEmail: string) {

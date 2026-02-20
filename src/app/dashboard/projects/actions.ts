@@ -4,6 +4,8 @@ import { createClient, createAdminClient } from '@/lib/supabase/server';
 import { getCurrentUser } from '@/lib/supabase/auth-helpers';
 import { MAX_FUNDING_GOAL } from '@/lib/constants';
 import { revalidatePath } from 'next/cache';
+import { sendNotificationEmail, notificationEmailHtml } from '@/lib/email/resend';
+import { awardFirstProject } from '@/lib/badges';
 
 interface MilestoneInput {
   title: string;
@@ -102,6 +104,8 @@ export async function createProject(data: CreateProjectData) {
     return { error: 'Failed to save milestones. Please try again.' };
   }
 
+  await awardFirstProject(user.id, project.id);
+
   revalidatePath('/dashboard/projects');
   return { success: true, projectId: project.id };
 }
@@ -198,6 +202,15 @@ export async function submitForVerification(projectId: string) {
     message: `${user.full_name} has submitted "${project.title}" for your verification.`,
     link: `/dashboard/verify/${projectId}`,
   });
+  await sendNotificationEmail(
+    project.mentor_id,
+    'New project to verify',
+    notificationEmailHtml(
+      'New project to verify',
+      `${user.full_name} has submitted "${project.title}" for your verification.`,
+      `/dashboard/verify/${projectId}`
+    )
+  );
 
   revalidatePath('/dashboard/projects');
   return { success: true };
@@ -240,6 +253,15 @@ export async function approveProject(projectId: string) {
     message: `"${project.title}" has been approved by ${user.full_name}. Now waiting for parent consent.`,
     link: `/dashboard/projects`,
   });
+  await sendNotificationEmail(
+    project.student_id,
+    'Project approved by teacher!',
+    notificationEmailHtml(
+      'Project approved by teacher!',
+      `"${project.title}" has been approved by ${user.full_name}. Now waiting for parent consent.`,
+      '/dashboard/projects'
+    )
+  );
 
   // Auto-create consent record from student's linked parent if none exist
   const { data: existingConsents } = await adminClient
@@ -271,6 +293,15 @@ export async function approveProject(projectId: string) {
         message: `"${project.title}" needs your consent to go live.`,
         link: `/dashboard/consent/${projectId}`,
       });
+      await sendNotificationEmail(
+        studentProfile.parent_id,
+        'Consent needed',
+        notificationEmailHtml(
+          'Consent needed',
+          `"${project.title}" needs your consent to go live.`,
+          `/dashboard/consent/${projectId}`
+        )
+      );
     }
   } else {
     // Notify existing linked parents
@@ -282,6 +313,15 @@ export async function approveProject(projectId: string) {
         message: `"${project.title}" needs your consent to go live.`,
         link: `/dashboard/consent/${projectId}`,
       });
+      await sendNotificationEmail(
+        consent.parent_id,
+        'Consent needed',
+        notificationEmailHtml(
+          'Consent needed',
+          `"${project.title}" needs your consent to go live.`,
+          `/dashboard/consent/${projectId}`
+        )
+      );
     }
   }
 
@@ -325,6 +365,15 @@ export async function requestChanges(projectId: string, feedback: string) {
     message: `${user.full_name} has requested changes on "${project.title}": ${feedback}`,
     link: `/dashboard/projects`,
   });
+  await sendNotificationEmail(
+    project.student_id,
+    'Changes requested',
+    notificationEmailHtml(
+      'Changes requested',
+      `${user.full_name} has requested changes on "${project.title}": ${feedback}`,
+      '/dashboard/projects'
+    )
+  );
 
   revalidatePath('/dashboard/verify');
   revalidatePath('/dashboard/projects');
@@ -366,6 +415,15 @@ export async function rejectProject(projectId: string, reason: string) {
     message: `${user.full_name} was unable to approve "${project.title}": ${reason}`,
     link: `/dashboard/projects`,
   });
+  await sendNotificationEmail(
+    project.student_id,
+    'Project not approved',
+    notificationEmailHtml(
+      'Project not approved',
+      `${user.full_name} was unable to approve "${project.title}": ${reason}`,
+      '/dashboard/projects'
+    )
+  );
 
   revalidatePath('/dashboard/verify');
   return { success: true };
@@ -388,6 +446,8 @@ export async function giveConsent(projectId: string) {
     .single();
 
   if (!project) return { error: 'Project not found' };
+  // Already live: consent was likely given (e.g. double-click or another guardian). Treat as success so UI doesn't show an error.
+  if (project.status === 'live') return { success: true };
   if (project.status !== 'pending_consent') return { error: 'This project is not awaiting consent' };
 
   // Verify this parent has a consent record for this project
@@ -422,6 +482,15 @@ export async function giveConsent(projectId: string) {
     message: `"${project.title}" has been approved and is now visible to the public. Good luck!`,
     link: `/dashboard/projects`,
   });
+  await sendNotificationEmail(
+    project.student_id,
+    'Your project is live!',
+    notificationEmailHtml(
+      'Your project is live!',
+      `"${project.title}" has been approved and is now visible to the public. Good luck!`,
+      '/dashboard/projects'
+    )
+  );
 
   // Notify teacher
   if (project.mentor_id) {
@@ -432,6 +501,15 @@ export async function giveConsent(projectId: string) {
       message: `"${project.title}" is now live after receiving parent consent.`,
       link: `/dashboard/verify`,
     });
+    await sendNotificationEmail(
+      project.mentor_id,
+      'Project is live',
+      notificationEmailHtml(
+        'Project is live',
+        `"${project.title}" is now live after receiving parent consent.`,
+        '/dashboard/verify'
+      )
+    );
   }
 
   revalidatePath('/dashboard/consent');
@@ -456,6 +534,7 @@ export async function declineConsent(projectId: string, reason: string) {
     .single();
 
   if (!project) return { error: 'Project not found' };
+  if (project.status === 'live') return { error: 'This project is already live. Consent was already given.' };
   if (project.status !== 'pending_consent') return { error: 'This project is not awaiting consent' };
 
   const { data: consent } = await adminClient
@@ -484,6 +563,15 @@ export async function declineConsent(projectId: string, reason: string) {
     message: `Your parent/guardian was unable to give consent for "${project.title}": ${reason}. The project has been moved back to draft.`,
     link: `/dashboard/projects`,
   });
+  await sendNotificationEmail(
+    project.student_id,
+    'Parent consent declined',
+    notificationEmailHtml(
+      'Parent consent declined',
+      `Your parent/guardian was unable to give consent for "${project.title}": ${reason}. The project has been moved back to draft.`,
+      '/dashboard/projects'
+    )
+  );
 
   revalidatePath('/dashboard/consent');
   revalidatePath('/dashboard/projects');

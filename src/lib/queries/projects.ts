@@ -104,7 +104,8 @@ export async function getProjectsPendingConsent(parentId: string): Promise<Proje
   const results: ProjectWithDetails[] = [];
   for (const pid of projectIds) {
     const full = await getProjectById(pid, { useAdmin: true });
-    if (full) results.push(full);
+    // Only show projects that are still awaiting consent (e.g. not already live from another guardian)
+    if (full && full.status === 'pending_consent') results.push(full);
   }
 
   return results;
