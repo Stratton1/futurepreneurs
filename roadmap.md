@@ -315,9 +315,9 @@ Everything that happened before any code was written.
 - [x] Approved + consented projects go live
 - [x] TypeScript compiles with zero errors
 - [ ] Manual test: full flow from create → verify → consent → live
-- [ ] Code pushed to GitHub
-- [ ] Deployed to Vercel (automatic on push)
-- [ ] Joseph approves Phase 2
+- [x] Code pushed to GitHub
+- [x] Deployed to Vercel (automatic on push)
+- [x] Joseph approves Phase 2
 
 **Potential issues to watch for:**
 - Supabase Storage bucket permissions — if images don't load publicly, check RLS policies on the storage bucket
@@ -326,7 +326,7 @@ Everything that happened before any code was written.
 
 ---
 
-## Phase 3 — Public Discovery & Project Pages (TODO)
+## Phase 3 — Public Discovery & Project Pages (DONE)
 
 **Goal:** Anyone can visit the site, browse projects, and view individual project pages with full details.
 
@@ -419,13 +419,13 @@ Everything that happened before any code was written.
 - `src/components/ui/accordion.tsx` — reusable accordion component
 
 ### Phase 3 Checkpoint
-- [ ] Homepage shows real live projects (featured, recent, almost there)
-- [ ] Browse page works with search, category filter, sort, pagination
-- [ ] Individual project pages show all details, milestones, updates
-- [ ] How It Works, About, FAQ pages are complete
-- [ ] All pages are mobile-responsive
-- [ ] Navigation links updated (navbar, footer) to point to new pages
-- [ ] TypeScript compiles with zero errors
+- [x] Homepage shows real live projects (featured, recent, almost there)
+- [x] Browse page works with search, category filter, sort, pagination
+- [x] Individual project pages show all details, milestones, updates
+- [x] How It Works, About, FAQ pages are complete
+- [x] All pages are mobile-responsive
+- [x] Navigation links updated (navbar, footer) to point to new pages
+- [x] TypeScript compiles with zero errors
 - [ ] Manual test: browse projects, search, filter, view project page, check on mobile
 - [ ] Code pushed to GitHub
 - [ ] Deployed to Vercel

@@ -26,7 +26,7 @@ export function Footer() {
             <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">Platform</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/" className="text-sm hover:text-white transition-colors">
+                <Link href="/projects" className="text-sm hover:text-white transition-colors">
                   Browse Projects
                 </Link>
               </li>

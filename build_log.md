@@ -199,3 +199,102 @@
 ### Verification
 - TypeScript compilation: **PASS** (zero errors)
 - All 16 new files + 1 modified file present and correctly structured
+- Code pushed to GitHub by Joseph
+- Joseph approved Phase 2
+
+---
+
+## Phase 3 — Public Discovery & Project Pages
+
+### Entry: Phase 3 Complete
+- **Date:** 2026-02-20
+- **Status:** Complete
+- **Goal:** Public-facing experience — browse, search, filter projects; view project details; static pages
+
+### What was built
+1. **Funding progress bar component:**
+   - Three sizes (sm/md/lg), raised/goal amounts, backer count, percentage
+   - Green bar, emerald when fully funded
+
+2. **Project card component:**
+   - Image (or gradient placeholder), category badge, title, short description
+   - Student name + school, funding progress bar
+   - Links to `/projects/{id}`
+
+3. **Public project query layer:**
+   - `getPublicProjects()` — browse with category, search (ilike), sort, pagination
+   - `getFeaturedProjects()` — featured live/funded projects
+   - `getRecentProjects()` — newest live/funded projects
+   - `getAlmostThereProjects()` — projects ≥50% funded
+   - `getPublicProjectById()` — full project with milestones, student, mentor, school
+   - `getProjectCountsByCategory()` — counts for filter badges
+   - All queries filter by status IN ('live', 'funded', 'completed')
+
+4. **Browse projects page (`/projects`):**
+   - Search bar with URL param management
+   - Category pill filters with counts
+   - Sort dropdown (newest, most funded, closest to goal)
+   - 3-column responsive grid of project cards
+   - Pagination with numbered page links
+   - Empty states for no results
+
+5. **Individual project detail page (`/projects/[id]`):**
+   - Two-column layout (content + sidebar)
+   - Image gallery with carousel and thumbnails
+   - Full description, video link, milestones section
+   - Sidebar: funding card with progress bar, "Back This Project" button (placeholder for Phase 4)
+   - Student profile card, verified teacher badge
+   - Share buttons (Twitter, Facebook, WhatsApp, copy link)
+   - Dynamic OG metadata via generateMetadata()
+
+6. **Homepage updated:**
+   - Dynamic "Featured Projects" section (fetched from DB)
+   - Dynamic "Recently Launched" section (deduplicated from featured)
+   - Updated CTA links to point to /projects
+
+7. **How It Works page:**
+   - Sections for each role: Students (6 steps), Teachers (3 cards), Parents (3 cards), Backers (3 cards)
+   - CTA section
+
+8. **About page:**
+   - Mission statement, values grid (6 items)
+   - "What makes us different" section (3 cards)
+   - UK-focused section with contact CTA
+
+9. **FAQ page:**
+   - Accordion sections: General (4), Students (5), Teachers (3), Backers (4), Parents (3)
+   - CTA to contact page
+
+10. **Accordion UI component:**
+    - Expandable items with chevron rotation animation
+    - Single open at a time
+
+11. **Navigation updated:**
+    - Navbar "Browse Projects" → `/projects` (desktop + mobile)
+    - Footer "Browse Projects" → `/projects`
+
+### Files created (12 new files)
+- `src/components/features/funding-progress-bar.tsx`
+- `src/components/features/project-card.tsx`
+- `src/lib/queries/public-projects.ts`
+- `src/components/features/search-bar.tsx`
+- `src/components/features/project-filters.tsx`
+- `src/app/(public)/projects/page.tsx`
+- `src/components/features/share-buttons.tsx`
+- `src/components/features/image-gallery.tsx`
+- `src/components/features/milestone-list.tsx`
+- `src/components/features/student-profile-card.tsx`
+- `src/app/(public)/projects/[id]/page.tsx`
+- `src/components/ui/accordion.tsx`
+- `src/app/(public)/how-it-works/page.tsx`
+- `src/app/(public)/about/page.tsx`
+- `src/app/(public)/faq/page.tsx`
+
+### Files modified (3 files)
+- `src/app/page.tsx` — added dynamic featured/recent project sections
+- `src/components/features/navbar.tsx` — Browse Projects link → /projects
+- `src/components/features/footer.tsx` — Browse Projects link → /projects
+
+### Verification
+- TypeScript compilation: **PASS** (zero errors)
+- All 15 new files + 3 modified files present and correctly structured

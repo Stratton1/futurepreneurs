@@ -77,12 +77,23 @@ draft → pending_verification → pending_consent → live → funded → compl
 - Notifications created in server actions (stored in notifications table)
 - Teacher list fetched via API route `/api/teachers` (needed for client component)
 
+## Key Architecture Patterns (Phase 3)
+
+- Public project queries in `src/lib/queries/public-projects.ts` with filtering, sorting, pagination
+- Browse page at `/projects` with URL-based search params for category, sort, search, pagination
+- Project detail page at `/projects/[id]` with dynamic OG metadata via `generateMetadata()`
+- Share buttons component for Twitter, Facebook, WhatsApp, copy link
+- Image gallery with carousel navigation and thumbnails
+- Accordion component for FAQ page
+- All public pages are server components; interactive elements (search, filters, gallery, accordion, share) are client components
+
 ## Current Phase
 
 - **Phase 1: Foundation & Auth** — COMPLETE (deployed)
-- **Phase 2: Project Creation & Verification** — COMPLETE
-- **Phase 3: Public Discovery & Project Pages** — NEXT
-- Status: Ready for Phase 3 (needs Joseph approval)
+- **Phase 2: Project Creation & Verification** — COMPLETE (pushed to GitHub)
+- **Phase 3: Public Discovery & Project Pages** — COMPLETE
+- **Phase 4: Payments & Funding** — NEXT
+- Status: Ready for Phase 4 (needs Joseph approval)
 
 ## Deployment
 

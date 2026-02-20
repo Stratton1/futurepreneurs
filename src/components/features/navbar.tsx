@@ -32,7 +32,7 @@ export function Navbar({ user }: NavbarProps) {
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-6">
-            <Link href="/" className="text-gray-600 hover:text-gray-900 font-medium transition-colors">
+            <Link href="/projects" className="text-gray-600 hover:text-gray-900 font-medium transition-colors">
               Browse Projects
             </Link>
             <Link href="/how-it-works" className="text-gray-600 hover:text-gray-900 font-medium transition-colors">
@@ -79,7 +79,7 @@ export function Navbar({ user }: NavbarProps) {
           <div className="md:hidden pb-4 border-t border-gray-100 pt-3">
             <div className="flex flex-col gap-2">
               <Link
-                href="/"
+                href="/projects"
                 className="px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 font-medium"
                 onClick={() => setIsOpen(false)}
               >
