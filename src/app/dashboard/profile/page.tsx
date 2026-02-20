@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { createClient } from '@/lib/supabase/server';
+import { createClient, createAdminClient } from '@/lib/supabase/server';
 import { getCurrentUser } from '@/lib/supabase/auth-helpers';
 import { USER_ROLE_LABELS } from '@/lib/constants';
 import { User, School, Users, ArrowLeft } from 'lucide-react';
@@ -10,9 +10,11 @@ export default async function ProfilePage() {
   const user = await getCurrentUser();
   if (!user) redirect('/login');
 
+  // Use admin client for cross-user profile lookups (RLS only allows viewing own profile)
+  const adminClient = createAdminClient();
   const supabase = await createClient();
 
-  // Get school info
+  // Get school info (schools are readable by everyone via RLS)
   let schoolName = null;
   if (user.school_id) {
     const { data: school } = await supabase
@@ -26,7 +28,7 @@ export default async function ProfilePage() {
   // Get parent info (for students)
   let parentInfo = null;
   if (user.role === 'student' && user.parent_id) {
-    const { data: parent } = await supabase
+    const { data: parent } = await adminClient
       .from('user_profiles')
       .select('id, full_name, email')
       .eq('id', user.parent_id)
@@ -37,7 +39,7 @@ export default async function ProfilePage() {
   // Get children info (for parents)
   let children: { id: string; full_name: string; email: string }[] = [];
   if (user.role === 'parent') {
-    const { data } = await supabase
+    const { data } = await adminClient
       .from('user_profiles')
       .select('id, full_name, email')
       .eq('parent_id', user.id)
@@ -54,7 +56,7 @@ export default async function ProfilePage() {
       .eq('mentor_id', user.id);
     if (projects) {
       for (const p of projects) {
-        const { data: student } = await supabase
+        const { data: student } = await adminClient
           .from('user_profiles')
           .select('full_name')
           .eq('id', p.student_id)

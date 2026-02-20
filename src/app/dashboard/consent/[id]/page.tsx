@@ -17,7 +17,7 @@ export default async function ConsentProjectPage({ params }: Props) {
   if (!user) redirect('/login');
   if (user.role !== 'parent') redirect('/dashboard');
 
-  const project = await getProjectById(id);
+  const project = await getProjectById(id, { useAdmin: true });
   if (!project) notFound();
 
   return (

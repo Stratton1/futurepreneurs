@@ -1,6 +1,6 @@
 'use server';
 
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 import { getCurrentUser } from '@/lib/supabase/auth-helpers';
 import { revalidatePath } from 'next/cache';
 
@@ -11,9 +11,10 @@ export async function linkParent(parentEmail: string) {
     return { error: 'Only students can link a parent' };
   }
 
-  const supabase = await createClient();
+  // Use admin client — RLS only allows viewing own profile
+  const adminClient = createAdminClient();
 
-  const { data: parent } = await supabase
+  const { data: parent } = await adminClient
     .from('user_profiles')
     .select('id, full_name')
     .eq('email', parentEmail.toLowerCase().trim())
@@ -25,7 +26,7 @@ export async function linkParent(parentEmail: string) {
     return { error: 'No parent account found with that email. They need to sign up as a parent first.' };
   }
 
-  const { error } = await supabase
+  const { error } = await adminClient
     .from('user_profiles')
     .update({ parent_id: parent.id })
     .eq('id', user.id);
@@ -43,9 +44,10 @@ export async function linkChild(studentEmail: string) {
     return { error: 'Only parents can link a child' };
   }
 
-  const supabase = await createClient();
+  // Use admin client — RLS only allows viewing/updating own profile
+  const adminClient = createAdminClient();
 
-  const { data: student } = await supabase
+  const { data: student } = await adminClient
     .from('user_profiles')
     .select('id, full_name')
     .eq('email', studentEmail.toLowerCase().trim())
@@ -58,7 +60,7 @@ export async function linkChild(studentEmail: string) {
   }
 
   // Check if student already has a parent
-  const { data: existing } = await supabase
+  const { data: existing } = await adminClient
     .from('user_profiles')
     .select('parent_id')
     .eq('id', student.id)
@@ -68,7 +70,7 @@ export async function linkChild(studentEmail: string) {
     return { error: 'This student is already linked to another parent.' };
   }
 
-  const { error } = await supabase
+  const { error } = await adminClient
     .from('user_profiles')
     .update({ parent_id: user.id })
     .eq('id', student.id);
@@ -86,9 +88,9 @@ export async function unlinkParent() {
     return { error: 'Only students can unlink a parent' };
   }
 
-  const supabase = await createClient();
+  const adminClient = createAdminClient();
 
-  const { error } = await supabase
+  const { error } = await adminClient
     .from('user_profiles')
     .update({ parent_id: null })
     .eq('id', user.id);

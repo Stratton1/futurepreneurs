@@ -17,7 +17,7 @@ export default async function VerifyProjectPage({ params }: Props) {
   if (!user) redirect('/login');
   if (user.role !== 'teacher') redirect('/dashboard');
 
-  const project = await getProjectById(id);
+  const project = await getProjectById(id, { useAdmin: true });
   if (!project) notFound();
   if (project.mentor_id !== user.id) redirect('/dashboard/verify');
 

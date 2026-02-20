@@ -1,6 +1,6 @@
 'use server';
 
-import { createClient } from '@/lib/supabase/server';
+import { createClient, createAdminClient } from '@/lib/supabase/server';
 import { getCurrentUser } from '@/lib/supabase/auth-helpers';
 import { MAX_FUNDING_GOAL } from '@/lib/constants';
 import { revalidatePath } from 'next/cache';
@@ -189,8 +189,9 @@ export async function submitForVerification(projectId: string) {
 
   if (error) return { error: 'Failed to submit project' };
 
-  // Create notification for the teacher
-  await supabase.from('notifications').insert({
+  // Use admin client for cross-user notification
+  const adminClient = createAdminClient();
+  await adminClient.from('notifications').insert({
     user_id: project.mentor_id,
     type: 'verification_request',
     title: 'New project to verify',
@@ -228,8 +229,11 @@ export async function approveProject(projectId: string) {
 
   if (error) return { error: 'Failed to approve project' };
 
+  // Use admin client for cross-user operations (notifications, consent records)
+  const adminClient = createAdminClient();
+
   // Notify the student
-  await supabase.from('notifications').insert({
+  await adminClient.from('notifications').insert({
     user_id: project.student_id,
     type: 'project_approved',
     title: 'Project approved by teacher!',
@@ -238,21 +242,21 @@ export async function approveProject(projectId: string) {
   });
 
   // Auto-create consent record from student's linked parent if none exist
-  const { data: existingConsents } = await supabase
+  const { data: existingConsents } = await adminClient
     .from('parental_consents')
     .select('parent_id')
     .eq('project_id', projectId);
 
   if (!existingConsents || existingConsents.length === 0) {
     // Look up the student's linked parent
-    const { data: studentProfile } = await supabase
+    const { data: studentProfile } = await adminClient
       .from('user_profiles')
       .select('parent_id')
       .eq('id', project.student_id)
       .single();
 
     if (studentProfile?.parent_id) {
-      await supabase.from('parental_consents').insert({
+      await adminClient.from('parental_consents').insert({
         student_id: project.student_id,
         parent_id: studentProfile.parent_id,
         project_id: projectId,
@@ -260,7 +264,7 @@ export async function approveProject(projectId: string) {
       });
 
       // Notify the parent
-      await supabase.from('notifications').insert({
+      await adminClient.from('notifications').insert({
         user_id: studentProfile.parent_id,
         type: 'consent_request',
         title: 'Consent needed',
@@ -271,7 +275,7 @@ export async function approveProject(projectId: string) {
   } else {
     // Notify existing linked parents
     for (const consent of existingConsents) {
-      await supabase.from('notifications').insert({
+      await adminClient.from('notifications').insert({
         user_id: consent.parent_id,
         type: 'consent_request',
         title: 'Consent needed',
@@ -312,8 +316,9 @@ export async function requestChanges(projectId: string, feedback: string) {
 
   if (error) return { error: 'Failed to update project status' };
 
-  // Notify the student
-  await supabase.from('notifications').insert({
+  // Use admin client for cross-user notification
+  const adminClient = createAdminClient();
+  await adminClient.from('notifications').insert({
     user_id: project.student_id,
     type: 'changes_requested',
     title: 'Changes requested',
@@ -352,7 +357,9 @@ export async function rejectProject(projectId: string, reason: string) {
 
   if (error) return { error: 'Failed to reject project' };
 
-  await supabase.from('notifications').insert({
+  // Use admin client for cross-user notification
+  const adminClient = createAdminClient();
+  await adminClient.from('notifications').insert({
     user_id: project.student_id,
     type: 'project_rejected',
     title: 'Project not approved',
@@ -371,9 +378,10 @@ export async function giveConsent(projectId: string) {
     return { error: 'Only parents can give consent' };
   }
 
-  const supabase = await createClient();
+  // Use admin client — parent can't read pending_consent projects or parental_consents via RLS
+  const adminClient = createAdminClient();
 
-  const { data: project } = await supabase
+  const { data: project } = await adminClient
     .from('projects')
     .select('id, status, student_id, title, mentor_id')
     .eq('id', projectId)
@@ -383,7 +391,7 @@ export async function giveConsent(projectId: string) {
   if (project.status !== 'pending_consent') return { error: 'This project is not awaiting consent' };
 
   // Verify this parent has a consent record for this project
-  const { data: consent } = await supabase
+  const { data: consent } = await adminClient
     .from('parental_consents')
     .select('id')
     .eq('project_id', projectId)
@@ -393,13 +401,13 @@ export async function giveConsent(projectId: string) {
   if (!consent) return { error: 'You do not have permission to consent to this project' };
 
   // Update consent record
-  await supabase
+  await adminClient
     .from('parental_consents')
     .update({ status: 'approved', consented_at: new Date().toISOString() })
     .eq('id', consent.id);
 
   // Set project to live
-  const { error } = await supabase
+  const { error } = await adminClient
     .from('projects')
     .update({ status: 'live' })
     .eq('id', projectId);
@@ -407,7 +415,7 @@ export async function giveConsent(projectId: string) {
   if (error) return { error: 'Failed to update project status' };
 
   // Notify student
-  await supabase.from('notifications').insert({
+  await adminClient.from('notifications').insert({
     user_id: project.student_id,
     type: 'project_live',
     title: 'Your project is live!',
@@ -417,7 +425,7 @@ export async function giveConsent(projectId: string) {
 
   // Notify teacher
   if (project.mentor_id) {
-    await supabase.from('notifications').insert({
+    await adminClient.from('notifications').insert({
       user_id: project.mentor_id,
       type: 'project_live',
       title: 'Project is live',
@@ -438,9 +446,10 @@ export async function declineConsent(projectId: string, reason: string) {
     return { error: 'Only parents can decline consent' };
   }
 
-  const supabase = await createClient();
+  // Use admin client — parent can't read pending_consent projects or parental_consents via RLS
+  const adminClient = createAdminClient();
 
-  const { data: project } = await supabase
+  const { data: project } = await adminClient
     .from('projects')
     .select('id, status, student_id, title')
     .eq('id', projectId)
@@ -449,7 +458,7 @@ export async function declineConsent(projectId: string, reason: string) {
   if (!project) return { error: 'Project not found' };
   if (project.status !== 'pending_consent') return { error: 'This project is not awaiting consent' };
 
-  const { data: consent } = await supabase
+  const { data: consent } = await adminClient
     .from('parental_consents')
     .select('id')
     .eq('project_id', projectId)
@@ -458,17 +467,17 @@ export async function declineConsent(projectId: string, reason: string) {
 
   if (!consent) return { error: 'You do not have permission for this project' };
 
-  await supabase
+  await adminClient
     .from('parental_consents')
     .update({ status: 'rejected' })
     .eq('id', consent.id);
 
-  await supabase
+  await adminClient
     .from('projects')
     .update({ status: 'draft' })
     .eq('id', projectId);
 
-  await supabase.from('notifications').insert({
+  await adminClient.from('notifications').insert({
     user_id: project.student_id,
     type: 'consent_declined',
     title: 'Parent consent declined',

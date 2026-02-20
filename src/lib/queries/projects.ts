@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createClient, createAdminClient } from '@/lib/supabase/server';
 import type { Project, Milestone, UserProfile } from '@/types/database';
 
 export interface ProjectWithDetails extends Project {
@@ -7,9 +7,10 @@ export interface ProjectWithDetails extends Project {
   mentor: Pick<UserProfile, 'id' | 'full_name' | 'email'> | null;
 }
 
-/** Fetch a single project with milestones, student, and mentor */
-export async function getProjectById(projectId: string): Promise<ProjectWithDetails | null> {
-  const supabase = await createClient();
+/** Fetch a single project with milestones, student, and mentor.
+ *  Use useAdmin=true when the caller may not have RLS access (e.g. parent viewing pending_consent projects). */
+export async function getProjectById(projectId: string, { useAdmin = false } = {}): Promise<ProjectWithDetails | null> {
+  const supabase = useAdmin ? createAdminClient() : await createClient();
 
   const { data: project } = await supabase
     .from('projects')
@@ -77,16 +78,17 @@ export async function getProjectsPendingVerification(teacherId: string): Promise
 
   const results: ProjectWithDetails[] = [];
   for (const project of projects) {
-    const full = await getProjectById(project.id);
+    const full = await getProjectById(project.id, { useAdmin: true });
     if (full) results.push(full);
   }
 
   return results;
 }
 
-/** Fetch projects pending parental consent for a parent */
+/** Fetch projects pending parental consent for a parent.
+ *  Uses admin client because parents can't read parental_consents or pending_consent projects via RLS. */
 export async function getProjectsPendingConsent(parentId: string): Promise<ProjectWithDetails[]> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   // Find consent records for this parent that are pending
   const { data: consents } = await supabase
@@ -101,16 +103,17 @@ export async function getProjectsPendingConsent(parentId: string): Promise<Proje
 
   const results: ProjectWithDetails[] = [];
   for (const pid of projectIds) {
-    const full = await getProjectById(pid);
+    const full = await getProjectById(pid, { useAdmin: true });
     if (full) results.push(full);
   }
 
   return results;
 }
 
-/** Fetch verified teachers at a specific school */
+/** Fetch verified teachers at a specific school.
+ *  Uses admin client because RLS only allows viewing own profile. */
 export async function getTeachersAtSchool(schoolId: string): Promise<Pick<UserProfile, 'id' | 'full_name' | 'email'>[]> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data } = await supabase
     .from('user_profiles')
