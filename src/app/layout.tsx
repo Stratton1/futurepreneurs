@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/features/navbar";
 import { Footer } from "@/components/features/footer";
+import { getCurrentUser } from "@/lib/supabase/auth-helpers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,17 +21,19 @@ export const metadata: Metadata = {
     "The safe, supported crowdfunding platform for under-18s to raise money and start their business ideas. Backed by teachers, supported by parents, funded by the public.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const user = await getCurrentUser();
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
-        <Navbar />
+        <Navbar user={user ? { fullName: user.full_name, role: user.role } : null} />
         <main className="flex-1">{children}</main>
         <Footer />
       </body>

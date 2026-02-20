@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { Menu, X, Rocket } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Menu, X, Rocket, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface NavbarProps {
@@ -14,6 +15,15 @@ interface NavbarProps {
 
 export function Navbar({ user }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    await fetch('/api/auth/logout', { method: 'POST' });
+    router.push('/');
+    router.refresh();
+  };
 
   return (
     <nav className="bg-white border-b border-gray-100 sticky top-0 z-50">
@@ -39,11 +49,20 @@ export function Navbar({ user }: NavbarProps) {
             </Link>
             {user ? (
               <div className="flex items-center gap-3">
+                <span className="text-sm text-gray-500">{user.fullName}</span>
                 <Link href="/dashboard">
                   <Button variant="primary" size="sm">
                     Dashboard
                   </Button>
                 </Link>
+                <button
+                  onClick={handleLogout}
+                  disabled={loggingOut}
+                  className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                  title="Log out"
+                >
+                  <LogOut className="h-4 w-4" />
+                </button>
               </div>
             ) : (
               <div className="flex items-center gap-3">
@@ -90,11 +109,21 @@ export function Navbar({ user }: NavbarProps) {
                 How It Works
               </Link>
               {user ? (
-                <Link href="/dashboard" onClick={() => setIsOpen(false)}>
-                  <Button variant="primary" size="sm" className="w-full">
-                    Dashboard
-                  </Button>
-                </Link>
+                <>
+                  <p className="px-3 py-1 text-sm text-gray-500">{user.fullName}</p>
+                  <Link href="/dashboard" onClick={() => setIsOpen(false)}>
+                    <Button variant="primary" size="sm" className="w-full">
+                      Dashboard
+                    </Button>
+                  </Link>
+                  <button
+                    onClick={() => { setIsOpen(false); handleLogout(); }}
+                    disabled={loggingOut}
+                    className="px-3 py-2 rounded-lg text-red-600 hover:bg-red-50 font-medium text-left text-sm"
+                  >
+                    Log out
+                  </button>
+                </>
               ) : (
                 <div className="flex flex-col gap-2 mt-2">
                   <Link href="/login" onClick={() => setIsOpen(false)}>
