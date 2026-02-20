@@ -1,6 +1,8 @@
 import { Accordion } from '@/components/ui/accordion';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { AnimateIn } from '@/components/ui/animate-in';
+import { HelpCircle, Rocket, GraduationCap, Heart, Users, ArrowRight, MessageCircle } from 'lucide-react';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -118,77 +120,93 @@ const parentFAQs = [
   },
 ];
 
+const sections = [
+  { id: 'general', label: 'General', icon: HelpCircle, color: 'text-gray-600', bg: 'bg-gray-100', faqs: generalFAQs },
+  { id: 'students', label: 'Students', icon: Rocket, color: 'text-emerald-600', bg: 'bg-emerald-50', faqs: studentFAQs },
+  { id: 'teachers', label: 'Teachers', icon: GraduationCap, color: 'text-blue-600', bg: 'bg-blue-50', faqs: teacherFAQs },
+  { id: 'backers', label: 'Backers', icon: Heart, color: 'text-purple-600', bg: 'bg-purple-50', faqs: backerFAQs },
+  { id: 'parents', label: 'Parents', icon: Users, color: 'text-amber-600', bg: 'bg-amber-50', faqs: parentFAQs },
+];
+
 export default function FAQPage() {
   return (
-    <div>
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-emerald-50 via-white to-amber-50 py-16 sm:py-20">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-            Frequently Asked Questions
-          </h1>
-          <p className="text-lg text-gray-600">
-            Everything you need to know about Futurepreneurs. Can not find what you are looking for?{' '}
-            <Link href="/contact" className="text-emerald-600 hover:text-emerald-700 font-medium underline">
-              Get in touch
+    <div className="overflow-hidden">
+      {/* ═══ HERO ═══ */}
+      <section className="relative bg-gradient-to-br from-emerald-50 via-white to-amber-50 py-20 sm:py-28 overflow-hidden">
+        <div className="absolute top-10 right-10 w-72 h-72 bg-emerald-200/20 rounded-full blur-3xl animate-float-slow" />
+        <div className="absolute bottom-10 left-10 w-64 h-64 bg-amber-200/20 rounded-full blur-3xl animate-float-slower" />
+
+        <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <AnimateIn animation="fade-in">
+            <div className="inline-flex items-center gap-2 bg-emerald-100/80 text-emerald-700 rounded-full px-5 py-2 text-sm font-semibold mb-6">
+              <MessageCircle className="h-4 w-4" />
+              Got questions?
+            </div>
+          </AnimateIn>
+          <AnimateIn animation="fade-up" delay={100}>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-6 leading-tight tracking-tight">
+              Frequently Asked <span className="text-gradient">Questions</span>
+            </h1>
+          </AnimateIn>
+          <AnimateIn animation="fade-up" delay={200}>
+            <p className="text-xl text-gray-500 font-light">
+              Everything you need to know about Futurepreneurs. Can not find what you are looking for?{' '}
+              <Link href="/contact" className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-4">
+                Get in touch
+              </Link>
+              .
+            </p>
+          </AnimateIn>
+        </div>
+      </section>
+
+      {/* ═══ FAQ SECTIONS ═══ */}
+      <div className="py-16 sm:py-24 bg-white">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          {sections.map((section, sectionIndex) => (
+            <AnimateIn key={section.id} delay={sectionIndex * 50}>
+              <div className={sectionIndex > 0 ? 'mt-16' : ''}>
+                <div className="flex items-center gap-3 mb-6">
+                  <div className={`${section.bg} p-2 rounded-xl`}>
+                    <section.icon className={`h-5 w-5 ${section.color}`} />
+                  </div>
+                  <h2 className="text-xl font-bold text-gray-900">{section.label}</h2>
+                  <span className="text-xs text-gray-400 bg-gray-100 rounded-full px-2.5 py-0.5">
+                    {section.faqs.length} questions
+                  </span>
+                </div>
+                <Accordion items={section.faqs} />
+              </div>
+            </AnimateIn>
+          ))}
+        </div>
+      </div>
+
+      {/* ═══ CTA ═══ */}
+      <section className="relative py-24 sm:py-32 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700" />
+        <div className="absolute top-10 left-10 w-64 h-64 bg-white/5 rounded-full blur-2xl" />
+        <div className="absolute bottom-10 right-10 w-80 h-80 bg-white/5 rounded-full blur-2xl" />
+
+        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <AnimateIn>
+            <h2 className="text-4xl sm:text-5xl font-extrabold text-white mb-6 leading-tight">
+              Still have questions?
+            </h2>
+          </AnimateIn>
+          <AnimateIn delay={100}>
+            <p className="text-xl text-emerald-100 mb-10 font-light">
+              We are happy to help. Reach out and we will get back to you as soon as we can.
+            </p>
+          </AnimateIn>
+          <AnimateIn delay={200}>
+            <Link href="/contact">
+              <Button size="lg" className="bg-white text-emerald-600 hover:bg-emerald-50 font-bold text-lg px-8 py-4 shadow-xl hover:-translate-y-0.5 transition-all duration-300" asChild>
+                Contact Us
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
             </Link>
-            .
-          </p>
-        </div>
-      </section>
-
-      {/* General */}
-      <section className="py-12 bg-white">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">General</h2>
-          <Accordion items={generalFAQs} />
-        </div>
-      </section>
-
-      {/* Students */}
-      <section className="py-12 bg-gray-50">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">For Students</h2>
-          <Accordion items={studentFAQs} />
-        </div>
-      </section>
-
-      {/* Teachers */}
-      <section className="py-12 bg-white">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">For Teachers</h2>
-          <Accordion items={teacherFAQs} />
-        </div>
-      </section>
-
-      {/* Backers */}
-      <section className="py-12 bg-gray-50">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">For Backers</h2>
-          <Accordion items={backerFAQs} />
-        </div>
-      </section>
-
-      {/* Parents */}
-      <section className="py-12 bg-white">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">For Parents</h2>
-          <Accordion items={parentFAQs} />
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-16 bg-emerald-500">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl font-bold text-white mb-4">Still have questions?</h2>
-          <p className="text-emerald-100 mb-8">
-            We are happy to help. Reach out and we will get back to you as soon as we can.
-          </p>
-          <Link href="/contact">
-            <Button size="lg" className="bg-white text-emerald-600 hover:bg-emerald-50 font-bold">
-              Contact Us
-            </Button>
-          </Link>
+          </AnimateIn>
         </div>
       </section>
     </div>

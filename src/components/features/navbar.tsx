@@ -42,7 +42,7 @@ export function Navbar({ user }: NavbarProps) {
               <div className="flex items-center gap-3">
                 <span className="text-sm text-gray-500">{user.fullName}</span>
                 <Link href="/dashboard">
-                  <Button variant="primary" size="sm">
+                  <Button variant="primary" size="sm" asChild>
                     Dashboard
                   </Button>
                 </Link>
@@ -51,12 +51,12 @@ export function Navbar({ user }: NavbarProps) {
             ) : (
               <div className="flex items-center gap-3">
                 <Link href="/login">
-                  <Button variant="ghost" size="sm">
+                  <Button variant="ghost" size="sm" asChild>
                     Log in
                   </Button>
                 </Link>
                 <Link href="/signup">
-                  <Button variant="primary" size="sm">
+                  <Button variant="primary" size="sm" asChild>
                     Get Started
                   </Button>
                 </Link>
@@ -105,12 +105,12 @@ export function Navbar({ user }: NavbarProps) {
               ) : (
                 <div className="flex flex-col gap-2 mt-2">
                   <Link href="/login" onClick={() => setIsOpen(false)}>
-                    <Button variant="outline" size="sm" className="w-full">
+                    <Button variant="outline" size="sm" className="w-full" asChild>
                       Log in
                     </Button>
                   </Link>
                   <Link href="/signup" onClick={() => setIsOpen(false)}>
-                    <Button variant="primary" size="sm" className="w-full">
+                    <Button variant="primary" size="sm" className="w-full" asChild>
                       Get Started
                     </Button>
                   </Link>

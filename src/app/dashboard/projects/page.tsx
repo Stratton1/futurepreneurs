@@ -24,7 +24,7 @@ export default async function MyProjectsPage() {
           <p className="text-gray-600 mt-1">Manage your project ideas and track their progress.</p>
         </div>
         <Link href="/dashboard/projects/new">
-          <Button>
+          <Button asChild>
             <Plus className="h-4 w-4 mr-1" /> New Project
           </Button>
         </Link>
@@ -36,7 +36,7 @@ export default async function MyProjectsPage() {
           <h2 className="text-lg font-semibold text-gray-700 mb-2">No projects yet</h2>
           <p className="text-gray-500 mb-6">Ready to share your business idea with the world?</p>
           <Link href="/dashboard/projects/new">
-            <Button>Create Your First Project</Button>
+            <Button asChild>Create Your First Project</Button>
           </Link>
         </div>
       ) : (
@@ -64,14 +64,14 @@ export default async function MyProjectsPage() {
                   {project.status === 'draft' && (
                     <>
                       <Link href={`/dashboard/projects/${project.id}/edit`}>
-                        <Button variant="outline" size="sm">Edit</Button>
+                        <Button variant="outline" size="sm" asChild>Edit</Button>
                       </Link>
                       <SubmitButton projectId={project.id} />
                     </>
                   )}
                   {project.status === 'pending_consent' && (
                     <Link href={`/dashboard/projects/${project.id}/invite-parent`}>
-                      <Button variant="secondary" size="sm">Invite Parent</Button>
+                      <Button variant="secondary" size="sm" asChild>Invite Parent</Button>
                     </Link>
                   )}
                 </div>

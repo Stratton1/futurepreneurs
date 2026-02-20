@@ -427,8 +427,8 @@ Everything that happened before any code was written.
 - [x] Navigation links updated (navbar, footer) to point to new pages
 - [x] TypeScript compiles with zero errors
 - [ ] Manual test: browse projects, search, filter, view project page, check on mobile
-- [ ] Code pushed to GitHub
-- [ ] Deployed to Vercel
+- [x] Code pushed to GitHub
+- [x] Deployed to Vercel (automatic on push)
 - [ ] Verify live site: browse real projects, check all pages render
 - [ ] Joseph approves Phase 3
 
@@ -443,19 +443,16 @@ Everything that happened before any code was written.
 
 **Goal:** A backer can fund a project, funds are held until the goal is reached, and released (minus 2.5% platform fee) when the goal is hit.
 
-### 4.0 Stripe Account Setup (Joseph Action Required)
-- [ ] **Joseph creates a Stripe account** at https://dashboard.stripe.com
-- [ ] Get **Publishable Key** (starts with `pk_test_...`) from Stripe Dashboard → Developers → API Keys
-- [ ] Get **Secret Key** (starts with `sk_test_...`) from the same page
-- [ ] Enable **Stripe Connect** (for disbursing funds to students' bank accounts later). Go to Stripe Dashboard → Connect → Get Started.
-- [ ] Set up a **Stripe Webhook** pointing to `https://futurepreneurs-sigma.vercel.app/api/webhooks/stripe`
-  - Events to listen for: `payment_intent.succeeded`, `payment_intent.payment_failed`, `charge.refunded`
-- [ ] Get the **Webhook Signing Secret** (starts with `whsec_...`)
-- [ ] Add all four keys to Vercel environment variables:
-  - `STRIPE_SECRET_KEY`
-  - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
-  - `STRIPE_WEBHOOK_SECRET`
-- [ ] Also add them to `.env.local` for local development
+### 4.0 Stripe Account Setup (DONE)
+- [x] **Joseph created Stripe account** at https://dashboard.stripe.com
+- [x] Got **Publishable Key** (`pk_test_...`)
+- [x] Got **Secret Key** (`sk_test_...`)
+- [ ] Enable **Stripe Connect** (for disbursing funds to students' bank accounts later — needed in Phase 5)
+- [x] Set up **Stripe Webhook** pointing to `https://futurepreneurs-sigma.vercel.app/api/webhooks/stripe`
+  - Events: `payment_intent.succeeded`, `payment_intent.payment_failed`, `charge.refunded`
+- [x] Got **Webhook Signing Secret** (`whsec_...`)
+- [x] All three keys added to Vercel environment variables
+- [x] All three keys added to `.env.local` for local development
 
 ### 4.1 Stripe Integration Setup
 - Install Stripe npm packages (`stripe`, `@stripe/stripe-js`, `@stripe/react-stripe-js`)

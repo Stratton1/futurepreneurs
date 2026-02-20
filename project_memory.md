@@ -2,7 +2,7 @@
 
 **Purpose:** Quick-reference file for key decisions, patterns, and context that should persist across sessions.
 
-**Last Updated:** 2026-02-20
+**Last Updated:** 2026-02-20 (Phase 3 deployed, Stripe keys configured)
 
 ---
 
@@ -87,13 +87,24 @@ draft → pending_verification → pending_consent → live → funded → compl
 - Accordion component for FAQ page
 - All public pages are server components; interactive elements (search, filters, gallery, accordion, share) are client components
 
+## Stripe Integration (Phase 4 prep)
+
+- **Stripe account:** Created (test mode)
+- **Publishable key:** configured in .env.local and Vercel
+- **Secret key:** configured in .env.local and Vercel
+- **Webhook secret:** configured in .env.local and Vercel
+- **Webhook endpoint:** `https://futurepreneurs-sigma.vercel.app/api/webhooks/stripe`
+- **Webhook events:** payment_intent.succeeded, payment_intent.payment_failed, charge.refunded
+- **Currency:** All amounts in pence (£10 = 1000). Stripe uses smallest currency unit.
+- **Test card:** 4242 4242 4242 4242, any future expiry, any CVC
+
 ## Current Phase
 
 - **Phase 1: Foundation & Auth** — COMPLETE (deployed)
-- **Phase 2: Project Creation & Verification** — COMPLETE (pushed to GitHub)
-- **Phase 3: Public Discovery & Project Pages** — COMPLETE
-- **Phase 4: Payments & Funding** — NEXT
-- Status: Ready for Phase 4 (needs Joseph approval)
+- **Phase 2: Project Creation & Verification** — COMPLETE (deployed)
+- **Phase 3: Public Discovery & Project Pages** — COMPLETE (deployed)
+- **Phase 4: Payments & Funding** — READY TO START (Stripe keys configured)
+- Status: Stripe account created, webhook set up, keys in .env.local + Vercel. Ready to build Phase 4.
 
 ## Deployment
 
@@ -103,6 +114,5 @@ draft → pending_verification → pending_consent → live → funded → compl
 
 ## Blockers / Open Questions
 
-- None currently
-- Stripe account needed for Phase 4
+- None currently — Stripe is ready
 - Resend account needed for Phase 6

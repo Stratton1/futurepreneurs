@@ -298,3 +298,25 @@
 ### Verification
 - TypeScript compilation: **PASS** (zero errors)
 - All 15 new files + 3 modified files present and correctly structured
+- Code pushed to GitHub by Joseph
+- Deployed to Vercel (automatic on push)
+
+---
+
+## Stripe Account Setup (Pre-Phase 4)
+
+### Entry: Stripe Configuration Complete
+- **Date:** 2026-02-20
+- **Status:** Complete
+
+### What was done
+1. Joseph created Stripe account (test mode)
+2. Publishable key (`pk_test_...`) and Secret key (`sk_test_...`) obtained
+3. Webhook endpoint created at `https://futurepreneurs-sigma.vercel.app/api/webhooks/stripe`
+4. Webhook listens for: `payment_intent.succeeded`, `payment_intent.payment_failed`, `charge.refunded`
+5. Webhook signing secret (`whsec_...`) obtained
+6. All three keys saved to `.env.local` (local development)
+7. All three keys added to Vercel environment variables (production)
+
+### Next steps
+- Build Phase 4: Payments & Funding (awaiting Joseph approval)

@@ -1,9 +1,10 @@
 import { Suspense } from 'react';
-import { Compass } from 'lucide-react';
+import { Compass, Sparkles, ArrowRight, Search } from 'lucide-react';
 import { ProjectCard } from '@/components/features/project-card';
 import { SearchBar } from '@/components/features/search-bar';
 import { ProjectFilters } from '@/components/features/project-filters';
 import { getPublicProjects, getProjectCountsByCategory } from '@/lib/queries/public-projects';
+import { AnimateIn } from '@/components/ui/animate-in';
 import Link from 'next/link';
 
 interface BrowsePageProps {
@@ -40,68 +41,81 @@ export default async function BrowseProjectsPage({ searchParams }: BrowsePagePro
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="bg-emerald-100 p-2 rounded-xl">
-              <Compass className="h-6 w-6 text-emerald-600" />
+      <div className="relative bg-gradient-to-br from-emerald-50 via-white to-blue-50 border-b border-gray-100 overflow-hidden">
+        <div className="absolute top-0 right-0 w-72 h-72 bg-emerald-200/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-200/10 rounded-full blur-3xl" />
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+          <AnimateIn animation="fade-in">
+            <div className="inline-flex items-center gap-2 text-emerald-600 text-sm font-semibold mb-3">
+              <Sparkles className="h-4 w-4" />
+              DISCOVER
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Browse Projects</h1>
-          </div>
-          <p className="text-gray-600 mb-6">
-            Discover young entrepreneurs and support the ideas you believe in.
-          </p>
+          </AnimateIn>
+          <AnimateIn animation="fade-up" delay={50}>
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2 tracking-tight">Browse Projects</h1>
+          </AnimateIn>
+          <AnimateIn animation="fade-up" delay={100}>
+            <p className="text-lg text-gray-500 mb-8 font-light">
+              Discover young entrepreneurs and support the ideas you believe in.
+            </p>
+          </AnimateIn>
 
           {/* Search */}
-          <div className="max-w-md mb-6">
-            <Suspense fallback={null}>
-              <SearchBar />
-            </Suspense>
-          </div>
+          <AnimateIn animation="fade-up" delay={150}>
+            <div className="max-w-md mb-6">
+              <Suspense fallback={null}>
+                <SearchBar />
+              </Suspense>
+            </div>
+          </AnimateIn>
 
           {/* Filters */}
-          <Suspense fallback={null}>
-            <ProjectFilters categoryCounts={categoryCounts} />
-          </Suspense>
+          <AnimateIn animation="fade-up" delay={200}>
+            <Suspense fallback={null}>
+              <ProjectFilters categoryCounts={categoryCounts} />
+            </Suspense>
+          </AnimateIn>
         </div>
       </div>
 
       {/* Results */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {search && (
-          <p className="text-sm text-gray-500 mb-4">
-            Showing results for &ldquo;{search}&rdquo;
+          <p className="text-sm text-gray-500 mb-6">
+            Showing results for &ldquo;<span className="font-medium text-gray-700">{search}</span>&rdquo;
             {total > 0 && <span> &mdash; {total} {total === 1 ? 'project' : 'projects'} found</span>}
           </p>
         )}
 
         {projects.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {projects.map((project: Record<string, unknown>) => {
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {projects.map((project: Record<string, unknown>, i: number) => {
                 const student = project.student as Record<string, unknown> | null;
                 const school = student?.school as Record<string, unknown> | null;
                 return (
-                  <ProjectCard
-                    key={project.id as string}
-                    id={project.id as string}
-                    title={project.title as string}
-                    shortDescription={project.short_description as string | null}
-                    category={project.category as string}
-                    goalAmount={project.goal_amount as number}
-                    totalRaised={project.total_raised as number}
-                    backerCount={project.backer_count as number}
-                    images={project.images as string[]}
-                    studentName={student?.full_name as string || 'Student'}
-                    schoolName={school?.name as string | null}
-                  />
+                  <AnimateIn key={project.id as string} delay={i * 50} animation="fade-up">
+                    <ProjectCard
+                      id={project.id as string}
+                      title={project.title as string}
+                      shortDescription={project.short_description as string | null}
+                      category={project.category as string}
+                      goalAmount={project.goal_amount as number}
+                      totalRaised={project.total_raised as number}
+                      backerCount={project.backer_count as number}
+                      images={project.images as string[]}
+                      studentName={student?.full_name as string || 'Student'}
+                      schoolName={school?.name as string | null}
+                    />
+                  </AnimateIn>
                 );
               })}
             </div>
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex justify-center gap-2 mt-10">
+              <div className="flex justify-center gap-2 mt-12">
                 {page > 1 && (
                   <PaginationLink page={page - 1} params={params} label="Previous" />
                 )}
@@ -122,25 +136,32 @@ export default async function BrowseProjectsPage({ searchParams }: BrowsePagePro
           </>
         ) : (
           /* Empty state */
-          <div className="text-center py-16">
-            <div className="bg-gray-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <Compass className="h-10 w-10 text-gray-400" />
+          <AnimateIn>
+            <div className="text-center py-20">
+              <div className="bg-gray-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                {search ? (
+                  <Search className="h-10 w-10 text-gray-400" />
+                ) : (
+                  <Compass className="h-10 w-10 text-gray-400" />
+                )}
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">
+                {search ? 'No projects found' : 'No projects yet'}
+              </h3>
+              <p className="text-gray-500 mb-8 max-w-md mx-auto">
+                {search
+                  ? `We could not find any projects matching "${search}". Try a different search or browse all projects.`
+                  : "There are no live projects right now. Check back soon or start your own!"}
+              </p>
+              <Link
+                href="/signup"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-500 text-white rounded-xl font-semibold hover:bg-emerald-600 hover:-translate-y-0.5 transition-all duration-300 shadow-lg shadow-emerald-500/25"
+              >
+                Start a Project
+                <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              {search ? 'No projects found' : 'No projects yet'}
-            </h3>
-            <p className="text-gray-500 mb-6 max-w-md mx-auto">
-              {search
-                ? `We couldn't find any projects matching "${search}". Try a different search or browse all projects.`
-                : "There aren't any live projects right now. Check back soon or start your own!"}
-            </p>
-            <Link
-              href="/signup"
-              className="inline-flex items-center px-4 py-2 bg-emerald-500 text-white rounded-xl text-sm font-medium hover:bg-emerald-600 transition-colors"
-            >
-              Start a Project
-            </Link>
-          </div>
+          </AnimateIn>
         )}
       </div>
     </div>
@@ -168,10 +189,10 @@ function PaginationLink({
   return (
     <Link
       href={href}
-      className={`px-3.5 py-2 rounded-lg text-sm font-medium transition-colors ${
+      className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
         isActive
-          ? 'bg-emerald-500 text-white'
-          : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+          ? 'bg-emerald-500 text-white shadow-sm shadow-emerald-500/25'
+          : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300'
       }`}
     >
       {label}

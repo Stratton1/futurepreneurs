@@ -56,7 +56,7 @@ export default async function TeacherVerifyPage() {
                   </div>
                 </div>
                 <Link href={`/dashboard/verify/${project.id}`}>
-                  <Button size="sm">Review</Button>
+                  <Button size="sm" asChild>Review</Button>
                 </Link>
               </div>
             </div>
