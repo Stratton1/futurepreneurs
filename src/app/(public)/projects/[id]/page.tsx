@@ -15,19 +15,25 @@ interface ProjectPageProps {
 }
 
 export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
-  const { id } = await params;
-  const project = await getPublicProjectById(id);
-  if (!project) return { title: 'Project Not Found — Futurepreneurs' };
+  try {
+    const { id } = await params;
+    const project = await getPublicProjectById(id);
+    if (!project) return { title: 'Project Not Found — Futurepreneurs' };
 
-  return {
-    title: `${project.title} — Futurepreneurs`,
-    description: project.short_description || project.description.slice(0, 160),
-    openGraph: {
-      title: project.title,
-      description: project.short_description || project.description.slice(0, 160),
-      images: project.images?.[0] ? [project.images[0]] : [],
-    },
-  };
+    const desc = project.short_description || (project.description || '').slice(0, 160);
+
+    return {
+      title: `${project.title} — Futurepreneurs`,
+      description: desc,
+      openGraph: {
+        title: project.title,
+        description: desc,
+        images: project.images?.[0] ? [project.images[0]] : [],
+      },
+    };
+  } catch {
+    return { title: 'Project — Futurepreneurs' };
+  }
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
@@ -192,13 +198,15 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             </div>
 
             {/* Student card */}
-            <StudentProfileCard
-              name={project.student.full_name}
-              avatarUrl={project.student.avatar_url}
-              bio={project.student.bio}
-              schoolName={project.student.school?.name}
-              schoolCity={project.student.school?.city}
-            />
+            {project.student && (
+              <StudentProfileCard
+                name={project.student.full_name}
+                avatarUrl={project.student.avatar_url}
+                bio={project.student.bio}
+                schoolName={project.student.school?.name}
+                schoolCity={project.student.school?.city}
+              />
+            )}
 
             {/* Trust badge */}
             {project.mentor && (
