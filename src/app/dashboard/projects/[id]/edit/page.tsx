@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,7 +9,8 @@ import { Select } from '@/components/ui/select';
 import { Alert } from '@/components/ui/alert';
 import { PROJECT_CATEGORIES, CURRENCY_SYMBOL, MAX_FUNDING_GOAL } from '@/lib/constants';
 import { updateProject, submitForVerification } from '../../actions';
-import { ArrowLeft, Save, Send, Plus, Trash2, UserPlus } from 'lucide-react';
+import { ArrowLeft, Save, Send, Plus, Trash2, UserPlus, Gift, Paintbrush, Sparkles, Users } from 'lucide-react';
+import Link from 'next/link';
 
 interface Milestone {
   id?: string;
@@ -31,6 +32,8 @@ interface ProjectData {
   mentor_id: string | null;
   milestones: Milestone[];
   mentor: { id: string; full_name: string } | null;
+  project_type: string;
+  group_name: string | null;
 }
 
 export default function EditProjectPage() {
@@ -55,6 +58,7 @@ export default function EditProjectPage() {
   const [mentorId, setMentorId] = useState('');
   const [mentorName, setMentorName] = useState('');
   const [status, setStatus] = useState('');
+  const [projectType, setProjectType] = useState('');
 
   // Mentor search
   const [mentorEmail, setMentorEmail] = useState('');
@@ -64,12 +68,7 @@ export default function EditProjectPage() {
   // Teachers dropdown
   const [teachers, setTeachers] = useState<{ id: string; full_name: string }[]>([]);
 
-  useEffect(() => {
-    loadProject();
-    loadTeachers();
-  }, [projectId]);
-
-  const loadProject = async () => {
+  const loadProject = useCallback(async () => {
     try {
       const res = await fetch(`/api/projects/${projectId}`);
       if (!res.ok) {
@@ -93,13 +92,14 @@ export default function EditProjectPage() {
       setMentorId(data.mentor_id || '');
       setMentorName(data.mentor?.full_name || '');
       setStatus(data.status);
+      setProjectType(data.project_type || 'individual');
     } catch {
       setError('Failed to load project');
     }
     setLoading(false);
-  };
+  }, [projectId]);
 
-  const loadTeachers = async () => {
+  const loadTeachers = useCallback(async () => {
     try {
       const res = await fetch('/api/teachers');
       if (res.ok) {
@@ -109,7 +109,15 @@ export default function EditProjectPage() {
     } catch {
       // Teachers will be empty
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      loadProject();
+      loadTeachers();
+    }, 0);
+    return () => clearTimeout(t);
+  }, [loadProject, loadTeachers]);
 
   const findTeacherByEmail = async () => {
     if (!mentorEmail.trim()) return;
@@ -284,6 +292,12 @@ export default function EditProjectPage() {
             hint="Minimum 50 characters"
             rows={6}
           />
+          <Link
+            href={`/dashboard/projects/${projectId}/pitch-builder`}
+            className="inline-flex items-center gap-2 text-sm font-medium text-purple-600 hover:text-purple-800 transition-colors"
+          >
+            <Sparkles className="h-4 w-4" /> Need help? Use the Pitch Builder →
+          </Link>
           <Input
             label="Video URL (optional)"
             id="videoUrl"
@@ -400,6 +414,55 @@ export default function EditProjectPage() {
               </div>
             </>
           )}
+        </section>
+        {/* Logo Builder */}
+        <section className="bg-white rounded-xl border border-gray-200 p-5 space-y-3">
+          <h2 className="font-semibold text-gray-900 flex items-center gap-2">
+            <Paintbrush className="h-5 w-5 text-blue-500" /> Business Logo
+          </h2>
+          <p className="text-sm text-gray-600">
+            Create a fun logo for your business using our template builder.
+          </p>
+          <Link
+            href={`/dashboard/projects/${projectId}/logo`}
+            className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
+          >
+            <Paintbrush className="h-4 w-4" /> Open Logo Builder →
+          </Link>
+        </section>
+
+        {/* Team (group projects only) */}
+        {projectType === 'group' && (
+          <section className="bg-white rounded-xl border border-gray-200 p-5 space-y-3">
+            <h2 className="font-semibold text-gray-900 flex items-center gap-2">
+              <Users className="h-5 w-5 text-blue-500" /> Team Members
+            </h2>
+            <p className="text-sm text-gray-600">
+              Invite students from your school to collaborate on this project.
+            </p>
+            <Link
+              href={`/dashboard/projects/${projectId}/team`}
+              className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
+            >
+              <Users className="h-4 w-4" /> Manage Team →
+            </Link>
+          </section>
+        )}
+
+        {/* Reward Tiers */}
+        <section className="bg-white rounded-xl border border-gray-200 p-5 space-y-3">
+          <h2 className="font-semibold text-gray-900 flex items-center gap-2">
+            <Gift className="h-5 w-5 text-purple-500" /> Reward Tiers
+          </h2>
+          <p className="text-sm text-gray-600">
+            Offer backers something in return — like a thank-you card, early access, or a custom item.
+          </p>
+          <Link
+            href={`/dashboard/projects/${projectId}/rewards`}
+            className="inline-flex items-center gap-2 text-sm font-medium text-purple-600 hover:text-purple-800 transition-colors"
+          >
+            <Gift className="h-4 w-4" /> Manage Reward Tiers →
+          </Link>
         </section>
       </div>
 

@@ -14,12 +14,16 @@ export default async function ProfilePage() {
   let user = await getCurrentUser();
   if (!user) redirect('/login');
 
-  // Auto-assign display handle for students who don't have one yet
+  // Auto-assign display handle for students who don't have one yet (best-effort; don't block page)
   if (user.role === 'student' && !user.display_handle) {
-    const adminClient = createAdminClient();
-    const handle = await generateDisplayHandle();
-    await adminClient.from('user_profiles').update({ display_handle: handle }).eq('id', user.id);
-    user = await getCurrentUser() ?? user;
+    try {
+      const adminClient = createAdminClient();
+      const handle = await generateDisplayHandle();
+      await adminClient.from('user_profiles').update({ display_handle: handle }).eq('id', user.id);
+      user = (await getCurrentUser()) ?? user;
+    } catch {
+      // Migrations may not be applied; page still shows avatar and rest of profile
+    }
   }
 
   // Use admin client for cross-user profile lookups (RLS only allows viewing own profile)
@@ -60,7 +64,7 @@ export default async function ProfilePage() {
   }
 
   // Get mentored students (for teachers)
-  let mentoredProjects: { id: string; title: string; student_name: string }[] = [];
+  const mentoredProjects: { id: string; title: string; student_name: string }[] = [];
   if (user.role === 'teacher') {
     const { data: projects } = await supabase
       .from('projects')
@@ -171,7 +175,7 @@ export default async function ProfilePage() {
         <RelationshipSection
           role={user.role}
           parentInfo={parentInfo}
-          children={children}
+          linkedChildren={children}
           mentoredProjects={mentoredProjects}
         />
       </section>

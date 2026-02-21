@@ -2,7 +2,7 @@
 
 **Purpose:** Quick-reference file for key decisions, patterns, and context that should persist across sessions.
 
-**Last Updated:** 2026-02-20 (Phase 6 & 7 complete)
+**Last Updated:** 2026-02-21
 
 ---
 
@@ -28,8 +28,8 @@
 
 ## Tech Stack
 
-- Next.js 14+ (App Router) + Tailwind CSS
-- Supabase (PostgreSQL, Auth, Storage)
+- Next.js 16.1.6 (App Router) + Tailwind CSS
+- Supabase (PostgreSQL, Auth, Storage) — project ID: `fclidhnncjdhrinazkqn`
 - Stripe (Payments, Connect for disbursements)
 - Resend (Transactional email)
 - Vercel (Hosting)
@@ -42,6 +42,19 @@
 - DB tables: `snake_case`
 - Env vars: `UPPER_SNAKE_CASE`
 - Commit style: `type: short description`
+
+## Critical Pattern: Admin Client for Cross-User Operations
+
+**Problem:** RLS policies on `user_profiles` only allow `SELECT` where `auth.uid() = id`. Tables like `parental_consents` and `notifications` have no INSERT policies. This means server actions that create records for OTHER users (e.g. teacher creating a consent record for a parent, or inserting a notification for a student) fail silently.
+
+**Solution:** `createAdminClient()` in `src/lib/supabase/server.ts` uses the service role key to bypass RLS. Use it in any server action that reads/writes data for users other than the currently logged-in user. User identity is still verified via `getCurrentUser()` before using the admin client.
+
+**Where it's used:**
+- `src/app/dashboard/projects/actions.ts` — approveProject, submitForVerification, giveConsent, declineConsent, requestChanges, rejectProject
+- `src/app/dashboard/profile/actions.ts` — linkParent, linkChild, unlinkParent
+- `src/app/dashboard/profile/page.tsx` — reading parent/child/student profiles
+- `src/lib/queries/projects.ts` — getProjectsPendingConsent, getProjectsPendingVerification (with `useAdmin` flag), getTeachersAtSchool
+- Admin dashboard pages
 
 ## School Email Validation
 
@@ -68,54 +81,33 @@ draft → pending_verification → pending_consent → live → funded → compl
               → draft                  → draft
 ```
 
-## Key Architecture Patterns (Phase 2)
+## Key Architecture Patterns (Phases 1-7 + Epic 1)
 
-- Server actions in `src/app/dashboard/projects/actions.ts` handle all project CRUD + verification + consent
-- Query functions in `src/lib/queries/projects.ts` for reusable database reads
-- Status helpers in `src/lib/project-status.ts` for status-based logic
-- Project creation uses a 6-step client-side wizard (single page with step state)
-- Notifications created in server actions (stored in notifications table)
-- Teacher list fetched via API route `/api/teachers` (needed for client component)
+- **Phase 2:** Server actions in `actions.ts` for project CRUD + verification + consent. Query functions in `queries/projects.ts`. 6-step creation wizard.
+- **Phase 3:** Public queries in `queries/public-projects.ts`. Browse at `/projects` with URL params. OG metadata via `generateMetadata()`.
+- **Phase 4:** Stripe Checkout via `/api/checkout`. Webhook at `/api/webhooks/stripe`. All-or-nothing logic. Guest checkout. Amounts in pence.
+- **Phase 5:** Drawdown request/approval flow. Admin client for cross-user RLS. Milestone status tracking.
+- **Phase 6:** Notification centre + email via Resend. Admin dashboard with `createAdminClient()`. Investor backed page.
+- **Phase 7:** Report system + admin moderation. Content flagging.
+- **Epic 1:** Avatar builder (JSONB config), safe display handles, Trophy Room badges.
 
-## Key Architecture Patterns (Phase 3)
+## Key Architecture Patterns (Epic 2 — Educational Hub)
 
-- Public project queries in `src/lib/queries/public-projects.ts` with filtering, sorting, pagination
-- Browse page at `/projects` with URL-based search params for category, sort, search, pagination
-- Project detail page at `/projects/[id]` with dynamic OG metadata via `generateMetadata()`
-- Share buttons component for Twitter, Facebook, WhatsApp, copy link
-- Image gallery with carousel navigation and thumbnails
-- Accordion component for FAQ page
-- All public pages are server components; interactive elements (search, filters, gallery, accordion, share) are client components
+- **Learning content:** 4 modules (Business Plan, Pitch Writing, Marketing, Managing Money), 22 lessons total, defined in `src/lib/learning-modules.ts`
+- **Public pages:** `/learn`, `/learn/[moduleId]`, `/learn/[moduleId]/[lessonId]` — browse, read, take quizzes
+- **Student dashboard:** `/dashboard/learning` — track progress, completion badges
+- **Database:** `learning_progress` table (migration 007), RLS per-user
+- **Queries:** `src/lib/queries/learning.ts` — progress tracking, completion counts
+- **Components:** LearningModuleCard, LessonProgressBar, QuizQuestion, GuidedTip
 
-## Key Architecture Patterns (Phase 4)
+## Key Architecture Patterns (Epic 3 — Campaign Management)
 
-- Checkout: POST /api/checkout creates pending backing + Stripe Checkout Session; redirect to sessionUrl. Webhook handles checkout.session.completed (backing → held, project totals updated; if goal met → project funded, backings → collected), charge.refunded, payment_intent.payment_failed.
-- Back-project form: client component with native dialog; amount presets + custom, name, email, anonymous; optional currentUser for prefilling and backerId. Platform fee 2.5% copy in form; fee applied at disbursement (Phase 5).
-- Success page: /projects/[id]/back/success with session_id; thank-you or error message, link back to project.
-
-## Key Architecture Patterns (Phase 5)
-
-- Drawdowns: student creates request (project funded, milestone has remaining); teacher approves/rejects via /dashboard/drawdowns. Parent sees read-only list on same route. RLS on drawdown_requests; server actions use admin client and enforce role/ownership.
-- Queries: getDrawdownRequestsByProject, getPendingDrawdownsForTeacher, getDrawdownsForParent; getMilestoneRemaining / getApprovedAmountForMilestone for eligibility.
-- Milestone status: pending → approved (first approved drawdown) → disbursed (when approved sum ≥ milestone amount). stripe_transfer_id reserved for Epic 4.
-
-## Key Architecture Patterns (Phase 6)
-
-- Notifications: getNotificationsForUser, markNotificationRead, markAllNotificationsRead in `src/lib/queries/notifications.ts`. Notification centre at /dashboard/notifications; Notifications card on dashboard home for all roles.
-- Backings: getBackingsForUser in `src/lib/queries/backings.ts`; RLS allows SELECT where backer_id = auth.uid(). Investor “Backed projects” at /dashboard/backed.
-- Admin: /admin layout checks role === 'admin' else redirect. Overview (counts), Users, Projects, Reports pages; all use createAdminClient() for RLS bypass.
-- Resend: sendNotificationEmail(userId, subject, html) in `src/lib/email/resend.ts`; called after each in-app notification in project and drawdown actions. No send if RESEND_API_KEY missing.
-
-## Key Architecture Patterns (Phase 7)
-
-- Reports: RLS allows INSERT where reporter_id = auth.uid(). createReport(projectId, reason, details) in project page actions; Report project UI (modal) for logged-in users on public project page.
-- Admin moderation: resolveReport, dismissReport, removeProject in `src/app/admin/reports/actions.ts`; Remove project sets status to cancelled and notifies student.
-
-## Key Architecture Patterns (Epic 1)
-
-- **Avatars:** user_profiles.avatar_config (JSONB): hairStyle, hairColor, skinTone, accessories. AvatarDisplay renders from config, else avatar_url, else initial. AvatarBuilder on profile for students; updateAvatarConfig action.
-- **Display handles:** user_profiles.display_handle (unique). generateDisplayHandle() in safe-username.ts; assign on first profile load for students; regenerate in DisplayHandleSection. Public project card/detail and StudentProfileCard use display_handle for student name.
-- **Badges:** user_badges (user_id, badge_type, project_id). awardFirstProject (on first project), awardFullyFunded (webhook when goal met), awardMilestoneMaster (first drawdown approved). getBadgesForUser for Trophy Room. RLS: users SELECT own badges; inserts via admin client.
+- **Pitch Builder:** AI-assisted (Hugging Face Llama) 5-question wizard → generates pitch. `src/lib/ai/pitch-builder.ts`, migration 011 (`pitch_drafts`, `ai_generation_log`). PII scrubbing via `src/lib/ai/content-moderation.ts`.
+- **Logo Builder:** Template-based SVG (8 shapes, 10 colours, 20+ icons). `src/app/dashboard/projects/[id]/logo/`. Migration 010 (`logo_config` JSONB on projects). Teacher approval flow.
+- **Reward Tiers:** Student creates, teacher approves. Migration 009 (`reward_tiers` table + `reward_tier_id` on backings). Queries in `src/lib/queries/reward-tiers.ts`.
+- **Micro-Goals:** Auto-generated at 25/50/75/100% of goal. Migration 008. Visual progress tracker.
+- **Team/Collaborators:** `project_collaborators` table, invitation flow. Migration 012. `project_type` (individual/group) on projects.
+- **Video Embed:** YouTube/Vimeo with privacy mode. VideoEmbed component.
 
 ## Stripe Integration (Phase 4)
 
@@ -131,21 +123,35 @@ draft → pending_verification → pending_consent → live → funded → compl
 ## Current Phase
 
 - **Phase 1: Foundation & Auth** — COMPLETE (deployed)
-- **Phase 2: Project Creation & Verification** — COMPLETE (deployed)
+- **Phase 2: Project Creation & Verification** — COMPLETE (deployed, RLS fixes applied)
 - **Phase 3: Public Discovery & Project Pages** — COMPLETE (deployed)
-- **Phase 4: Payments & Funding** — COMPLETE (back form, Stripe Checkout, success page, guest checkout, Apple/Google Pay)
-- **Phase 5: Milestone Drawdowns** — COMPLETE (request, approve/reject, parent view, audit trail, disbursement recorded)
-- **Phase 6: Dashboards & Notifications** — COMPLETE (notification centre, backed page, admin dashboard, Resend email)
-- **Phase 7: Trust, Safety & Polish** — COMPLETE (report project, admin moderation, RLS reports/backings, polish, docs)
-- **Epic 1: Safe Identity & Gamification** — COMPLETE (zero-PII avatars, safe usernames, Trophy Room)
-- **Next:** Epic 2 (Educational Hub) or launch prep
+- **Phase 4: Payments & Funding** — COMPLETE (deployed)
+- **Phase 5: Milestone Drawdowns** — COMPLETE (deployed)
+- **Phase 6: Dashboards & Notifications** — COMPLETE (deployed)
+- **Phase 7: Trust, Safety & Polish** — COMPLETE (deployed)
+- **Epic 1: Safe Identity & Gamification** — COMPLETE (deployed)
+- **Epic 2: Educational Hub** — BUILT (~95%), NOT YET COMMITTED/DEPLOYED. Migrations 007 not applied.
+- **Epic 3: Campaign Management** — BUILT (~82%), NOT YET COMMITTED/DEPLOYED. Migrations 008-012 not applied.
+- **Epic 5: Oversight (partial)** — Logo/reward approval in verification pages. ~80% built, uncommitted.
+- **Next:** Commit & deploy Epics 2/3, apply migrations, test, then Epic 4 (Wallet/Card) or launch prep.
 
 ## Deployment
 
 - **Live URL:** https://futurepreneurs-sigma.vercel.app/
 - **GitHub:** https://github.com/Stratton1/futurepreneurs
 - **Vercel team:** team_ZI5YAx1Srbvg1a3Ggm329fOD
+- **Vercel project:** prj_IlqjKk10FzEFDB9C8oJz2AceJmll
+
+## Database
+
+- **Supabase project:** fclidhnncjdhrinazkqn (new — migrated from anoqfecrfawwreanibnf)
+- **Committed migrations:** 001-006 (applied to production)
+- **Uncommitted migrations:** 007-012 (built, need to be committed and applied)
+- **Test accounts:** Seeded via `scripts/seed-test-accounts.ts` (password: TestPass123!)
 
 ## Blockers / Open Questions
 
-- None currently — Stripe and Resend (Phase 6) integrated; optional RESEND_FROM in .env for production sender
+- Migrations 007-012 need to be applied to the Supabase database before Epic 2/3 features can work on production
+- Epic 3 collaborator invitation email notifications not yet integrated with Resend
+- Group project creation UI may need polish
+- Reward tier max_claims enforcement in checkout needs testing

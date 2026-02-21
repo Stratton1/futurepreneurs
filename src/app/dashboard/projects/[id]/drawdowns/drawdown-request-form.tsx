@@ -16,7 +16,6 @@ interface DrawdownRequestFormProps {
 export function DrawdownRequestForm({
   projectId,
   milestoneId,
-  milestoneTitle,
   maxAmount,
 }: DrawdownRequestFormProps) {
   const [amount, setAmount] = useState('');

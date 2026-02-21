@@ -1,9 +1,9 @@
 # Roadmap — Futurepreneurs
 
-**Last Updated:** 2026-02-20
+**Last Updated:** 2026-02-21
 **Live URL:** https://futurepreneurs-sigma.vercel.app/
 **GitHub:** https://github.com/Stratton1/futurepreneurs
-**Supabase:** https://anoqfecrfawwreanibnf.supabase.co
+**Supabase:** https://fclidhnncjdhrinazkqn.supabase.co
 
 **Platform:** Youth-centric crowdfunding for ages 11–17
 **Compliance:** COPPA & GDPR-K compliant by design
@@ -13,10 +13,29 @@
 ## Status Key
 
 - DONE = completed and deployed
+- BUILT = code written and builds, not yet committed/deployed
 - IN PROGRESS = currently being built
 - NEXT = approved to start
 - PLANNED = scoped but not yet started
 - FUTURE = post-MVP, not yet scoped in detail
+
+---
+
+## Production setup (migrations and seeding)
+
+**Migrations:** Apply all Supabase migrations to your **production** Supabase project so the schema matches the app. Run them in order via Supabase Dashboard → SQL Editor, or `supabase db push` if using linked project.
+
+- **Committed (001–006):** initial schema, drawdown RLS, reports/backings RLS, avatar_config, display_handle, user_badges. Apply these for the deployed MVP.
+- **Built but uncommitted (007–012):** learning_progress, micro_goals, reward_tiers, project_logos, pitch_drafts, group_projects. Apply these before deploying Epics 2 & 3.
+
+If migrations are missing, the app may show empty project lists or layout errors.
+
+**Seeding production:** To show sample projects on the live site, either:
+
+1. **Seed API** — Set `ALLOW_SEED=true` in your Vercel environment (or use a one-off secret). Then send a single `POST` request to `https://<your-app>/api/admin/seed` (e.g. with curl or from a secure script). This creates sample schools, users, and projects. Remove or set `ALLOW_SEED=false` after seeding.
+2. **Manual** — Create schools, user profiles, and projects directly in the Supabase Dashboard (Table Editor) or by running your own SQL against the production database.
+
+The public Browse Projects page and homepage use the **service-role** client to read live projects, so once migrations are applied and data exists, projects will appear without further RLS changes.
 
 ---
 
@@ -37,8 +56,10 @@
 - [x] Project creation form (title, description, images, goal, category, milestones)
 - [x] Student selects teacher/mentor
 - [x] Teacher verification/approval flow
-- [x] Parental consent flow
+- [x] Parental consent flow (auto-create from student's linked parent)
 - [x] Project status management (draft → pending → live)
+- [x] RLS fix: admin client (`createAdminClient`) for cross-user operations (notifications, consent records, profile lookups)
+- [x] Profile page with family relationship management (link parent/child)
 
 ### Phase 3 — Public Discovery & Project Pages (DONE)
 
@@ -96,18 +117,24 @@
 - [x] **Safe Usernames** — Auto-generated display handles (e.g. BrightSpark42); assign on first profile load for students; regenerate in profile; public project card and detail use display_handle.
 - [x] **Trophy Room** — Badges: First Project, Fully Funded, Milestone Master; user_badges table; award on project create, webhook funded, drawdown approval; /dashboard/trophy-room page; backfill script.
 
-### Epic 2: Educational Hub & Onboarding
+### Epic 2: Educational Hub & Onboarding (BUILT — needs commit, migrations 007, deploy)
 
-- [ ] **Learning Platform** — A centralised resource centre with bite-sized guides, video tutorials, and interactive modules teaching students how to write a business plan, create a pitch, market a project, and manage funds responsibly.
-- [ ] **Guided Setup Flows** — Step-by-step interactive wizards that walk students through every stage of creating a campaign, explaining the "why" behind each requirement (e.g. "Why do I need milestones?") so they learn as they build.
+- [x] **Learning Platform** — 4 modules (Business Plan Basics, Pitch Writing, Marketing Your Project, Managing Your Money) with 22 lessons, quizzes with explanations, and per-user progress tracking. Public hub at `/learn` with module/lesson pages. Student dashboard at `/dashboard/learning` with completion stats. Database: `learning_progress` table (migration 007).
+- [x] **Guided Setup Flows** — GuidedTip component with "Why?" explanations linked from project creation steps. "First time? Start here" entry point from student dashboard linking to /learn.
+- [x] **Components** — LearningModuleCard, LessonProgressBar, QuizQuestion, GuidedTip.
 
-### Epic 3: Campaign Management & Teamwork
+### Epic 3: Campaign Management & Teamwork (BUILT — needs commit, migrations 008–012, deploy)
 
-- [ ] **Guided Video Pitch Integration** — Safe, moderated tools to record or embed a short video pitch directly on the project page, with content review by teachers before publishing.
-- [ ] **Scaffolded Micro-Goals** — Tools to break down a large funding target into smaller, achievable steps (e.g. "Week 1: Raise £50 for ingredients") with visual progress tracking and celebratory animations.
-- [ ] **Safe Reward Tiers** — A structured system for students to offer backers tangible or digital rewards (e.g. thank-you cards, early access, custom items) with teacher approval on all reward descriptions.
-- [ ] **Group / Club Fundraising Mode** — Dedicated project pages for school clubs, sports teams, or student groups to raise funds together under a single campaign with shared management tools.
-- [ ] **Multi-User / One Project** — Collaboration tools allowing multiple students to safely co-manage a single campaign — shared editing, split responsibilities, and joint milestone tracking.
+- [x] **AI Campaign Co-Pilot (Guided Pitch Builder)** — 5-question wizard (Problem, Solution, Audience, Funds, Uniqueness) with AI generation via Hugging Face (Meta-Llama). Student editing dashboard with apply-to-project flow. Automated PII scrubbing + content moderation (`src/lib/ai/content-moderation.ts`). Rate limiting (3 generations/24h). Migration 011 (`pitch_drafts`, `ai_generation_log`).
+- [x] **Business Logo Creator** — Template-based SVG generator (8 shapes: circle, square, shield, hexagon, badge, banner, diamond, oval; 10 colour palettes; 20+ Lucide icons). Real-time preview. Teacher approval before public display. Migration 010 (`logo_config` JSONB on projects).
+- [x] **Video Embed** — YouTube/Vimeo embed with privacy-enhanced mode. VideoEmbed component on project pages and teacher verification.
+- [x] **Scaffolded Micro-Goals** — Auto-generated at 25/50/75/100% of funding goal. Visual progress tracker with celebration animations (confetti component). Migration 008 (`micro_goals` table).
+- [x] **Safe Reward Tiers** — Students create tiers (title, description, min amount, max claims). Teacher approval required before public display. Reward selection UI for backers. Migration 009 (`reward_tiers` table + `reward_tier_id` on backings).
+- [x] **Group / Club Fundraising Mode** — `project_type` (individual/group) and `group_name` columns on projects. Migration 012 (`project_collaborators` table).
+- [x] **Multi-User / One Project** — Invite collaborator form, team member list, pending invitations on dashboard. Accept/decline flow with RLS.
+- [ ] **Collaborator email notifications** — Not yet integrated with Resend
+- [ ] **Reward tier max_claims enforcement** — Column exists, enforcement in checkout needs testing
+- [ ] **Group project creation UI polish** — Type/group_name UI needs refinement
 
 ### Epic 4: Youth-Centric Digital Wallet & Card System (FUTURE)
 
@@ -204,8 +231,9 @@ POST   /api/webhooks/stripe-issuing       — Stripe Issuing webhook (authorizat
 - [ ] **90-Day Transition Flow** — At 17 years 9 months, student receives a "Growing Up" notification explaining upcoming changes. At 18, the system: (1) removes dual-approval requirement, (2) converts custodial Connected Account to an independent account, (3) runs full Adult KYC on the now-adult user, (4) preserves all transaction history, (5) notifies parent that oversight has ended.
 - [ ] **Graduated Independence** — Optional "training wheels" mode where 18+ users can voluntarily keep mentor oversight for their first independent project.
 
-### Epic 5: Oversight, Privacy & Verification
+### Epic 5: Oversight, Privacy & Verification (PARTIAL — some items BUILT with Epic 3)
 
+- [x] **Teacher Approval for Logos & Rewards** — Logo approval and reward tier approval cards integrated into teacher verification flow (BUILT, uncommitted)
 - [ ] **Enhanced Parent Dashboard** — An expanded hub for parents to monitor activity, view spending breakdowns, see milestone progress, and manage consent settings — all in one place.
 - [ ] **Privacy Checkpoints (The Approval Flow)** — Mandatory review gates at key moments (project creation, going live, first drawdown) requiring parent or teacher sign-off before the student can proceed, with clear audit trails.
 - [ ] **Teacher / School Verification Badges** — Visual trust badges displayed on project pages showing that a real teacher at a verified school has reviewed and approved the project, boosting backer confidence.

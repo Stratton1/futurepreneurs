@@ -7,10 +7,10 @@ import { Input } from '@/components/ui/input';
 
 interface DrawdownApprovalActionsProps {
   drawdownId: string;
-  projectId: string;
+  projectId?: string;
 }
 
-export function DrawdownApprovalActions({ drawdownId, projectId }: DrawdownApprovalActionsProps) {
+export function DrawdownApprovalActions({ drawdownId }: DrawdownApprovalActionsProps) {
   const [isApproving, setIsApproving] = useState(false);
   const [isRejecting, setIsRejecting] = useState(false);
   const [rejectReason, setRejectReason] = useState('');

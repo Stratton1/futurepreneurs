@@ -1,0 +1,249 @@
+'use client';
+
+import { useState } from 'react';
+import { CheckCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { QuizQuestion } from '@/components/features/quiz-question';
+import { markLessonComplete, submitQuizAnswer } from '@/app/dashboard/learning/actions';
+import type { QuizQuestion as QuizQuestionType } from '@/types/learning';
+
+interface LessonContentProps {
+  moduleId: string;
+  lessonId: string;
+  content: string;
+  quiz: QuizQuestionType | null;
+  isLoggedIn: boolean;
+  alreadyCompleted: boolean;
+}
+
+/** Simple markdown-like renderer for lesson content */
+function renderContent(markdown: string) {
+  const lines = markdown.split('\n');
+  const elements: React.ReactNode[] = [];
+  let inTable = false;
+  let tableRows: string[][] = [];
+  let inList = false;
+  let listItems: string[] = [];
+
+  const flushTable = () => {
+    if (tableRows.length === 0) return;
+    const headerRow = tableRows[0];
+    const bodyRows = tableRows.slice(2); // skip separator row
+    elements.push(
+      <div key={`table-${elements.length}`} className="overflow-x-auto my-4">
+        <table className="w-full text-sm border-collapse">
+          <thead>
+            <tr>
+              {headerRow.map((cell, i) => (
+                <th key={i} className="border border-gray-200 bg-gray-50 px-3 py-2 text-left font-medium text-gray-700">
+                  {cell.trim()}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {bodyRows.map((row, ri) => (
+              <tr key={ri}>
+                {row.map((cell, ci) => (
+                  <td key={ci} className="border border-gray-200 px-3 py-2 text-gray-600">
+                    {cell.trim().replace(/\*\*(.*?)\*\*/g, '$1')}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+    tableRows = [];
+  };
+
+  const flushList = () => {
+    if (listItems.length === 0) return;
+    elements.push(
+      <ul key={`list-${elements.length}`} className="list-disc list-inside space-y-1 my-3 text-gray-700">
+        {listItems.map((item, i) => (
+          <li key={i} dangerouslySetInnerHTML={{ __html: formatInline(item) }} />
+        ))}
+      </ul>
+    );
+    listItems = [];
+  };
+
+  const formatInline = (text: string) => {
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/`(.*?)`/g, '<code class="bg-gray-100 px-1 rounded text-sm">$1</code>');
+  };
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+
+    // Table detection
+    if (trimmed.startsWith('|')) {
+      if (!inTable) {
+        if (inList) { inList = false; flushList(); }
+        inTable = true;
+      }
+      const cells = trimmed.split('|').filter((c) => c.trim() !== '');
+      // Skip separator rows (e.g., |------|------|)
+      if (cells.every((c) => /^[-:\s]+$/.test(c))) {
+        tableRows.push(cells);
+      } else {
+        tableRows.push(cells);
+      }
+      continue;
+    } else if (inTable) {
+      inTable = false;
+      flushTable();
+    }
+
+    // List items
+    if (/^[-*]\s/.test(trimmed) || /^\d+\.\s/.test(trimmed)) {
+      if (!inList) inList = true;
+      const itemText = trimmed.replace(/^[-*]\s/, '').replace(/^\d+\.\s/, '');
+      listItems.push(itemText);
+      continue;
+    } else if (inList) {
+      inList = false;
+      flushList();
+    }
+
+    // Checklist items
+    if (/^- \[[ x]\]/.test(trimmed)) {
+      const checked = trimmed.startsWith('- [x]');
+      const text = trimmed.replace(/^- \[[ x]\]\s*/, '');
+      elements.push(
+        <div key={`check-${elements.length}`} className="flex items-center gap-2 my-1 text-gray-700">
+          <input type="checkbox" defaultChecked={checked} className="rounded" />
+          <span dangerouslySetInnerHTML={{ __html: formatInline(text) }} />
+        </div>
+      );
+      continue;
+    }
+
+    // Blockquote
+    if (trimmed.startsWith('>')) {
+      const quoteText = trimmed.replace(/^>\s*/, '');
+      elements.push(
+        <blockquote
+          key={`quote-${elements.length}`}
+          className="border-l-4 border-emerald-300 bg-emerald-50 px-4 py-3 my-3 text-gray-700 italic"
+          dangerouslySetInnerHTML={{ __html: formatInline(quoteText) }}
+        />
+      );
+      continue;
+    }
+
+    // Headings
+    if (trimmed.startsWith('### ')) {
+      elements.push(
+        <h3 key={`h3-${elements.length}`} className="text-lg font-semibold text-gray-900 mt-6 mb-2">
+          {trimmed.replace('### ', '')}
+        </h3>
+      );
+      continue;
+    }
+    if (trimmed.startsWith('## ')) {
+      elements.push(
+        <h2 key={`h2-${elements.length}`} className="text-xl font-bold text-gray-900 mt-8 mb-3">
+          {trimmed.replace('## ', '')}
+        </h2>
+      );
+      continue;
+    }
+
+    // Empty line
+    if (trimmed === '') {
+      continue;
+    }
+
+    // Regular paragraph
+    elements.push(
+      <p
+        key={`p-${elements.length}`}
+        className="text-gray-700 my-2 leading-relaxed"
+        dangerouslySetInnerHTML={{ __html: formatInline(trimmed) }}
+      />
+    );
+  }
+
+  // Flush any remaining
+  if (inTable) flushTable();
+  if (inList) flushList();
+
+  return elements;
+}
+
+export function LessonContent({ moduleId, lessonId, content, quiz, isLoggedIn, alreadyCompleted }: LessonContentProps) {
+  const [completed, setCompleted] = useState(alreadyCompleted);
+  const [markingComplete, setMarkingComplete] = useState(false);
+
+  const handleMarkComplete = async () => {
+    setMarkingComplete(true);
+    await markLessonComplete(moduleId, lessonId);
+    setCompleted(true);
+    setMarkingComplete(false);
+  };
+
+  const handleQuizSubmit = async (selectedIndex: number) => {
+    const result = await submitQuizAnswer(moduleId, lessonId, selectedIndex);
+    if ('error' in result && result.error) return null;
+    setCompleted(true);
+    const r = result as { isCorrect: boolean; explanation: string };
+    return { isCorrect: r.isCorrect, explanation: r.explanation };
+  };
+
+  return (
+    <div>
+      {/* Lesson content */}
+      <div className="bg-white rounded-2xl border border-gray-100 p-6 sm:p-8">
+        {renderContent(content)}
+      </div>
+
+      {/* Quiz section */}
+      {quiz && isLoggedIn && (
+        <div className="mt-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-3">Quick Quiz</h2>
+          <QuizQuestion
+            quiz={quiz}
+            moduleId={moduleId}
+            lessonId={lessonId}
+            onComplete={handleQuizSubmit}
+            alreadyCompleted={alreadyCompleted}
+          />
+        </div>
+      )}
+
+      {/* Mark complete button (for lessons without quiz) */}
+      {!quiz && isLoggedIn && !completed && (
+        <div className="mt-6 text-center">
+          <Button
+            variant="primary"
+            onClick={handleMarkComplete}
+            disabled={markingComplete}
+          >
+            {markingComplete ? 'Saving...' : 'Mark as Complete'}
+          </Button>
+        </div>
+      )}
+
+      {/* Completed indicator */}
+      {completed && !quiz && (
+        <div className="mt-6 flex items-center justify-center gap-2 text-emerald-600">
+          <CheckCircle className="h-5 w-5" />
+          <span className="font-medium">Lesson completed!</span>
+        </div>
+      )}
+
+      {/* Not logged in prompt */}
+      {!isLoggedIn && (
+        <div className="mt-6 bg-gray-50 rounded-xl p-4 text-center text-sm text-gray-500">
+          <a href="/signup" className="text-emerald-600 hover:text-emerald-700 font-medium">Sign up</a>
+          {' '}to track your progress and take quizzes.
+        </div>
+      )}
+    </div>
+  );
+}

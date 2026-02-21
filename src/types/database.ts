@@ -65,6 +65,9 @@ export interface Project {
   images: string[];
   video_url: string | null;
   is_featured: boolean;
+  logo_config: import('@/lib/logo-templates').LogoConfig | null;
+  logo_url: string | null;
+  logo_approved: boolean;
   created_at: string;
   updated_at: string;
 }

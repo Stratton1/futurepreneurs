@@ -22,12 +22,19 @@ export const metadata: Metadata = {
     "The safe, supported crowdfunding platform for under-18s to raise money and start their business ideas. Backed by teachers, supported by parents, funded by the public.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const user = await getCurrentUser();
+  let user = null;
+  try {
+    user = await getCurrentUser();
+  } catch (err) {
+    console.error('Root layout: getCurrentUser failed', err);
+  }
 
   return (
     <html lang="en">

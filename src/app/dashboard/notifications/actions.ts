@@ -31,8 +31,9 @@ export async function markAllNotificationsRead(): Promise<{ error: string | null
   return { error: null };
 }
 
-/** Wrapper for form action (returns void). */
-export async function markAllNotificationsReadFormAction(_formData: FormData): Promise<void> {
+/** Wrapper for form action (returns void). FormData is passed by Next.js but not used. */
+export async function markAllNotificationsReadFormAction(formData: FormData): Promise<void> {
+  void formData;
   await markAllNotificationsRead();
 }
 

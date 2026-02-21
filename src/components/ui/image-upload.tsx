@@ -87,6 +87,7 @@ export function ImageUpload({
         <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 mb-3">
           {images.map((url, index) => (
             <div key={index} className="relative group aspect-square rounded-xl overflow-hidden bg-gray-100 border border-gray-200">
+              {/* eslint-disable-next-line @next/next/no-img-element -- preview may be blob URL */}
               <img src={url} alt={`Upload ${index + 1}`} className="w-full h-full object-cover" />
               <button
                 type="button"

@@ -4,9 +4,21 @@ import { useRef, useState } from 'react';
 import { Heart, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { RewardSelector } from '@/components/features/reward-selector';
 import { CURRENCY_SYMBOL, MAX_FUNDING_GOAL } from '@/lib/constants';
 
 const PRESET_AMOUNTS = [10, 25, 50, 100];
+
+interface RewardTierData {
+  id: string;
+  title: string;
+  description: string;
+  min_amount: number;
+  max_claims: number | null;
+  claimed_count: number;
+  approval_status: 'pending' | 'approved' | 'rejected';
+  sort_order: number;
+}
 
 export interface BackProjectFormProps {
   projectId: string;
@@ -14,6 +26,7 @@ export interface BackProjectFormProps {
   goalAmount: number;
   totalRaised: number;
   currentUser?: { id: string; full_name: string; email: string };
+  rewardTiers?: RewardTierData[];
 }
 
 export function BackProjectForm({
@@ -22,6 +35,7 @@ export function BackProjectForm({
   goalAmount,
   totalRaised,
   currentUser,
+  rewardTiers = [],
 }: BackProjectFormProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [amount, setAmount] = useState<number | ''>('');
@@ -29,6 +43,7 @@ export function BackProjectForm({
   const [backerName, setBackerName] = useState(currentUser?.full_name ?? '');
   const [backerEmail, setBackerEmail] = useState(currentUser?.email ?? '');
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const [selectedRewardTierId, setSelectedRewardTierId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -45,6 +60,7 @@ export function BackProjectForm({
     setBackerName(currentUser?.full_name ?? '');
     setBackerEmail(currentUser?.email ?? '');
     setIsAnonymous(false);
+    setSelectedRewardTierId(null);
     dialogRef.current?.showModal();
   };
 
@@ -91,6 +107,7 @@ export function BackProjectForm({
           backerEmail: email,
           isAnonymous,
           backerId: currentUser?.id ?? undefined,
+          rewardTierId: selectedRewardTierId ?? undefined,
         }),
       });
 
@@ -220,6 +237,16 @@ export function BackProjectForm({
               />
               <span className="text-sm text-gray-700">Back as anonymous</span>
             </label>
+
+            {rewardTiers.length > 0 && (
+              <RewardSelector
+                tiers={rewardTiers}
+                projectId={projectId}
+                selectedTierId={selectedRewardTierId}
+                onSelect={setSelectedRewardTierId}
+                backingAmount={effectiveAmount}
+              />
+            )}
 
             {error && (
               <p className="text-sm text-red-600 bg-red-50 rounded-xl px-3 py-2">{error}</p>

@@ -12,6 +12,7 @@ import { ImageUpload } from '@/components/ui/image-upload';
 import { PROJECT_CATEGORIES, MAX_FUNDING_GOAL, CURRENCY_SYMBOL } from '@/lib/constants';
 import { createProject } from '../actions';
 import { ArrowLeft, ArrowRight, Plus, Trash2, Rocket } from 'lucide-react';
+import { GuidedTip } from '@/components/features/guided-tip';
 
 interface MilestoneInput {
   title: string;
@@ -36,6 +37,8 @@ export default function NewProjectPage() {
   const [success, setSuccess] = useState(false);
 
   // Form state
+  const [projectType, setProjectType] = useState<'individual' | 'group'>('individual');
+  const [groupName, setGroupName] = useState('');
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
   const [shortDescription, setShortDescription] = useState('');
@@ -152,6 +155,8 @@ export default function NewProjectPage() {
         amount: Number(m.amount),
       })),
       mentorId: mentorId || undefined,
+      projectType,
+      groupName: projectType === 'group' ? groupName : undefined,
     });
 
     if (result.error) {
@@ -190,6 +195,12 @@ export default function NewProjectPage() {
       {/* Step 0: Basics */}
       {step === 0 && (
         <div className="space-y-5">
+          <GuidedTip
+            title="Why a good title matters"
+            body="Your title is the first thing people see. A catchy, clear title helps backers instantly understand your idea and makes them want to learn more. Think about what makes your project special!"
+            learnMoreHref="/learn/pitch-writing/hook-your-audience"
+            learnMoreLabel="Learn about hooks"
+          />
           <Input
             label="Project Title"
             id="title"
@@ -215,12 +226,57 @@ export default function NewProjectPage() {
             hint="This appears on project cards. Keep it snappy! (at least 10 characters)"
             rows={2}
           />
+
+          {/* Project Type */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Project Type</label>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => { setProjectType('individual'); setGroupName(''); }}
+                className={`flex-1 rounded-xl border-2 px-4 py-3 text-sm font-medium transition-colors ${
+                  projectType === 'individual'
+                    ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                    : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                }`}
+              >
+                Solo Project
+              </button>
+              <button
+                type="button"
+                onClick={() => setProjectType('group')}
+                className={`flex-1 rounded-xl border-2 px-4 py-3 text-sm font-medium transition-colors ${
+                  projectType === 'group'
+                    ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                    : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                }`}
+              >
+                Group / Club Project
+              </button>
+            </div>
+          </div>
+          {projectType === 'group' && (
+            <Input
+              label="Group / Club Name"
+              id="groupName"
+              placeholder="e.g., Year 10 Entrepreneurs Club"
+              value={groupName}
+              onChange={(e) => setGroupName(e.target.value)}
+              hint="Give your team a name"
+            />
+          )}
         </div>
       )}
 
       {/* Step 1: Details */}
       {step === 1 && (
         <div className="space-y-5">
+          <GuidedTip
+            title="How to write a great description"
+            body="Tell your story! Explain why you started this project, what problem it solves, and how the funds will help. The best descriptions are honest, personal, and show your passion."
+            learnMoreHref="/learn/pitch-writing/tell-your-story"
+            learnMoreLabel="Learn about storytelling"
+          />
           <Textarea
             label="Full Description"
             id="description"
@@ -250,6 +306,12 @@ export default function NewProjectPage() {
       {/* Step 2: Funding */}
       {step === 2 && (
         <div className="space-y-5">
+          <GuidedTip
+            title="How to set a realistic goal"
+            body="Think carefully about exactly how much money you need. Research the costs of materials, tools, and anything else your project requires. A realistic goal builds trust with backers!"
+            learnMoreHref="/learn/business-plan/setting-goals"
+            learnMoreLabel="Learn about goal setting"
+          />
           <Input
             label={`Funding Goal (${CURRENCY_SYMBOL})`}
             id="goalAmount"
@@ -272,9 +334,12 @@ export default function NewProjectPage() {
       {/* Step 3: Milestones */}
       {step === 3 && (
         <div className="space-y-5">
-          <div className="bg-amber-50 rounded-xl p-4 text-sm text-amber-800 mb-4">
-            <strong>What are milestones?</strong> Break your funding into spending steps. When your project is funded, you&apos;ll request money for each milestone and your teacher will approve it. This keeps things safe and organised!
-          </div>
+          <GuidedTip
+            title="Why milestones keep your project on track"
+            body="Milestones break your funding into spending steps. When your project is funded, you'll request money for each milestone and your teacher will approve it. This keeps things safe, organised, and teaches you real budget management!"
+            learnMoreHref="/learn/managing-money/what-are-milestones"
+            learnMoreLabel="Learn about milestones"
+          />
 
           {milestones.map((milestone, index) => (
             <div key={index} className="bg-gray-50 rounded-xl p-4 space-y-3">
@@ -327,9 +392,10 @@ export default function NewProjectPage() {
       {/* Step 4: Mentor */}
       {step === 4 && (
         <div className="space-y-5">
-          <div className="bg-blue-50 rounded-xl p-4 text-sm text-blue-800 mb-4">
-            <strong>Choose your mentor:</strong> Your teacher will review your project, approve it, and help you manage your funding through milestones.
-          </div>
+          <GuidedTip
+            title="Why your teacher is important"
+            body="Your teacher is your project's trust anchor. They review your idea, approve it before it goes live, and help you manage your funding responsibly. Backers feel more confident knowing a teacher is supporting you!"
+          />
 
           {/* Show selected mentor if found via email */}
           {mentorId && mentorName && (

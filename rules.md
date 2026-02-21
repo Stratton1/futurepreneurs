@@ -2,7 +2,7 @@
 
 **Purpose:** Hard rules that must never be broken during development. Reference this before making any significant decision.
 
-**Last Updated:** 2026-02-19
+**Last Updated:** 2026-02-21
 
 ---
 
@@ -45,6 +45,7 @@
 - **No over-engineering.** Use the simplest solution that works. Don't build abstractions until there's a clear need.
 - **Test critical paths.** Payment logic, drawdown calculations, fee calculations, and auth flows must have tests.
 - **Consistent naming.** Follow the conventions in CLAUDE.md — no exceptions.
+- **Admin client safety.** When using `createAdminClient()` to bypass RLS, ALWAYS verify user identity via `getCurrentUser()` first. Never expose admin client operations to unauthenticated requests.
 
 ## 5. Communication Rules
 

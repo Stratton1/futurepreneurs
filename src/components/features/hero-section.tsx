@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Rocket, Sparkles, Star, Heart, Lightbulb, Zap } from 'lucide-react';
 
@@ -26,7 +26,16 @@ export function HeroSection() {
   const [wordIndex, setWordIndex] = useState(0);
   const [displayText, setDisplayText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
-  const [sparkles, setSparkles] = useState<Array<{ id: number; x: number; y: number; size: number; delay: number }>>([]);
+  // Initial sparkles (stable so we avoid setState-in-effect)
+  const [sparkles] = useState<Array<{ id: number; x: number; y: number; size: number; delay: number }>>(() =>
+    Array.from({ length: 20 }, () => ({
+      id: Date.now() + Math.random(),
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      size: Math.random() * 8 + 4,
+      delay: Math.random() * 4,
+    }))
+  );
 
   // Typewriter effect
   const currentWord = ROTATING_WORDS[wordIndex].text;
@@ -41,9 +50,12 @@ export function HeroSection() {
     }
 
     if (isDeleting && displayText === '') {
-      setIsDeleting(false);
-      setWordIndex((prev) => (prev + 1) % ROTATING_WORDS.length);
-      return;
+      // Defer state updates to avoid synchronous setState in effect
+      const t = setTimeout(() => {
+        setIsDeleting(false);
+        setWordIndex((prev) => (prev + 1) % ROTATING_WORDS.length);
+      }, 0);
+      return () => clearTimeout(t);
     }
 
     const timeout = setTimeout(() => {
@@ -56,23 +68,6 @@ export function HeroSection() {
 
     return () => clearTimeout(timeout);
   }, [displayText, isDeleting, currentWord]);
-
-  // Generate random sparkles
-  const generateSparkle = useCallback(() => {
-    const id = Date.now() + Math.random();
-    return {
-      id,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      size: Math.random() * 8 + 4,
-      delay: Math.random() * 4,
-    };
-  }, []);
-
-  useEffect(() => {
-    const initial = Array.from({ length: 20 }, () => generateSparkle());
-    setSparkles(initial);
-  }, [generateSparkle]);
 
   return (
     <section className="relative min-h-[100vh] flex items-center overflow-hidden bg-[#0a0f1e]">
@@ -215,21 +210,21 @@ export function HeroSection() {
 
         {/* Trust badges */}
         <div className="hero-fade-in" style={{ animationDelay: '0.9s' }}>
-          <div className="flex flex-wrap items-center justify-center gap-6 text-white/30 text-sm">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-emerald-400" />
+          <div className="flex flex-wrap items-center justify-center gap-8 px-4 py-3 rounded-2xl bg-white/5 backdrop-blur-sm text-white/60 text-base font-medium">
+            <div className="flex items-center gap-2.5">
+              <div className="w-3 h-3 rounded-full bg-emerald-400 shrink-0" />
               <span>School verified</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-blue-400" />
+            <div className="flex items-center gap-2.5">
+              <div className="w-3 h-3 rounded-full bg-blue-400 shrink-0" />
               <span>Teacher mentored</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-amber-400" />
+            <div className="flex items-center gap-2.5">
+              <div className="w-3 h-3 rounded-full bg-amber-400 shrink-0" />
               <span>Parent approved</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-purple-400" />
+            <div className="flex items-center gap-2.5">
+              <div className="w-3 h-3 rounded-full bg-purple-400 shrink-0" />
               <span>Free to start</span>
             </div>
           </div>

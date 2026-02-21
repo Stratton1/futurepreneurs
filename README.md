@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Futurepreneurs
+
+A crowdfunding platform for under-18s to raise money and start their small business ideas. Students create projects, teachers verify them, parents give consent, and the public backs them — all with milestone-based fund management and safety built in.
+
+**Live:** https://futurepreneurs-sigma.vercel.app/
+
+## Tech Stack
+
+- **Frontend:** Next.js 16 (App Router) + Tailwind CSS + TypeScript
+- **Database & Auth:** Supabase (PostgreSQL, Auth, Storage)
+- **Payments:** Stripe (Checkout, Apple Pay, Google Pay)
+- **Email:** Resend (transactional notifications)
+- **Hosting:** Vercel (auto-deploy from main)
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+# 1. Install dependencies
+npm install
+
+# 2. Set up environment variables
+cp .env.example .env.local
+# Fill in your Supabase and Stripe keys (see below)
+
+# 3. Run the development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create `.env.local` with:
 
-## Learn More
+```
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 
-To learn more about Next.js, take a look at the following resources:
+# Stripe
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Resend (optional — emails skip if missing)
+RESEND_API_KEY=re_...
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# App
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+PLATFORM_FEE_PERCENTAGE=2.5
+```
 
-## Deploy on Vercel
+## Database Setup
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Create a Supabase project at https://supabase.com
+2. Apply migrations in order via Supabase Dashboard > SQL Editor:
+   - `supabase/migrations/001_initial_schema.sql` through `006_user_badges.sql` (core platform)
+   - `007_learning_progress.sql` through `012_group_projects.sql` (Epics 2 & 3, if deploying those features)
+3. Seed test accounts: `npx tsx scripts/seed-test-accounts.ts`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+All test accounts use password: `TestPass123!`
+
+## Deployment
+
+Push to `main` — Vercel auto-deploys. Ensure all environment variables are set in Vercel dashboard.
+
+For production seeding, see the "Production setup" section in [roadmap.md](roadmap.md).
+
+## Project Structure
+
+```
+src/
+  app/           Next.js pages and API routes
+    (public)/    Public pages (home, browse, project pages, learn)
+    (auth)/      Login, signup
+    dashboard/   Role-based dashboards
+    admin/       Admin area
+    api/         API routes (checkout, webhooks, etc.)
+  components/    Reusable UI and feature components
+  lib/           Utilities, Supabase/Stripe helpers, queries
+  types/         TypeScript type definitions
+supabase/
+  migrations/    Database migrations (apply in order)
+```
+
+## Key Documentation
+
+- [CLAUDE.md](CLAUDE.md) — Full project specification, product scope, and technical decisions
+- [roadmap.md](roadmap.md) — Build progress, feature status, and future plans
+- [rules.md](rules.md) — Hard rules for safety, access control, and engineering

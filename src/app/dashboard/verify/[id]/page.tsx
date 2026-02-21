@@ -4,6 +4,11 @@ import { getProjectById } from '@/lib/queries/projects';
 import { CURRENCY_SYMBOL } from '@/lib/constants';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { VideoEmbed } from '@/components/features/video-embed';
+import { LogoPreview } from '@/components/features/logo-preview';
+import { getAllRewardTiers } from '@/lib/queries/reward-tiers';
+import { RewardTierApprovalCard } from './reward-tier-approval';
+import { LogoApprovalCard } from './logo-approval';
 import { VerificationActions } from './verification-actions';
 
 interface Props {
@@ -20,6 +25,8 @@ export default async function VerifyProjectPage({ params }: Props) {
   const project = await getProjectById(id, { useAdmin: true });
   if (!project) notFound();
   if (project.mentor_id !== user.id) redirect('/dashboard/verify');
+
+  const rewardTiers = await getAllRewardTiers(id);
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
@@ -76,10 +83,40 @@ export default async function VerifyProjectPage({ params }: Props) {
 
         {project.video_url && (
           <section className="bg-white rounded-xl border border-gray-200 p-5">
-            <h2 className="font-semibold text-gray-900 mb-2">Video</h2>
-            <a href={project.video_url} target="_blank" rel="noopener noreferrer" className="text-sm text-emerald-600 hover:underline">
-              {project.video_url}
-            </a>
+            <h2 className="font-semibold text-gray-900 mb-3">Video</h2>
+            <VideoEmbed url={project.video_url} title={`${project.title} — Video Pitch`} />
+          </section>
+        )}
+
+        {/* Logo */}
+        {project.logo_config && (
+          <section className="bg-white rounded-xl border border-gray-200 p-5">
+            <h2 className="font-semibold text-gray-900 mb-3">Business Logo</h2>
+            <div className="flex items-start gap-4">
+              <LogoPreview config={project.logo_config} size={100} />
+              <LogoApprovalCard
+                projectId={id}
+                approved={project.logo_approved}
+                canApprove={project.status === 'pending_verification'}
+              />
+            </div>
+          </section>
+        )}
+
+        {/* Reward Tiers */}
+        {rewardTiers.length > 0 && (
+          <section className="bg-white rounded-xl border border-gray-200 p-5">
+            <h2 className="font-semibold text-gray-900 mb-3">Reward Tiers ({rewardTiers.length})</h2>
+            <div className="space-y-3">
+              {rewardTiers.map((tier) => (
+                <RewardTierApprovalCard
+                  key={tier.id}
+                  tier={tier}
+                  projectId={id}
+                  canApprove={project.status === 'pending_verification'}
+                />
+              ))}
+            </div>
           </section>
         )}
 

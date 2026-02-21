@@ -10,11 +10,11 @@ import { UserPlus, X, GraduationCap, Heart } from 'lucide-react';
 interface Props {
   role: string;
   parentInfo: { id: string; full_name: string; email: string } | null;
-  children: { id: string; full_name: string; email: string }[];
+  linkedChildren: { id: string; full_name: string; email: string }[];
   mentoredProjects: { id: string; title: string; student_name: string }[];
 }
 
-export function RelationshipSection({ role, parentInfo, children, mentoredProjects }: Props) {
+export function RelationshipSection({ role, parentInfo, linkedChildren, mentoredProjects }: Props) {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -105,9 +105,9 @@ export function RelationshipSection({ role, parentInfo, children, mentoredProjec
       {role === 'parent' && (
         <div>
           <h3 className="text-sm font-medium text-gray-700 mb-3">My Children</h3>
-          {children.length > 0 ? (
+          {linkedChildren.length > 0 ? (
             <div className="space-y-2 mb-4">
-              {children.map((child) => (
+              {linkedChildren.map((child) => (
                 <div key={child.id} className="bg-emerald-50 rounded-xl p-4 flex items-center gap-3">
                   <GraduationCap className="h-5 w-5 text-emerald-500" />
                   <div>

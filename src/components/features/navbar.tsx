@@ -38,6 +38,9 @@ export function Navbar({ user }: NavbarProps) {
             <Link href="/how-it-works" className="text-gray-600 hover:text-gray-900 font-medium transition-colors">
               How It Works
             </Link>
+            <Link href="/learn" className="text-gray-600 hover:text-gray-900 font-medium transition-colors">
+              Learn
+            </Link>
             {user ? (
               <div className="flex items-center gap-3">
                 <span className="text-sm text-gray-500">{user.fullName}</span>
@@ -91,6 +94,13 @@ export function Navbar({ user }: NavbarProps) {
                 onClick={() => setIsOpen(false)}
               >
                 How It Works
+              </Link>
+              <Link
+                href="/learn"
+                className="px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 font-medium"
+                onClick={() => setIsOpen(false)}
+              >
+                Learn
               </Link>
               {user ? (
                 <>

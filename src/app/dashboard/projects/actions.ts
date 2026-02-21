@@ -6,6 +6,7 @@ import { MAX_FUNDING_GOAL } from '@/lib/constants';
 import { revalidatePath } from 'next/cache';
 import { sendNotificationEmail, notificationEmailHtml } from '@/lib/email/resend';
 import { awardFirstProject } from '@/lib/badges';
+import { generateMicroGoals } from '@/lib/queries/micro-goals';
 
 interface MilestoneInput {
   title: string;
@@ -23,6 +24,8 @@ interface CreateProjectData {
   images: string[];
   milestones: MilestoneInput[];
   mentorId?: string;
+  projectType?: 'individual' | 'group';
+  groupName?: string;
 }
 
 /** Create a new project (saves as draft) */
@@ -74,6 +77,8 @@ export async function createProject(data: CreateProjectData) {
       video_url: data.videoUrl?.trim() || null,
       images: data.images,
       status: 'draft',
+      project_type: data.projectType || 'individual',
+      group_name: data.projectType === 'group' ? (data.groupName?.trim() || null) : null,
     })
     .select('id')
     .single();
@@ -441,7 +446,7 @@ export async function giveConsent(projectId: string) {
 
   const { data: project } = await adminClient
     .from('projects')
-    .select('id, status, student_id, title, mentor_id')
+    .select('id, status, student_id, title, mentor_id, goal_amount')
     .eq('id', projectId)
     .single();
 
@@ -473,6 +478,9 @@ export async function giveConsent(projectId: string) {
     .eq('id', projectId);
 
   if (error) return { error: 'Failed to update project status' };
+
+  // Auto-generate micro-goals (25%, 50%, 75%, 100%)
+  await generateMicroGoals(projectId, Number(project.goal_amount));
 
   // Notify student
   await adminClient.from('notifications').insert({

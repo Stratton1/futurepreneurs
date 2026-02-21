@@ -57,6 +57,9 @@ export default async function Home() {
                       images={project.images as string[]}
                       studentName={student?.full_name as string || 'Student'}
                       schoolName={school?.name as string | null}
+                      logoConfig={project.logo_config as import('@/lib/logo-templates').LogoConfig | null}
+                      projectType={project.project_type as string}
+                      groupName={project.group_name as string | null}
                     />
                   </AnimateIn>
                 );
@@ -109,6 +112,9 @@ export default async function Home() {
                       images={project.images as string[]}
                       studentName={student?.full_name as string || 'Student'}
                       schoolName={school?.name as string | null}
+                      logoConfig={project.logo_config as import('@/lib/logo-templates').LogoConfig | null}
+                      projectType={project.project_type as string}
+                      groupName={project.group_name as string | null}
                     />
                   </AnimateIn>
                 );

@@ -76,7 +76,7 @@ export default function AboutPage() {
                   { icon: Target, label: 'Milestone-based', description: 'Structured fund releases', color: 'from-purple-500 to-purple-600', lightBg: 'bg-purple-50' },
                   { icon: Lightbulb, label: 'Real learning', description: 'Business skills by doing', color: 'from-orange-500 to-orange-600', lightBg: 'bg-orange-50' },
                   { icon: Rocket, label: 'Big dreams', description: 'No idea is too ambitious', color: 'from-pink-500 to-pink-600', lightBg: 'bg-pink-50' },
-                ].map((item, i) => (
+                ].map((item) => (
                   <div key={item.label} className={`${item.lightBg} rounded-2xl p-5 text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group`}>
                     <div className={`bg-gradient-to-br ${item.color} w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
                       <item.icon className="h-6 w-6 text-white" />
@@ -149,8 +149,8 @@ export default function AboutPage() {
                 description: 'Funds are not handed over in a lump sum. Students plan milestones upfront and draw down funds step by step, building real financial discipline.',
                 gradient: 'from-purple-500 to-violet-500',
               },
-            ].map((item, i) => (
-              <AnimateIn key={item.title} delay={i * 150} animation="fade-up">
+            ].map((item, index) => (
+              <AnimateIn key={item.title} delay={index * 150} animation="fade-up">
                 <div className="relative rounded-2xl p-8 bg-white border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 h-full group overflow-hidden">
                   <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${item.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
                   <h3 className="text-xl font-bold text-gray-900 mb-3">{item.title}</h3>

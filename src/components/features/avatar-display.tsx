@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import type { AvatarConfig } from '@/types/database';
 
 const SKIN_COLORS: Record<string, string> = {
@@ -46,11 +47,15 @@ export function AvatarDisplay({
   }
 
   if (avatarUrl) {
+    const sizePx = size === 'sm' ? 32 : size === 'md' ? 48 : 64;
     return (
-      <img
+      <Image
         src={avatarUrl}
         alt={name || 'Avatar'}
+        width={sizePx}
+        height={sizePx}
         className={`${sizeClass} rounded-full object-cover ${className}`}
+        unoptimized
       />
     );
   }
@@ -75,7 +80,7 @@ function BuiltAvatarSvg({
   size: 'sm' | 'md' | 'lg';
   className: string;
 }) {
-  const px = size === 'sm' ? 32 : size === 'md' ? 48 : 64;
+  const sizePx = size === 'sm' ? 32 : size === 'md' ? 48 : 64;
   const skin = SKIN_COLORS[config.skinTone || 'medium'] ?? SKIN_COLORS.medium;
   const hairColor = HAIR_COLORS[config.hairColor || 'brown'] ?? HAIR_COLORS.brown;
   const hasGlasses = config.accessories?.includes('glasses');
@@ -85,6 +90,8 @@ function BuiltAvatarSvg({
   return (
     <svg
       viewBox="0 0 64 64"
+      width={sizePx}
+      height={sizePx}
       className={className}
       aria-hidden
     >

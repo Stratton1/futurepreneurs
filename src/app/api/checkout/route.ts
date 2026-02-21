@@ -17,7 +17,7 @@ import { createAdminClient } from '@/lib/supabase/server';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { projectId, amount, backerName, backerEmail, isAnonymous, backerId } = body;
+    const { projectId, amount, backerName, backerEmail, isAnonymous, backerId, rewardTierId } = body;
 
     // Validate inputs
     if (!projectId || !amount || !backerName || !backerEmail) {
@@ -75,6 +75,7 @@ export async function POST(request: NextRequest) {
         backer_name: backerName,
         amount: amountNum,
         is_anonymous: isAnonymous || false,
+        reward_tier_id: rewardTierId || null,
         status: 'pending',
       })
       .select('id')

@@ -1,7 +1,9 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { GraduationCap } from 'lucide-react';
 import { FundingProgressBar } from './funding-progress-bar';
-import { CURRENCY_SYMBOL } from '@/lib/constants';
+import { LogoPreview } from './logo-preview';
+import type { LogoConfig } from '@/lib/logo-templates';
 
 interface ProjectCardProps {
   id: string;
@@ -15,6 +17,9 @@ interface ProjectCardProps {
   studentName: string;
   schoolName?: string | null;
   status?: string;
+  logoConfig?: LogoConfig | null;
+  projectType?: string;
+  groupName?: string | null;
 }
 
 export function ProjectCard({
@@ -28,9 +33,11 @@ export function ProjectCard({
   images,
   studentName,
   schoolName,
+  logoConfig,
+  projectType,
+  groupName,
 }: ProjectCardProps) {
   const hasImage = images && images.length > 0;
-  const percentage = goalAmount > 0 ? Math.min((totalRaised / goalAmount) * 100, 100) : 0;
 
   return (
     <Link href={`/projects/${id}`} className="group block">
@@ -38,11 +45,18 @@ export function ProjectCard({
         {/* Image */}
         <div className="aspect-[16/10] bg-gradient-to-br from-emerald-50 to-blue-50 relative overflow-hidden">
           {hasImage ? (
-            <img
+            <Image
               src={images[0]}
               alt={title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              sizes="(max-width: 768px) 100vw, 400px"
+              unoptimized
             />
+          ) : logoConfig ? (
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+              <LogoPreview config={logoConfig} size={120} />
+            </div>
           ) : (
             <div className="w-full h-full flex items-center justify-center">
               <div className="text-center">
@@ -54,10 +68,15 @@ export function ProjectCard({
             </div>
           )}
           {/* Category badge */}
-          <div className="absolute top-3 left-3">
+          <div className="absolute top-3 left-3 flex gap-1.5">
             <span className="bg-white/90 backdrop-blur-sm text-gray-700 text-xs font-medium px-2.5 py-1 rounded-full">
               {category}
             </span>
+            {projectType === 'group' && (
+              <span className="bg-blue-500/90 backdrop-blur-sm text-white text-xs font-medium px-2.5 py-1 rounded-full">
+                {groupName || 'Group'}
+              </span>
+            )}
           </div>
         </div>
 

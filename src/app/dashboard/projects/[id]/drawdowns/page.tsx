@@ -4,10 +4,8 @@ import { getCurrentUser } from '@/lib/supabase/auth-helpers';
 import { getProjectById } from '@/lib/queries/projects';
 import { getDrawdownRequestsByProject, getMilestoneRemaining } from '@/lib/queries/drawdowns';
 import { canRequestDrawdown } from '@/lib/project-status';
-import { createDrawdownRequest } from '@/app/dashboard/drawdowns/actions';
-import { Button } from '@/components/ui/button';
 import { CURRENCY_SYMBOL } from '@/lib/constants';
-import { ArrowLeft, Target, Banknote } from 'lucide-react';
+import { ArrowLeft, Target } from 'lucide-react';
 import { DrawdownRequestForm } from './drawdown-request-form';
 
 interface Props {

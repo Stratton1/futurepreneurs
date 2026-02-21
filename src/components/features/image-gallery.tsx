@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface ImageGalleryProps {
@@ -25,10 +26,13 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
     <div>
       {/* Main image */}
       <div className="relative aspect-[16/9] bg-gray-100 rounded-2xl overflow-hidden">
-        <img
+        <Image
           src={images[activeIndex]}
           alt={`${title} — image ${activeIndex + 1}`}
-          className="w-full h-full object-cover"
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, 800px"
+          unoptimized
         />
         {images.length > 1 && (
           <>
@@ -74,7 +78,7 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
                 i === activeIndex ? 'border-emerald-500' : 'border-transparent hover:border-gray-300'
               }`}
             >
-              <img src={img} alt={`Thumbnail ${i + 1}`} className="w-full h-full object-cover" />
+              <Image src={img} alt={`Thumbnail ${i + 1}`} width={64} height={64} className="w-full h-full object-cover" unoptimized />
             </button>
           ))}
         </div>

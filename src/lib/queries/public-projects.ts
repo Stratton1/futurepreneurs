@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 
 export interface PublicProject {
   id: string;
@@ -13,6 +13,10 @@ export interface PublicProject {
   video_url: string | null;
   status: string;
   is_featured: boolean;
+  logo_config: import('@/lib/logo-templates').LogoConfig | null;
+  logo_approved: boolean;
+  project_type: 'individual' | 'group';
+  group_name: string | null;
   created_at: string;
   student: {
     id: string;
@@ -75,14 +79,14 @@ function normaliseProject(raw: any): any {
 // Shared select for list queries (no description, video_url, bio, mentor, milestones)
 const LIST_SELECT = `
   id, title, short_description, category, goal_amount, total_raised, backer_count,
-  images, status, is_featured, created_at,
+  images, status, is_featured, logo_config, logo_approved, project_type, group_name, created_at,
   student:user_profiles!projects_student_id_fkey(id, full_name, display_handle, avatar_url, avatar_config, school:schools(name, city))
 `;
 
 // Full select for detail page
 const DETAIL_SELECT = `
   id, title, short_description, description, category, goal_amount, total_raised, backer_count,
-  images, video_url, status, is_featured, created_at,
+  images, video_url, status, is_featured, logo_config, logo_approved, project_type, group_name, created_at,
   student:user_profiles!projects_student_id_fkey(id, full_name, display_handle, avatar_url, avatar_config, bio, school:schools(name, city)),
   mentor:user_profiles!projects_mentor_id_fkey(id, full_name),
   milestones(id, title, description, amount, sort_order, status)
@@ -96,7 +100,7 @@ export async function getPublicProjects(options?: {
   limit?: number;
   offset?: number;
 }) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { category, search, sort = 'newest', limit = 12, offset = 0 } = options || {};
 
   let query = supabase
@@ -142,7 +146,7 @@ export async function getPublicProjects(options?: {
 
 /** Fetch featured projects for homepage */
 export async function getFeaturedProjects(limit = 3) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data } = await supabase
     .from('projects')
@@ -157,7 +161,7 @@ export async function getFeaturedProjects(limit = 3) {
 
 /** Fetch recently launched projects for homepage */
 export async function getRecentProjects(limit = 6) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data } = await supabase
     .from('projects')
@@ -171,7 +175,7 @@ export async function getRecentProjects(limit = 6) {
 
 /** Fetch projects closest to their goal for homepage */
 export async function getAlmostThereProjects(limit = 3) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data } = await supabase
     .from('projects')
@@ -190,7 +194,7 @@ export async function getAlmostThereProjects(limit = 3) {
 
 /** Fetch a single project with full details for the public project page */
 export async function getPublicProjectById(id: string): Promise<PublicProject | null> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data: project, error } = await supabase
     .from('projects')
@@ -209,7 +213,7 @@ export async function getPublicProjectById(id: string): Promise<PublicProject | 
 
 /** Count projects by category (for filter badges) */
 export async function getProjectCountsByCategory() {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data } = await supabase
     .from('projects')

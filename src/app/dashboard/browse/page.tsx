@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { CURRENCY_SYMBOL } from '@/lib/constants';
 import Link from 'next/link';
-import { ArrowLeft, Heart, Search } from 'lucide-react';
+import { ArrowLeft, Search } from 'lucide-react';
 
 export default async function BrowseProjectsPage() {
   const supabase = await createClient();

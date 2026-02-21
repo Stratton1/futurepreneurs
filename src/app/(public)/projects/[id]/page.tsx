@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
-import { Shield, GraduationCap, ExternalLink, Target } from 'lucide-react';
+import { Shield, GraduationCap, Target, Users } from 'lucide-react';
+import { LogoPreview } from '@/components/features/logo-preview';
 import { getPublicProjectById } from '@/lib/queries/public-projects';
 import { getCurrentUser } from '@/lib/supabase/auth-helpers';
 import { FundingProgressBar } from '@/components/features/funding-progress-bar';
@@ -8,6 +9,11 @@ import { MilestoneList } from '@/components/features/milestone-list';
 import { StudentProfileCard } from '@/components/features/student-profile-card';
 import { ShareButtons } from '@/components/features/share-buttons';
 import { BackProjectForm } from '@/components/features/back-project-form';
+import { VideoEmbed } from '@/components/features/video-embed';
+import { MicroGoalsTracker } from '@/components/features/micro-goals-tracker';
+import { getMicroGoals } from '@/lib/queries/micro-goals';
+import { getApprovedRewardTiers } from '@/lib/queries/reward-tiers';
+import { getProjectCollaborators } from '@/lib/queries/collaborators';
 import { ReportProjectButton } from './report-project-button';
 import { CURRENCY_SYMBOL } from '@/lib/constants';
 import Link from 'next/link';
@@ -50,6 +56,17 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     notFound();
   }
 
+  // Fetch micro-goals, reward tiers, and collaborators for live/funded/completed projects
+  const isPublicStatus = project.status === 'live' || project.status === 'funded' || project.status === 'completed';
+  const isGroupProject = project.project_type === 'group';
+  const [microGoals, rewardTiers, collaborators] = isPublicStatus
+    ? await Promise.all([
+        getMicroGoals(id),
+        getApprovedRewardTiers(id),
+        isGroupProject ? getProjectCollaborators(id) : Promise.resolve([]),
+      ])
+    : [[], [], []];
+
   const isFunded = project.status === 'funded' || project.status === 'completed';
   const percentage = project.goal_amount > 0
     ? Math.round((project.total_raised / project.goal_amount) * 100)
@@ -91,13 +108,28 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             {/* Title and share */}
             <div className="bg-white rounded-2xl border border-gray-100 p-6">
               <div className="flex items-start justify-between gap-4 mb-4">
-                <div>
-                  <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
-                    {project.category}
-                  </span>
-                  <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mt-3">
-                    {project.title}
-                  </h1>
+                <div className="flex items-start gap-4">
+                  {project.logo_config && project.logo_approved && (
+                    <LogoPreview config={project.logo_config} size={64} className="flex-shrink-0 mt-1" />
+                  )}
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
+                        {project.category}
+                      </span>
+                      {isGroupProject && (
+                        <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full inline-flex items-center gap-1">
+                          <Users className="h-3 w-3" /> Group Project
+                        </span>
+                      )}
+                    </div>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mt-3">
+                      {project.title}
+                    </h1>
+                    {isGroupProject && project.group_name && (
+                      <p className="text-sm text-blue-600 font-medium mt-1">by {project.group_name}</p>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -127,15 +159,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               {/* Video */}
               {project.video_url && (
                 <div className="mt-6 pt-6 border-t border-gray-100">
-                  <a
-                    href={project.video_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-emerald-600 hover:text-emerald-700 font-medium text-sm"
-                  >
-                    <ExternalLink className="h-4 w-4" />
-                    Watch project video
-                  </a>
+                  <h3 className="text-sm font-semibold text-gray-700 mb-3">Project Video</h3>
+                  <VideoEmbed url={project.video_url} title={`${project.title} — Video Pitch`} />
                 </div>
               )}
             </div>
@@ -151,6 +176,38 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   This is how the funds will be spent, step by step. Each milestone is approved by the student&apos;s teacher.
                 </p>
                 <MilestoneList milestones={project.milestones} />
+              </div>
+            )}
+
+            {/* Reward Tiers */}
+            {rewardTiers.length > 0 && (
+              <div className="bg-white rounded-2xl border border-gray-100 p-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Backer Rewards</h2>
+                <p className="text-sm text-gray-500 mb-4">
+                  Back this project at the right amount to claim a reward!
+                </p>
+                <div className="space-y-3">
+                  {rewardTiers.map((tier) => (
+                    <div key={tier.id} className="bg-purple-50 rounded-xl p-4">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <h3 className="font-semibold text-gray-900 text-sm">{tier.title}</h3>
+                          {tier.description && (
+                            <p className="text-sm text-gray-600 mt-1">{tier.description}</p>
+                          )}
+                        </div>
+                        <span className="text-sm font-bold text-purple-700 flex-shrink-0">
+                          {CURRENCY_SYMBOL}{Number(tier.min_amount).toFixed(0)}+
+                        </span>
+                      </div>
+                      {tier.max_claims && (
+                        <p className="text-xs text-gray-500 mt-2">
+                          {Math.max(0, tier.max_claims - tier.claimed_count)} of {tier.max_claims} remaining
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -197,6 +254,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                           }
                         : undefined
                     }
+                    rewardTiers={rewardTiers}
                   />
                   <p className="text-xs text-gray-400 text-center mt-2">
                     All-or-nothing funding. Pay with card, Apple Pay, or Google Pay.
@@ -217,6 +275,18 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               </div>
             </div>
 
+            {/* Micro-goals */}
+            {microGoals.length > 0 && (
+              <div className="bg-white rounded-2xl border border-gray-100 p-6">
+                <h3 className="text-sm font-semibold text-gray-900 mb-4">Funding Milestones</h3>
+                <MicroGoalsTracker
+                  goals={microGoals}
+                  totalRaised={project.total_raised}
+                  goalAmount={project.goal_amount}
+                />
+              </div>
+            )}
+
             {/* Student card */}
             {project.student && (
               <StudentProfileCard
@@ -228,6 +298,25 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 schoolName={project.student.school?.name}
                 schoolCity={project.student.school?.city}
               />
+            )}
+
+            {/* Team members for group projects */}
+            {isGroupProject && collaborators.filter((c) => c.accepted).length > 0 && (
+              <div className="bg-blue-50 rounded-2xl border border-blue-100 p-5">
+                <div className="flex items-center gap-2 mb-3">
+                  <Users className="h-5 w-5 text-blue-500" />
+                  <span className="text-sm font-semibold text-blue-900">Team Members</span>
+                </div>
+                <ul className="space-y-2">
+                  {collaborators
+                    .filter((c) => c.accepted && c.user)
+                    .map((c) => (
+                      <li key={c.id} className="text-sm text-blue-700">
+                        {c.user!.display_handle || c.user!.full_name}
+                      </li>
+                    ))}
+                </ul>
+              </div>
             )}
 
             {/* Trust badge */}

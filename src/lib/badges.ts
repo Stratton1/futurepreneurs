@@ -5,6 +5,9 @@ export const BADGE_TYPES = {
   first_project: { name: 'First Project', description: 'Created your first project', icon: 'FolderPlus' },
   fully_funded: { name: 'Fully Funded', description: 'Reached your funding goal', icon: 'Trophy' },
   milestone_master: { name: 'Milestone Master', description: 'First drawdown approved for a project', icon: 'Banknote' },
+  learning_complete: { name: 'Scholar', description: 'Completed all learning modules', icon: 'GraduationCap' },
+  pitch_pro: { name: 'Pitch Pro', description: 'Used the AI Pitch Builder', icon: 'Sparkles' },
+  team_player: { name: 'Team Player', description: 'Collaborated on a group project', icon: 'Users' },
 } as const;
 
 export type BadgeType = keyof typeof BADGE_TYPES;
@@ -54,6 +57,42 @@ export async function awardMilestoneMaster(userId: string, projectId: string): P
   const { error } = await admin.from('user_badges').insert({
     user_id: userId,
     badge_type: 'milestone_master',
+    project_id: projectId,
+  });
+  if (error && error.code !== '23505') return false;
+  return true;
+}
+
+/** Award "Scholar" when user completes all learning modules. Idempotent. */
+export async function awardLearningComplete(userId: string): Promise<boolean> {
+  const admin = createAdminClient();
+  const { error } = await admin.from('user_badges').insert({
+    user_id: userId,
+    badge_type: 'learning_complete',
+    project_id: null,
+  });
+  if (error && error.code !== '23505') return false;
+  return true;
+}
+
+/** Award "Pitch Pro" when user uses the AI Pitch Builder. Idempotent. */
+export async function awardPitchPro(userId: string, projectId: string): Promise<boolean> {
+  const admin = createAdminClient();
+  const { error } = await admin.from('user_badges').insert({
+    user_id: userId,
+    badge_type: 'pitch_pro',
+    project_id: projectId,
+  });
+  if (error && error.code !== '23505') return false;
+  return true;
+}
+
+/** Award "Team Player" when user joins or creates a group project. Idempotent. */
+export async function awardTeamPlayer(userId: string, projectId: string): Promise<boolean> {
+  const admin = createAdminClient();
+  const { error } = await admin.from('user_badges').insert({
+    user_id: userId,
+    badge_type: 'team_player',
     project_id: projectId,
   });
   if (error && error.code !== '23505') return false;

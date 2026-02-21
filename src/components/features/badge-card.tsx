@@ -1,11 +1,14 @@
 import Link from 'next/link';
-import { FolderPlus, Trophy, Banknote, Award } from 'lucide-react';
+import { FolderPlus, Trophy, Banknote, GraduationCap, Sparkles, Users, Award } from 'lucide-react';
 import { BADGE_TYPES, type BadgeType } from '@/lib/badges';
 
 const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   FolderPlus,
   Trophy,
   Banknote,
+  GraduationCap,
+  Sparkles,
+  Users,
 };
 
 interface BadgeCardProps {

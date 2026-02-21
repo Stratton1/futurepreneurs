@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { stripe, toPounds } from '@/lib/stripe';
 import { createAdminClient } from '@/lib/supabase/server';
 import { awardFullyFunded } from '@/lib/badges';
+import { checkAndMarkMicroGoals } from '@/lib/queries/micro-goals';
+import { incrementClaimedCount } from '@/lib/queries/reward-tiers';
 import Stripe from 'stripe';
 
 /**
@@ -61,6 +63,16 @@ export async function POST(request: NextRequest) {
         break;
       }
 
+      // Increment reward tier claimed count if applicable
+      const { data: backingRow } = await supabase
+        .from('backings')
+        .select('reward_tier_id')
+        .eq('id', backingId)
+        .single();
+      if (backingRow?.reward_tier_id) {
+        await incrementClaimedCount(backingRow.reward_tier_id);
+      }
+
       // Update project totals
       const amountPounds = toPounds(session.amount_total || 0);
       const { data: project } = await supabase
@@ -84,6 +96,9 @@ export async function POST(request: NextRequest) {
             ...(goalMet && project.status === 'live' ? { status: 'funded' } : {}),
           })
           .eq('id', projectId);
+
+        // Check and mark micro-goals as reached
+        await checkAndMarkMicroGoals(projectId, newTotal);
 
         // If goal is met, mark all held backings as "collected" and award badge
         if (goalMet) {

@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { createAdminClient } from '@/lib/supabase/server';
 
 export default async function AdminUsersPage({
