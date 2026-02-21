@@ -455,7 +455,7 @@ export default function EditProjectPage() {
             <Gift className="h-5 w-5 text-purple-500" /> Reward Tiers
           </h2>
           <p className="text-sm text-gray-600">
-            Offer backers something in return — like a thank-you card, early access, or a custom item.
+            Offer supporters something in return — like a thank-you card, early access, or a custom item.
           </p>
           <Link
             href={`/dashboard/projects/${projectId}/rewards`}

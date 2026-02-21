@@ -16,7 +16,7 @@ const sections = [
     title: '1. What We Collect',
     color: 'blue',
     content: [
-      'Account information: your name, email address, and role (student, teacher, parent, or backer).',
+      'Account information: your name, email address, and role (student, teacher, parent, or supporter).',
       'School information: for students and teachers, we collect your school name and school email domain for verification.',
       'Project data: any content you upload, including text, images, and videos for project pages.',
       'Payment information: handled entirely by Stripe. We never see or store your card details.',
@@ -29,7 +29,7 @@ const sections = [
     color: 'emerald',
     content: [
       'To create and manage your account, and to verify your identity and role.',
-      'To display your project to potential backers and the public.',
+      'To display your project to potential supporters and the public.',
       'To process payments, track funding progress, and manage milestone drawdowns.',
       'To send you important notifications about your projects, funding, and account.',
       'To maintain platform safety through content moderation and reporting systems.',
@@ -69,7 +69,7 @@ const sections = [
       'Public project pages: your project title, description, images, and funding progress are visible to everyone.',
       'Teachers can see the projects of students they mentor, including drawdown requests.',
       'Parents can see their child\'s projects, funding status, and drawdown activity.',
-      'Backers can see the projects they have supported and any updates posted by the student.',
+      'Supporters can see the projects they have supported and any updates posted by the student.',
       'Platform administrators can access all data for moderation and support purposes.',
       'We do not sell your data to third parties. Ever.',
     ],

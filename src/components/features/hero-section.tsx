@@ -209,19 +209,18 @@ export function HeroSection() {
         </div>
 
         {/* Trust badges */}
-        <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 px-4 py-4 rounded-2xl bg-white/5 backdrop-blur-sm">
+        <div className="hero-fade-in grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 px-3 py-3 rounded-2xl bg-white/5 backdrop-blur-sm max-w-3xl mx-auto" style={{ animationDelay: '0.9s' }}>
           {[
-            { icon: Shield, label: 'School verified', color: 'text-emerald-400', glow: 'hover:shadow-emerald-400/20', delay: '0.9s' },
-            { icon: GraduationCap, label: 'Teacher mentored', color: 'text-blue-400', glow: 'hover:shadow-blue-400/20', delay: '1.0s' },
-            { icon: Heart, label: 'Parent/Guardian approved', color: 'text-amber-400', glow: 'hover:shadow-amber-400/20', delay: '1.1s' },
-            { icon: Sparkles, label: 'Free to use', color: 'text-purple-400', glow: 'hover:shadow-purple-400/20', delay: '1.2s' },
+            { icon: Shield, label: 'School verified', color: 'text-emerald-400' },
+            { icon: GraduationCap, label: 'Teacher mentored', color: 'text-blue-400' },
+            { icon: Heart, label: 'Parent approved', color: 'text-amber-400' },
+            { icon: Sparkles, label: 'Free to use', color: 'text-purple-400' },
           ].map((badge) => (
             <div
               key={badge.label}
-              className={`hero-fade-in flex items-center gap-2.5 text-white/70 text-lg sm:text-xl font-medium px-3 py-1.5 rounded-xl transition-all duration-300 hover:bg-white/5 hover:shadow-lg ${badge.glow} cursor-default`}
-              style={{ animationDelay: badge.delay }}
+              className="flex items-center justify-center gap-2 text-white/70 text-sm font-medium px-2 py-1.5 rounded-lg transition-all duration-300 hover:bg-white/5 cursor-default whitespace-nowrap"
             >
-              <badge.icon className={`h-5 w-5 ${badge.color} shrink-0`} />
+              <badge.icon className={`h-4 w-4 ${badge.color} shrink-0`} />
               <span>{badge.label}</span>
             </div>
           ))}

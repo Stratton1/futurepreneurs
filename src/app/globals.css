@@ -229,9 +229,42 @@ html { scroll-behavior: smooth; }
   );
 }
 
+/* ═══════════════════════════════════════════════════
+   DOODLE BACKGROUND PATTERNS
+   ═══════════════════════════════════════════════════ */
+
+/* Entrepreneurship doodles set 1: lightbulb, rocket, coins */
+.doodle-bg {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Cg fill='none' stroke='%23000' stroke-width='1.2' opacity='0.035'%3E%3C!-- Lightbulb --%3E%3Ccircle cx='60' cy='50' r='14'/%3E%3Cpath d='M53 64h14M55 69h10M57 74h6'/%3E%3Cline x1='60' y1='30' x2='60' y2='22'/%3E%3Cline x1='74' y1='36' x2='80' y2='30'/%3E%3Cline x1='46' y1='36' x2='40' y2='30'/%3E%3C!-- Rocket --%3E%3Cpath d='M240 80 C240 60 260 40 260 40 C260 40 280 60 280 80 L270 90 L250 90Z'/%3E%3Ccircle cx='260' cy='65' r='5'/%3E%3Cpath d='M250 90 L245 105 L255 95M270 90 L275 105 L265 95'/%3E%3C!-- Coins --%3E%3Cellipse cx='70' cy='280' rx='18' ry='8'/%3E%3Cellipse cx='70' cy='275' rx='18' ry='8'/%3E%3Cellipse cx='70' cy='270' rx='18' ry='8'/%3E%3Ctext x='64' y='274' font-size='10' fill='%23000' opacity='0.035' font-family='sans-serif'%3E£%3C/text%3E%3C!-- Chart --%3E%3Cpath d='M300 300 L300 260 L340 260M305 295 L315 280 L325 285 L335 265'/%3E%3Ccircle cx='335' cy='265' r='3'/%3E%3C!-- Star --%3E%3Cpath d='M180 200 L183 190 L186 200 L196 200 L188 206 L191 216 L183 210 L175 216 L178 206 L170 200Z'/%3E%3C!-- Pencil --%3E%3Cpath d='M340 50 L360 30 L365 35 L345 55ZM340 50 L338 57 L345 55'/%3E%3C!-- Speech bubble --%3E%3Cpath d='M140 350 C120 350 110 340 110 330 C110 320 120 310 140 310 C160 310 170 320 170 330 C170 340 160 350 140 350ZM130 350 L125 365 L140 350'/%3E%3C!-- Gear --%3E%3Ccircle cx='330' cy='170' r='12'/%3E%3Ccircle cx='330' cy='170' r='6'/%3E%3Cpath d='M330 155 L330 158M330 182 L330 185M345 170 L342 170M318 170 L315 170M341 159 L339 161M321 179 L319 181M341 181 L339 179M321 161 L319 159'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 400px 400px;
+}
+
+/* Doodle set 2: handshake, target, trophy */
+.doodle-bg-alt {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Cg fill='none' stroke='%23000' stroke-width='1.2' opacity='0.035'%3E%3C!-- Target --%3E%3Ccircle cx='80' cy='80' r='20'/%3E%3Ccircle cx='80' cy='80' r='12'/%3E%3Ccircle cx='80' cy='80' r='4'/%3E%3Cpath d='M95 65 L80 80'/%3E%3C!-- Trophy --%3E%3Cpath d='M290 50 L290 80 C290 95 310 95 310 80 L310 50ZM280 50 L320 50M295 95 L295 105 L305 105 L305 95M290 105 L310 105'/%3E%3Cpath d='M290 60 C280 60 275 70 285 75M310 60 C320 60 325 70 315 75'/%3E%3C!-- Graph trending up --%3E%3Cpath d='M50 300 L50 260 L100 260M55 295 L70 280 L80 288 L95 268'/%3E%3Cpath d='M90 263 L95 268 L100 263'/%3E%3C!-- Paper airplane --%3E%3Cpath d='M270 280 L310 295 L285 300 L280 320ZM270 280 L285 300'/%3E%3C!-- Puzzle piece --%3E%3Cpath d='M160 170 L185 170 C185 165 195 165 195 170 L220 170 L220 195 C215 195 215 205 220 205 L220 230 L195 230 C195 225 185 225 185 230 L160 230 L160 205 C165 205 165 195 160 195Z'/%3E%3C!-- Magnifying glass --%3E%3Ccircle cx='340' cy='350' r='14'/%3E%3Cline x1='350' y1='360' x2='362' y2='372'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 400px 400px;
+}
+
+/* Doodle set 3: book, wifi/connect, plant growth */
+.doodle-bg-grow {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Cg fill='none' stroke='%23000' stroke-width='1.2' opacity='0.035'%3E%3C!-- Open book --%3E%3Cpath d='M40 80 L80 70 L80 120 L40 130ZM80 70 L120 80 L120 130 L80 120M80 70 L80 120'/%3E%3C!-- Plant growth --%3E%3Cpath d='M300 330 L300 290M290 310 C280 300 280 290 300 290M310 300 C320 290 320 280 300 290'/%3E%3Cellipse cx='300' cy='335' rx='15' ry='6'/%3E%3C!-- Connecting nodes --%3E%3Ccircle cx='200' cy='60' r='6'/%3E%3Ccircle cx='230' cy='40' r='4'/%3E%3Ccircle cx='175' cy='45' r='4'/%3E%3Ccircle cx='220' cy='80' r='4'/%3E%3Ccircle cx='180' cy='80' r='4'/%3E%3Cline x1='200' y1='60' x2='230' y2='40'/%3E%3Cline x1='200' y1='60' x2='175' y2='45'/%3E%3Cline x1='200' y1='60' x2='220' y2='80'/%3E%3Cline x1='200' y1='60' x2='180' y2='80'/%3E%3C!-- Diamond/gem --%3E%3Cpath d='M60 220 L75 210 L90 220 L75 245ZM60 220 L90 220'/%3E%3C!-- Checkmark badge --%3E%3Ccircle cx='330' cy='180' r='16'/%3E%3Cpath d='M322 180 L328 186 L340 174'/%3E%3C!-- Clock --%3E%3Ccircle cx='180' cy='320' r='16'/%3E%3Cpath d='M180 308 L180 320 L190 326'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 400px 400px;
+}
+
 /* Gradient text */
 .text-gradient {
   background: linear-gradient(135deg, #10b981, #3b82f6, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Dark hero gradient text */
+.text-gradient-light {
+  background: linear-gradient(135deg, #6ee7b7, #93c5fd, #c4b5fd);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

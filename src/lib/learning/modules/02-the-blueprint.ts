@@ -684,7 +684,7 @@ Without research, you're guessing. With research, you're making informed decisio
 - Understand your competition
 - Set the right price
 - Find the best way to reach customers
-- Convince backers your plan is solid
+- Convince supporters your plan is solid
 
 ### Primary research (you collect it yourself)
 
@@ -762,7 +762,7 @@ Start with your school. You have access to hundreds of potential customers every
             { text: 'Exactly 100 people', isCorrect: false },
             { text: '1 expert in the field', isCorrect: false },
           ],
-          explanation: 'Aim for at least 20 people from your target audience. This gives you enough responses to spot patterns and make your findings credible for backers.',
+          explanation: 'Aim for at least 20 people from your target audience. This gives you enough responses to spot patterns and make your findings credible for supporters.',
         },
         {
           question: 'Which of these is a primary research method?',
@@ -778,7 +778,7 @@ Start with your school. You have access to hundreds of potential customers every
           question: 'Why should you include research findings in your project description?',
           options: [
             { text: 'To make your page longer and more detailed', isCorrect: false },
-            { text: 'Because numbers and evidence make your pitch credible to backers', isCorrect: true },
+            { text: 'Because numbers and evidence make your pitch credible to supporters', isCorrect: true },
             { text: 'Because Futurepreneurs requires a minimum word count', isCorrect: false },
             { text: 'To show off how much work you\'ve done', isCorrect: false },
           ],
@@ -831,7 +831,7 @@ Every goal should be:
 
 | Timeframe | Example |
 |-----------|---------|
-| Daily | Make 10 cupcakes, reply to 2 backer messages |
+| Daily | Make 10 cupcakes, reply to 2 supporter messages |
 | Weekly | Sell 30 items, post 1 social media update |
 | Monthly | Reach 75% funded, complete 2 milestones |
 | Termly | Fully funded + first profit, expand product range |
@@ -849,9 +849,9 @@ KPIs are the numbers that tell you how your business is doing. Here are the most
 
 **Funding KPIs:**
 - Percentage funded
-- Number of backers
-- Average backing amount
-- Days since last backer
+- Number of supporters
+- Average contribution amount
+- Days since last supporter
 
 **Growth KPIs:**
 - New customers this week vs. last week

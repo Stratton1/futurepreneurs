@@ -34,7 +34,7 @@ export default async function Home() {
                     FEATURED
                   </div>
                   <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-                    Projects worth backing
+                    Projects worth supporting
                   </h2>
                 </div>
                 <Link href="/projects" className="text-emerald-600 font-semibold text-sm hover:text-emerald-700 hidden sm:flex items-center gap-1 group">
@@ -129,7 +129,7 @@ export default async function Home() {
 
       {/* ═══ HOW IT WORKS ═══ */}
       <section className="py-24 sm:py-32 bg-gradient-to-b from-white via-emerald-50/30 to-white relative overflow-hidden">
-        <div className="absolute inset-0 subtle-dots" />
+        <div className="absolute inset-0 doodle-bg" />
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-amber-50 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
 
@@ -197,7 +197,7 @@ export default async function Home() {
               <FlipCard
                 step="03"
                 title="Get funded"
-                description="Share your project with the world. Watch the support roll in as backers believe in your vision."
+                description="Share your project with the world. Watch the support roll in as people believe in your vision."
                 icon={<Heart className="h-6 w-6 text-amber-600" />}
                 color="bg-amber-500"
                 lightColor="bg-amber-50"
@@ -214,7 +214,7 @@ export default async function Home() {
                         <div className="h-full bg-white rounded-full" style={{ width: '78%' }} />
                       </div>
                     </div>
-                    <p className="text-sm text-white/70">12 backers so far — share with family, friends, and your school community!</p>
+                    <p className="text-sm text-white/70">12 supporters so far — share with family, friends, and your school community!</p>
                   </div>
                 }
               />
@@ -263,7 +263,7 @@ export default async function Home() {
 
       {/* ═══ TRUST & SAFETY ═══ */}
       <section className="py-24 sm:py-32 bg-gradient-to-b from-gray-50/80 via-white to-white relative overflow-hidden">
-        <div className="absolute inset-0 subtle-grid" />
+        <div className="absolute inset-0 doodle-bg-alt" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <AnimateIn>
             <div className="text-center mb-16">
@@ -338,7 +338,7 @@ export default async function Home() {
 
       {/* ═══ WHO IT'S FOR ═══ */}
       <section className="py-24 sm:py-32 bg-gradient-to-b from-gray-50/30 to-white relative overflow-hidden">
-        <div className="absolute inset-0 subtle-diagonal" />
+        <div className="absolute inset-0 doodle-bg-grow" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimateIn>
             <div className="text-center mb-16">
@@ -350,7 +350,7 @@ export default async function Home() {
                 Built for the whole team
               </h2>
               <p className="text-lg text-gray-500 max-w-2xl mx-auto">
-                Young entrepreneurs, teachers, parents/guardians, and backers — everyone has a role to play.
+                Young entrepreneurs, teachers, parents/guardians, and supporters — everyone has a role to play.
               </p>
             </div>
           </AnimateIn>
@@ -360,7 +360,7 @@ export default async function Home() {
               { emoji: "🎓", role: "Students", tagline: "Turn your idea into reality", description: "Create a project, set milestones, and raise funds for your business idea. Your teacher will guide you every step of the way.", cta: "Start a project", href: "/signup", bg: "bg-gradient-to-br from-emerald-50 to-emerald-100/50", border: "border-emerald-200/50" },
               { emoji: "👩‍🏫", role: "Teachers", tagline: "Mentor the next generation", description: "Verify projects, approve fund withdrawals, and help your students learn real-world business skills.", cta: "Join as teacher", href: "/signup", bg: "bg-gradient-to-br from-blue-50 to-blue-100/50", border: "border-blue-200/50" },
               { emoji: "👨‍👩‍👧", role: "Parents/Guardians", tagline: "Support with confidence", description: "Give consent, track progress, and watch your child develop real entrepreneurial skills in a safe environment.", cta: "Join as parent/guardian", href: "/signup", bg: "bg-gradient-to-br from-amber-50 to-amber-100/50", border: "border-amber-200/50" },
-              { emoji: "💰", role: "Backers", tagline: "Fund the future", description: "Back young entrepreneurs and help them launch their first business. Every pound makes a difference.", cta: "Browse projects", href: "/projects", bg: "bg-gradient-to-br from-purple-50 to-purple-100/50", border: "border-purple-200/50" },
+              { emoji: "💜", role: "Supporters", tagline: "Believe in the future", description: "Support young entrepreneurs and help them launch their first business. Every pound makes a difference.", cta: "Browse projects", href: "/projects", bg: "bg-gradient-to-br from-purple-50 to-purple-100/50", border: "border-purple-200/50" },
             ].map((item, i) => (
               <AnimateIn key={item.role} delay={i * 100} animation="fade-up">
                 <div className={`${item.bg} rounded-2xl p-6 border ${item.border} h-full flex flex-col hover:shadow-lg hover:-translate-y-1 transition-all duration-300`}>
@@ -413,7 +413,7 @@ export default async function Home() {
                 href="/projects"
                 className="inline-flex items-center justify-center gap-2 border-2 border-white/30 text-white hover:bg-white/10 font-bold text-lg px-8 py-4 rounded-2xl hover:-translate-y-0.5 transition-all duration-300"
               >
-                Back a Project
+                Support a Project
               </Link>
             </div>
           </AnimateIn>

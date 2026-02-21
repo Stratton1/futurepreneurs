@@ -3,7 +3,7 @@ import type { LearningModule } from '@/types/learning';
 export const managingBusiness: LearningModule = {
   id: 'managing-business',
   title: 'Managing Your Business',
-  description: 'Navigate your dashboard, master the dual-approval drawdown system, and learn to thank backers and complete your campaign with impact.',
+  description: 'Navigate your dashboard, master the dual-approval drawdown system, and learn to thank supporters and complete your campaign with impact.',
   icon: 'Wallet',
   colour: 'indigo',
   sectionNumber: 6,
@@ -23,7 +23,7 @@ When you log in, your student dashboard shows:
 - **Your projects** — All the projects you've created, with their current status
 - **Funding progress** — How much you've raised vs. your goal
 - **Milestones** — Which milestones are pending, approved, or completed
-- **Notifications** — New backers, teacher approvals, messages
+- **Notifications** — New supporters, teacher approvals, messages
 - **Learning progress** — How many modules and lessons you've completed
 
 ### Understanding project statuses
@@ -32,22 +32,22 @@ When you log in, your student dashboard shows:
 |--------|--------------|
 | Draft | You're still working on it — not visible to the public |
 | Pending Verification | Submitted to your teacher for review |
-| Live | Approved and visible on the platform — accepting backers |
+| Live | Approved and visible on the platform — accepting supporters |
 | Funded | You've reached your goal! Time to start your milestones |
 | Completed | All milestones done, project wrapped up |
 
 ### Reading your funding progress
 
 The funding bar shows:
-- **Amount raised** — How much money backers have pledged
+- **Amount raised** — How much money supporters have pledged
 - **Percentage** — How close you are to your goal
-- **Number of backers** — How many people support you
+- **Number of supporters** — How many people support you
 - **Days active** — How long your project has been live
 
 ### Key actions from your dashboard
 
 **Check daily:**
-- New backers and notifications
+- New supporters and notifications
 - Any teacher messages or questions
 
 **Check weekly:**
@@ -80,7 +80,7 @@ Your dashboard works on your phone too! This is especially useful for:
 Set a daily reminder to check your dashboard for 5 minutes. Staying on top of notifications and funding progress helps you respond quickly and keep momentum going.`,
       quiz: [
         {
-          question: 'What status means your project is visible to the public and accepting backers?',
+          question: 'What status means your project is visible to the public and accepting supporters?',
           options: [
             { text: 'Draft', isCorrect: false },
             { text: 'Pending Verification', isCorrect: false },
@@ -97,7 +97,7 @@ Set a daily reminder to check your dashboard for 5 minutes. Staying on top of no
             { text: 'Every hour', isCorrect: false },
             { text: 'Only when you get a notification', isCorrect: false },
           ],
-          explanation: 'A quick daily check (5 minutes) for notifications and new backers, plus a deeper weekly review of progress and strategy, is the ideal routine.',
+          explanation: 'A quick daily check (5 minutes) for notifications and new supporters, plus a deeper weekly review of progress and strategy, is the ideal routine.',
         },
         {
           question: 'What should you do if your project has been "Pending Verification" for too long?',
@@ -203,7 +203,7 @@ Your parent can see:
 
 The dual-approval system:
 - **Protects you** — Ensures money is spent wisely
-- **Protects backers** — Their money goes where promised
+- **Protects supporters** — Their money goes where promised
 - **Teaches skills** — You learn to justify spending decisions
 - **Builds trust** — Everyone can see the process is transparent
 
@@ -217,7 +217,7 @@ Before submitting a drawdown, prepare your research. Have links to the products,
             { text: 'Two students must agree on spending', isCorrect: false },
             { text: 'The student submits a request and the teacher must approve it', isCorrect: true },
             { text: 'Two teachers must approve every purchase', isCorrect: false },
-            { text: 'The student and a backer must both agree', isCorrect: false },
+            { text: 'The student and a supporter must both agree', isCorrect: false },
           ],
           explanation: 'Dual-approval means the student submits a drawdown request, and their teacher/mentor reviews and approves it. Two people involved means better oversight and safer spending.',
         },
@@ -255,11 +255,11 @@ Before submitting a drawdown, prepare your research. Have links to the products,
           question: 'Why does the dual-approval system exist?',
           options: [
             { text: 'To make the process slower and more difficult', isCorrect: false },
-            { text: 'To protect students, backers, and ensure money is spent wisely', isCorrect: true },
+            { text: 'To protect students, supporters, and ensure money is spent wisely', isCorrect: true },
             { text: 'Because Futurepreneurs doesn\'t trust students', isCorrect: false },
             { text: 'To generate more work for teachers', isCorrect: false },
           ],
-          explanation: 'The system protects everyone — students learn to justify spending, backers see money used as promised, and the process teaches real financial responsibility. It\'s a feature, not a barrier!',
+          explanation: 'The system protects everyone — students learn to justify spending, supporters see money used as promised, and the process teaches real financial responsibility. It\'s a feature, not a barrier!',
         },
       ],
       tasks: [
@@ -283,35 +283,35 @@ Before submitting a drawdown, prepare your research. Have links to the products,
       readingTime: 4,
       content: `## Completing the Circle of Gratitude
 
-Your project doesn't end when you reach your funding goal or finish spending. The final — and often most impactful — step is thanking your backers and sharing what you achieved.
+Your project doesn't end when you reach your funding goal or finish spending. The final — and often most impactful — step is thanking your supporters and sharing what you achieved.
 
 ### Why gratitude matters
 
-Your backers took a chance on you. They believed in your idea before it existed. Showing gratitude:
+Your supporters took a chance on you. They believed in your idea before it existed. Showing gratitude:
 
 - **Honours their trust** — They took a real risk supporting you
 - **Builds your reputation** — Grateful entrepreneurs attract future support
-- **Creates connections** — Backers become advocates for your next project
+- **Creates connections** — Supporters become advocates for your next project
 - **Feels amazing** — Expressing thanks is genuinely rewarding
 
 ### The thank-you timeline
 
 | When | What to Do |
 |------|-----------|
-| After first backer | Send a personal thank-you update |
-| At each milestone | Thank backers and show progress |
-| When fully funded | Post a celebration update naming all backers |
+| After first supporter | Send a personal thank-you update |
+| At each milestone | Thank supporters and show progress |
+| When fully funded | Post a celebration update naming all supporters |
 | When first purchase made | Show what their money bought |
 | When project completes | Share an impact report |
 | 1 month after | Final update: what you learned and what's next |
 
 ### Writing an impact report
 
-At the end of your project, share a final report with backers:
+At the end of your project, share a final report with supporters:
 
 **1. The numbers:**
 - Total raised: £XXX
-- Number of backers: XX
+- Number of supporters: XX
 - Milestones completed: X/X
 
 **2. What was achieved:**
@@ -330,8 +330,8 @@ At the end of your project, share a final report with backers:
 
 ### Turning donors into supporters
 
-Backers who feel appreciated become:
-- **Repeat backers** for your next project
+Supporters who feel appreciated become:
+- **Repeat supporters** for your next project
 - **Ambassadors** who tell others about you
 - **Mentors** who offer advice and connections
 
@@ -345,7 +345,7 @@ Keep them engaged by:
 When your project is complete:
 
 1. Post a final update summarising everything
-2. Thank every backer by display name
+2. Thank every supporter by display name
 3. Share 2-3 key learnings
 4. Tell people what's next for you
 5. Celebrate! You did something incredible!
@@ -355,14 +355,14 @@ When your project is complete:
 A handwritten "thank you" note (photographed and posted as an update) is incredibly powerful. It shows genuine care and stands out in a digital world.`,
       quiz: [
         {
-          question: 'When should you start thanking your backers?',
+          question: 'When should you start thanking your supporters?',
           options: [
             { text: 'Only after the project is fully funded', isCorrect: false },
-            { text: 'After your very first backer', isCorrect: true },
+            { text: 'After your very first supporter', isCorrect: true },
             { text: 'At the end of the project', isCorrect: false },
             { text: 'You don\'t need to — the platform thanks them automatically', isCorrect: false },
           ],
-          explanation: 'Start thanking from your very first backer! Early gratitude shows you care and encourages others to back you too. Don\'t wait until the end.',
+          explanation: 'Start thanking from your very first supporter! Early gratitude shows you care and encourages others to back you too. Don\'t wait until the end.',
         },
         {
           question: 'What should an impact report include?',
@@ -372,7 +372,7 @@ A handwritten "thank you" note (photographed and posted as an update) is incredi
             { text: 'A list of things that went wrong', isCorrect: false },
             { text: 'Just a thank-you message', isCorrect: false },
           ],
-          explanation: 'A good impact report includes: the numbers (raised, backers), what was achieved (concrete results), what you learned (insights), and what\'s next (future plans). It tells the full story!',
+          explanation: 'A good impact report includes: the numbers (raised, supporters), what was achieved (concrete results), what you learned (insights), and what\'s next (future plans). It tells the full story!',
         },
         {
           question: 'How can you turn one-time donors into long-term supporters?',
@@ -382,7 +382,7 @@ A handwritten "thank you" note (photographed and posted as an update) is incredi
             { text: 'Add them to a mailing list without asking', isCorrect: false },
             { text: 'You can\'t — once the project ends, the relationship ends', isCorrect: false },
           ],
-          explanation: 'Keep backers engaged by thanking them, sharing post-campaign progress, and including them in your journey. Appreciated backers become repeat supporters and ambassadors.',
+          explanation: 'Keep supporters engaged by thanking them, sharing post-campaign progress, and including them in your journey. Appreciated supporters become repeat supporters and ambassadors.',
         },
         {
           question: 'What is the final step when closing a campaign?',
@@ -392,7 +392,7 @@ A handwritten "thank you" note (photographed and posted as an update) is incredi
             { text: 'Ask for reviews and ratings', isCorrect: false },
             { text: 'Start a new project immediately', isCorrect: false },
           ],
-          explanation: 'Close gracefully with a final update that thanks every backer, summarises what you achieved, shares key learnings, and tells people what\'s next. End on a high note!',
+          explanation: 'Close gracefully with a final update that thanks every supporter, summarises what you achieved, shares key learnings, and tells people what\'s next. End on a high note!',
         },
         {
           question: 'Why does a photographed handwritten thank-you note work so well?',
@@ -400,16 +400,16 @@ A handwritten "thank you" note (photographed and posted as an update) is incredi
             { text: 'Because handwriting is faster than typing', isCorrect: false },
             { text: 'Because it shows genuine personal care and stands out in a digital world', isCorrect: true },
             { text: 'Because it\'s required by Futurepreneurs', isCorrect: false },
-            { text: 'Because backers can frame it', isCorrect: false },
+            { text: 'Because supporters can frame it', isCorrect: false },
           ],
-          explanation: 'In a world of automated emails and template messages, a handwritten note shows real effort and genuine care. It makes backers feel truly valued and special.',
+          explanation: 'In a world of automated emails and template messages, a handwritten note shows real effort and genuine care. It makes supporters feel truly valued and special.',
         },
       ],
       tasks: [
         {
           id: 'thank-you-plan',
           title: 'Plan Your Thank-You Strategy',
-          description: 'Create a timeline of when and how you\'ll thank backers at each stage: first backer, milestones, fully funded, project complete.',
+          description: 'Create a timeline of when and how you\'ll thank supporters at each stage: first supporter, milestones, fully funded, project complete.',
           type: 'exercise',
         },
         {

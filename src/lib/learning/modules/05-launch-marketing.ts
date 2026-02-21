@@ -3,7 +3,7 @@ import type { LearningModule } from '@/types/learning';
 export const launchMarketing: LearningModule = {
   id: 'launch-marketing',
   title: 'Launch & Marketing',
-  description: 'Get the word out — activate your inner circle, use social media safely, create stunning visuals, and keep backers engaged.',
+  description: 'Get the word out — activate your inner circle, use social media safely, create stunning visuals, and keep supporters engaged.',
   icon: 'Megaphone',
   colour: 'pink',
   sectionNumber: 5,
@@ -14,7 +14,7 @@ export const launchMarketing: LearningModule = {
       readingTime: 4,
       content: `## Activating the Inner Circle
 
-Your "inner circle" is the group of people closest to you — family, friends, teachers, and classmates. They're your first backers, your biggest cheerleaders, and the foundation of your campaign's success.
+Your "inner circle" is the group of people closest to you — family, friends, teachers, and classmates. They're your first supporters, your biggest cheerleaders, and the foundation of your campaign's success.
 
 ### Why the inner circle matters
 
@@ -44,12 +44,12 @@ Don't just send a link — **tell them the story**. "I'm launching a project to 
 
 ### Social proof and momentum
 
-People are more likely to back a project that already has backers. This is called **social proof** — "if others believe in this, maybe I should too."
+People are more likely to back a project that already has supporters. This is called **social proof** — "if others believe in this, maybe I should too."
 
-Getting your first 5-10 backers quickly creates a snowball effect:
-- Friends see "12 backers" and think "this must be good"
+Getting your first 5-10 supporters quickly creates a snowball effect:
+- Friends see "12 supporters" and think "this must be good"
 - The funding bar shows progress, which builds confidence
-- Early backers leave comments, adding credibility
+- Early supporters leave comments, adding credibility
 
 ### Making it easy for people to help
 
@@ -73,10 +73,10 @@ Launch on a Tuesday, Wednesday, or Thursday. Weekends have lower engagement beca
           options: [
             { text: 'A VIP group of wealthy investors', isCorrect: false },
             { text: 'Your closest contacts — family, friends, teachers who back you first', isCorrect: true },
-            { text: 'A secret group chat for backers', isCorrect: false },
+            { text: 'A secret group chat for supporters', isCorrect: false },
             { text: 'The Futurepreneurs team', isCorrect: false },
           ],
-          explanation: 'Your inner circle is the people closest to you — family, friends, teachers, classmates. They\'re your first backers and the foundation of your campaign\'s success.',
+          explanation: 'Your inner circle is the people closest to you — family, friends, teachers, classmates. They\'re your first supporters and the foundation of your campaign\'s success.',
         },
         {
           question: 'What is "social proof"?',
@@ -86,7 +86,7 @@ Launch on a Tuesday, Wednesday, or Thursday. Weekends have lower engagement beca
             { text: 'Proving that your social media account is real', isCorrect: false },
             { text: 'Getting a celebrity endorsement', isCorrect: false },
           ],
-          explanation: 'Social proof means people trust something more when they see others have already backed it. Getting your first 5-10 backers quickly creates a snowball effect!',
+          explanation: 'Social proof means people trust something more when they see others have already supported it. Getting your first 5-10 supporters quickly creates a snowball effect!',
         },
         {
           question: 'How many people should you personally tell about your project before launching?',
@@ -170,10 +170,10 @@ Social media is a powerful (and free!) tool for promoting your project. But as a
 4. Customer reactions — Friends trying your product
 5. Progress update — "We're 40% funded!"
 6. Fun fact — Something interesting about your product or market
-7. Milestone celebration — "10 backers! Thank you!"
+7. Milestone celebration — "10 supporters! Thank you!"
 8. Q&A — Answer common questions about your project
 9. Day in the life — Show your routine as a student entrepreneur
-10. Thank you post — Gratitude for your backers
+10. Thank you post — Gratitude for your supporters
 
 ### Safety rules (non-negotiable!)
 
@@ -407,7 +407,7 @@ Businesses sponsor because they get something too:
 - **Community goodwill** — "We support young entrepreneurs!"
 - **Social media mention** — Tag them in your posts
 - **Logo on your materials** — Printed on flyers, packaging
-- **Project update thanks** — Name them in backer updates
+- **Project update thanks** — Name them in supporter updates
 - **Customer referral** — Direct your customers their way
 
 ### How to approach a local business
@@ -519,11 +519,11 @@ Start small. Don't ask for £500 sponsorship — ask for a 10% discount, a share
       readingTime: 3,
       content: `## Updates That Engage
 
-Once your project is live, posting updates keeps backers excited and can attract new supporters. Updates show your project is active and your money is being well spent.
+Once your project is live, posting updates keeps supporters excited and can attract new supporters. Updates show your project is active and your money is being well spent.
 
 ### When to post updates
 
-- **Launch day** — Thank early backers and share excitement
+- **Launch day** — Thank early supporters and share excitement
 - **25% funded** — Show momentum building
 - **50% funded** — "Halfway there!" is a big milestone
 - **75% funded** — Create urgency to reach the goal
@@ -536,7 +536,7 @@ Once your project is live, posting updates keeps backers excited and can attract
 Every update should include:
 
 1. **Progress** — What's happened since the last update?
-2. **Gratitude** — Thank your backers (use display names only)
+2. **Gratitude** — Thank your supporters (use display names only)
 3. **Next steps** — What are you working on next?
 4. **Visual** — A photo or video as proof of progress
 
@@ -544,17 +544,17 @@ Every update should include:
 
 > **"We're 60% funded — first ingredient order placed!"** 🎉
 >
-> Thanks to 15 amazing backers, we've reached £90! This week I used our first milestone to order flour, sugar, and baking equipment from Tesco.
+> Thanks to 15 amazing supporters, we've reached £90! This week I used our first milestone to order flour, sugar, and baking equipment from Tesco.
 >
 > [Photo of ingredients on the kitchen counter]
 >
 > Next milestone: packaging! Once we hit £120, I'll order our custom cake boxes with our logo.
 >
-> Huge thank you to BrightStar22, EcoWarrior7, and all our backers — you're making this happen!
+> Huge thank you to BrightStar22, EcoWarrior7, and all our supporters — you're making this happen!
 >
 > **Just £60 to go. Know someone who might support us? Share the link!**
 
-### Keeping backers informed after funding
+### Keeping supporters informed after funding
 
 Don't go silent once funded! Post updates showing:
 - Purchases being made
@@ -562,7 +562,7 @@ Don't go silent once funded! Post updates showing:
 - First sales happening
 - Lessons learned along the way
 
-This transforms backers from one-time donors into long-term supporters.
+This transforms supporters from one-time donors into long-term supporters.
 
 ### Update mistakes to avoid
 
@@ -584,7 +584,7 @@ Set a reminder every Sunday: "Write Monday update." Consistency builds trust. Ev
             { text: 'Introduction, problem, solution, conclusion', isCorrect: false },
             { text: 'Budget, timeline, risks, ask', isCorrect: false },
           ],
-          explanation: 'Every great update includes: Progress (what\'s happened), Gratitude (thanking backers), Next Steps (what\'s coming), and a Visual (photo or video as proof). This formula keeps backers engaged!',
+          explanation: 'Every great update includes: Progress (what\'s happened), Gratitude (thanking supporters), Next Steps (what\'s coming), and a Visual (photo or video as proof). This formula keeps supporters engaged!',
         },
         {
           question: 'How often should you post updates during an active campaign?',
@@ -594,27 +594,27 @@ Set a reminder every Sunday: "Write Monday update." Consistency builds trust. Ev
             { text: 'Three times per day', isCorrect: false },
             { text: 'Once at the start and once at the end', isCorrect: false },
           ],
-          explanation: 'Weekly updates plus posts at major milestones (25%, 50%, 75%, 100% funded) keep your project visible and backers engaged. Consistency is more important than frequency.',
+          explanation: 'Weekly updates plus posts at major milestones (25%, 50%, 75%, 100% funded) keep your project visible and supporters engaged. Consistency is more important than frequency.',
         },
         {
           question: 'Why should you continue posting updates AFTER your project is fully funded?',
           options: [
             { text: 'To ask for more donations', isCorrect: false },
-            { text: 'To show backers how their money is being used and turn them into long-term supporters', isCorrect: true },
+            { text: 'To show supporters how their money is being used and turn them into long-term supporters', isCorrect: true },
             { text: 'Because Futurepreneurs requires it', isCorrect: false },
             { text: 'To show off your success', isCorrect: false },
           ],
-          explanation: 'Post-funding updates show backers their money is being used well. This builds trust and can transform one-time donors into long-term supporters of your future projects!',
+          explanation: 'Post-funding updates show supporters their money is being used well. This builds trust and can transform one-time donors into long-term supporters of your future projects!',
         },
         {
           question: 'What is the biggest update mistake?',
           options: [
             { text: 'Posting too many photos', isCorrect: false },
             { text: 'Going weeks without any update', isCorrect: true },
-            { text: 'Thanking too many backers', isCorrect: false },
+            { text: 'Thanking too many supporters', isCorrect: false },
             { text: 'Being too excited about progress', isCorrect: false },
           ],
-          explanation: 'Going silent is the worst thing you can do. Backers start to worry their money isn\'t being used properly. Even a quick update shows your project is alive and you\'re working hard.',
+          explanation: 'Going silent is the worst thing you can do. Supporters start to worry their money isn\'t being used properly. Even a quick update shows your project is alive and you\'re working hard.',
         },
         {
           question: 'What should you avoid sharing in updates?',
@@ -622,7 +622,7 @@ Set a reminder every Sunday: "Write Monday update." Consistency builds trust. Ev
             { text: 'Photos of your product being made', isCorrect: false },
             { text: 'Personal information like your school name or address', isCorrect: true },
             { text: 'Your funding progress', isCorrect: false },
-            { text: 'Thank-you messages to backers', isCorrect: false },
+            { text: 'Thank-you messages to supporters', isCorrect: false },
           ],
           explanation: 'Never share personal information in updates — no school names, addresses, or real names. Use display names only. Safety rules apply to updates just as much as to your main project page.',
         },

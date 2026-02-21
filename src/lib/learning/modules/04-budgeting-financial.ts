@@ -18,7 +18,7 @@ On Futurepreneurs, you don't raise cash to put in your pocket — you raise mone
 
 ### Why "materials, not cash"?
 
-When backers support your project, they want to know exactly what their money buys. A budget that lists specific items builds trust:
+When supporters support your project, they want to know exactly what their money buys. A budget that lists specific items builds trust:
 
 **Vague (bad):** "I need £200 for my business"
 **Specific (good):** "I need £200 to buy: 5kg flour (£15), baking trays (£25), 100 cake boxes (£40), food-safe labels (£20), a folding table (£45), market stall fee 4 weeks (£40), flyers (£15)"
@@ -66,17 +66,17 @@ Group your items into logical milestones:
 
 ### Top tip
 
-Screenshot the prices you find online and include them in your project description. This shows backers you've done real research — not just guessed!`,
+Screenshot the prices you find online and include them in your project description. This shows supporters you've done real research — not just guessed!`,
       quiz: [
         {
           question: 'Why does Futurepreneurs use a "materials, not cash" approach?',
           options: [
             { text: 'Because cash is illegal for minors', isCorrect: false },
-            { text: 'Because specific item budgets build trust and show backers exactly where money goes', isCorrect: true },
+            { text: 'Because specific item budgets build trust and show supporters exactly where money goes', isCorrect: true },
             { text: 'Because it\'s easier than budgeting', isCorrect: false },
             { text: 'Because you can\'t buy materials online', isCorrect: false },
           ],
-          explanation: 'Listing specific materials shows backers you\'ve done your research and planned carefully. It builds trust — the most important thing when asking people to support your project.',
+          explanation: 'Listing specific materials shows supporters you\'ve done your research and planned carefully. It builds trust — the most important thing when asking people to support your project.',
         },
         {
           question: 'What should you include when listing an item in your budget?',
@@ -106,7 +106,7 @@ Screenshot the prices you find online and include them in your project descripti
             { text: 'Check real prices on actual websites and shops, and save screenshots', isCorrect: true },
             { text: 'Use last year\'s prices from a textbook', isCorrect: false },
           ],
-          explanation: 'Real price research means checking current prices on actual websites (Tesco, Amazon, Argos etc.) and saving screenshots or links. This proves to backers that your budget is based on reality.',
+          explanation: 'Real price research means checking current prices on actual websites (Tesco, Amazon, Argos etc.) and saving screenshots or links. This proves to supporters that your budget is based on reality.',
         },
         {
           question: 'How should you organise your items into milestones?',
@@ -149,7 +149,7 @@ Micro-goals are small, specific targets that lead towards your bigger goal. Inst
 1. Get your project approved by your teacher ✓
 2. Share with 5 family members ✓
 3. Reach £20 (first 10%) ✓
-4. Get 5 backers ✓
+4. Get 5 supporters ✓
 5. Reach £50 (25%) ✓
 6. Share on social media ✓
 7. Reach £100 (halfway!) ✓
@@ -161,15 +161,15 @@ Micro-goals are small, specific targets that lead towards your bigger goal. Inst
 
 - **Dopamine hits** — Each small achievement gives you a burst of motivation
 - **Visible progress** — You can see yourself moving forward
-- **Less overwhelming** — "Get 5 backers" feels doable; "raise £200" feels huge
+- **Less overwhelming** — "Get 5 supporters" feels doable; "raise £200" feels huge
 - **Course correction** — If you're stuck on step 4, you know exactly where to focus
 
 ### SMART goals
 
 Make each micro-goal SMART:
 
-- **S**pecific — "Get 5 family members to back my project" not "Get some backers"
-- **M**easurable — You can count it (5 backers, £50, 3 shares)
+- **S**pecific — "Get 5 family members to back my project" not "Get some supporters"
+- **M**easurable — You can count it (5 supporters, £50, 3 shares)
 - **A**chievable — Realistic for this week
 - **R**elevant — Directly connected to your project's success
 - **T**ime-bound — "By Friday" not "eventually"
@@ -178,7 +178,7 @@ Make each micro-goal SMART:
 
 | Timeframe | Example Goals |
 |-----------|---------------|
-| This week | Share project with family, get first 3 backers |
+| This week | Share project with family, get first 3 supporters |
 | This month | Reach 50% funding, post 2 updates |
 | This term | Fully funded, first milestone complete, first sales |
 | This year | Profitable business, second campaign, mentor others |
@@ -191,7 +191,7 @@ On Futurepreneurs, your milestones are built-in micro-goals! Each milestone repr
 
 Don't wait until your project is fully funded to celebrate. Acknowledge every achievement:
 
-- First backer? Amazing — someone believes in you!
+- First supporter? Amazing — someone believes in you!
 - 25% funded? Quarter of the way there!
 - First drawdown approved? You're actually building your business!
 
@@ -232,7 +232,7 @@ Write your micro-goals on sticky notes and put them on your wall. Cross each one
         {
           question: 'Which of these is a well-formed SMART goal?',
           options: [
-            { text: 'Get lots of backers soon', isCorrect: false },
+            { text: 'Get lots of supporters soon', isCorrect: false },
             { text: 'Be successful with my project', isCorrect: false },
             { text: 'Get 5 family members to back my project by Friday at £10 each', isCorrect: true },
             { text: 'Raise as much money as possible', isCorrect: false },
@@ -271,7 +271,7 @@ Write your micro-goals on sticky notes and put them on your wall. Cross each one
       readingTime: 4,
       content: `## Stretch Goals & Safe Rewards
 
-What happens if your project raises MORE than your goal? That's a stretch goal! And how do you thank your backers? With rewards — but they need to be safe and deliverable.
+What happens if your project raises MORE than your goal? That's a stretch goal! And how do you thank your supporters? With rewards — but they need to be safe and deliverable.
 
 ### What are stretch goals?
 
@@ -282,15 +282,15 @@ A stretch goal is an extra target above your original funding goal. For example:
 - **Stretch goal 2 (£300):** Create branded packaging with custom stickers
 - **Stretch goal 3 (£400):** Set up a weekly stall at the local farmers' market
 
-Stretch goals give backers a reason to keep sharing even after you've hit your target!
+Stretch goals give supporters a reason to keep sharing even after you've hit your target!
 
 ### Planning safe rewards
 
-Rewards are how you thank backers. On Futurepreneurs, rewards must be:
+Rewards are how you thank supporters. On Futurepreneurs, rewards must be:
 
 - **Safe** — No personal information exchanged
 - **Deliverable** — You can actually provide them
-- **Age-appropriate** — Suitable for both you and your backers
+- **Age-appropriate** — Suitable for both you and your supporters
 - **Budget-friendly** — Don't spend all your funding on rewards!
 
 ### Great reward ideas for young entrepreneurs
@@ -298,9 +298,9 @@ Rewards are how you thank backers. On Futurepreneurs, rewards must be:
 | Reward Tier | Cost to You | Example |
 |-------------|-------------|---------|
 | Free | £0 | Digital thank-you card, name on project update |
-| Low (£5-10 backers) | £0-1 | Personalised digital artwork, behind-the-scenes video |
-| Medium (£15-25 backers) | £2-5 | Small sample of your product, custom sticker pack |
-| High (£50+ backers) | £5-15 | Full product, branded merchandise, VIP early access |
+| Low (£5-10 supporters) | £0-1 | Personalised digital artwork, behind-the-scenes video |
+| Medium (£15-25 supporters) | £2-5 | Small sample of your product, custom sticker pack |
+| High (£50+ supporters) | £5-15 | Full product, branded merchandise, VIP early access |
 
 ### Rewards to AVOID
 
@@ -315,8 +315,8 @@ Rewards are how you thank backers. On Futurepreneurs, rewards must be:
 The safest rewards are digital:
 - **Thank-you video** — Record a personal thank-you
 - **Project diary** — Share your weekly journey
-- **Name on the wall** — List backer display names in a project update
-- **Early access** — Let top backers see updates first
+- **Name on the wall** — List supporter display names in a project update
+- **Early access** — Let top supporters see updates first
 - **Custom digital art** — Create something unique using tools like Canva
 
 ### Budget your rewards
@@ -325,7 +325,7 @@ Never spend more than 10-15% of your funding on rewards. If you raise £200, spe
 
 ### Top tip
 
-The best reward is actually keeping backers updated! People who support young entrepreneurs mostly want to see you succeed. Regular updates showing your progress are more valuable than any physical reward.`,
+The best reward is actually keeping supporters updated! People who support young entrepreneurs mostly want to see you succeed. Regular updates showing your progress are more valuable than any physical reward.`,
       quiz: [
         {
           question: 'What is a stretch goal?',
@@ -338,12 +338,12 @@ The best reward is actually keeping backers updated! People who support young en
           explanation: 'A stretch goal is an additional target beyond your original funding goal. For example, if your goal is £200, a stretch goal at £300 might unlock a new product line or feature.',
         },
         {
-          question: 'Which of these is the SAFEST type of backer reward?',
+          question: 'Which of these is the SAFEST type of supporter reward?',
           options: [
-            { text: 'Posting products to backers\' home addresses', isCorrect: false },
+            { text: 'Posting products to supporters\' home addresses', isCorrect: false },
             { text: 'A personalised digital thank-you card or video', isCorrect: true },
             { text: 'Homemade food sent in the post', isCorrect: false },
-            { text: 'Meeting backers in person', isCorrect: false },
+            { text: 'Meeting supporters in person', isCorrect: false },
           ],
           explanation: 'Digital rewards like thank-you cards, videos, or behind-the-scenes content are the safest option. They don\'t require sharing personal information and cost almost nothing to create.',
         },
@@ -353,9 +353,9 @@ The best reward is actually keeping backers updated! People who support young en
             { text: '50% — half for rewards, half for the business', isCorrect: false },
             { text: '10-15% maximum', isCorrect: true },
             { text: '0% — never spend anything on rewards', isCorrect: false },
-            { text: '25-30% to make backers happy', isCorrect: false },
+            { text: '25-30% to make supporters happy', isCorrect: false },
           ],
-          explanation: 'Keep reward costs to 10-15% of your total funding. Your priority is building your business, not spending your budget on thank-you gifts. Most backers support you because they want to see you succeed!',
+          explanation: 'Keep reward costs to 10-15% of your total funding. Your priority is building your business, not spending your budget on thank-you gifts. Most supporters support you because they want to see you succeed!',
         },
         {
           question: 'Why should you avoid rewards that require home addresses?',
@@ -368,7 +368,7 @@ The best reward is actually keeping backers updated! People who support young en
           explanation: 'As a young entrepreneur, exchanging personal information like home addresses creates safety risks. Digital-first rewards keep everyone safe while still showing your gratitude.',
         },
         {
-          question: 'What do most backers of young entrepreneurs actually want?',
+          question: 'What do most supporters of young entrepreneurs actually want?',
           options: [
             { text: 'Expensive physical products', isCorrect: false },
             { text: 'Their money back with interest', isCorrect: false },

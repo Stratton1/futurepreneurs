@@ -32,7 +32,7 @@ const STEPS = [
   {
     key: 'fundsUsage' as const,
     title: 'What do you need the funds for?',
-    hint: 'Be specific about how you\'ll spend the money. This builds trust with backers.',
+    hint: 'Be specific about how you\'ll spend the money. This builds trust with supporters.',
     placeholder: 'e.g., I need £200 for a blender, £50 for cups and straws, and £100 for ingredients...',
   },
   {

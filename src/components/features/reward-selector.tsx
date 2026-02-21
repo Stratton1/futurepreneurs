@@ -33,7 +33,7 @@ export function RewardSelector({ tiers, projectId, selectedTierId, onSelect, bac
     const lowestAmount = Math.min(...tiers.filter(t => t.approval_status === 'approved').map(t => Number(t.min_amount)));
     return (
       <div className="text-xs text-gray-500 mt-2">
-        Back with £{lowestAmount}+ to unlock reward tiers
+        Support with £{lowestAmount}+ to unlock reward tiers
       </div>
     );
   }

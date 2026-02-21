@@ -37,13 +37,13 @@ export default async function ManageRewardsPage({ params }: Props) {
         </div>
         <div>
           <h1 className="text-xl font-bold text-gray-900">Reward Tiers</h1>
-          <p className="text-sm text-gray-600">Offer rewards to backers who support your project</p>
+          <p className="text-sm text-gray-600">Offer rewards to supporters who back your project</p>
         </div>
       </div>
 
       {/* Info box */}
       <div className="bg-purple-50 rounded-xl p-4 text-sm text-purple-800 mb-6">
-        <strong>How rewards work:</strong> Create reward tiers with a minimum backing amount. Your teacher will review and approve each tier before your project goes live. Backers can then choose a reward when they support your project.
+        <strong>How rewards work:</strong> Create reward tiers with a minimum contribution amount. Your teacher will review and approve each tier before your project goes live. Supporters can then choose a reward when they support your project.
       </div>
 
       {/* Existing tiers */}

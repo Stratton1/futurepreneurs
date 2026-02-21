@@ -5,7 +5,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Contact Us — Futurepreneurs',
-  description: 'Get in touch with the Futurepreneurs team. We are here to help students, teachers, parents, and backers.',
+  description: 'Get in touch with the Futurepreneurs team. We are here to help students, teachers, parents, and supporters.',
 };
 
 export default function ContactPage() {
@@ -154,7 +154,7 @@ export default function ContactPage() {
                   <option value="student">Student</option>
                   <option value="teacher">Teacher / Mentor</option>
                   <option value="parent">Parent / Guardian</option>
-                  <option value="backer">Backer / Investor</option>
+                  <option value="supporter">Supporter</option>
                   <option value="school">School Administrator</option>
                   <option value="other">Other</option>
                 </select>

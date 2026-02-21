@@ -89,7 +89,7 @@ export default async function AdminProjectsPage({
                 <th className="p-3">Status</th>
                 <th className="p-3">Goal</th>
                 <th className="p-3">Raised</th>
-                <th className="p-3">Backers</th>
+                <th className="p-3">Supporters</th>
                 <th className="p-3">Created</th>
               </tr>
             </thead>

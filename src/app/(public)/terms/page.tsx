@@ -19,7 +19,7 @@ const sections = [
       'Futurepreneurs is open to students under 18 in the United Kingdom who have a school-issued email address.',
       'Students must have a teacher or mentor at their school to verify and oversee their project.',
       'A parent or guardian must provide consent before any student project can go live on the platform.',
-      'Backers and investors can be any adult (18+) who wishes to support a student project.',
+      'Supporters can be any adult (18+) who wishes to support a student project.',
       'By creating an account, you confirm that all information you provide is accurate and truthful.',
     ],
   },
@@ -40,11 +40,11 @@ const sections = [
     title: '3. Funding and Payments',
     color: 'amber',
     content: [
-      'Futurepreneurs uses an all-or-nothing funding model. Backers are only charged if a project reaches its funding goal.',
+      'Futurepreneurs uses an all-or-nothing funding model. Supporters are only charged if a project reaches its funding goal.',
       'A platform fee of 2.5% is deducted from successfully funded projects. Standard payment processing fees also apply.',
       'The maximum funding goal for any project is £10,000.',
       'All transactions are processed securely through Stripe. Futurepreneurs never stores your card details.',
-      'Backing a project is a donation to support a young entrepreneur — it is not an investment and does not entitle you to equity, profits, or products unless the student explicitly offers rewards.',
+      'Supporting a project is a donation to help a young entrepreneur — it is not an investment and does not entitle you to equity, profits, or products unless the student explicitly offers rewards.',
     ],
   },
   {
@@ -89,7 +89,7 @@ const sections = [
     color: 'teal',
     content: [
       'If a project does not reach its funding goal, no funds are collected and no refunds are necessary.',
-      'If a funded project is cancelled or removed by the platform, backers will receive a full refund.',
+      'If a funded project is cancelled or removed by the platform, supporters will receive a full refund.',
       'Students may cancel their project at any time before it is fully funded.',
       'Once funds have been disbursed against a milestone, that portion is non-refundable.',
       'Refund disputes should be directed to hello@futurepreneurs.co.uk.',

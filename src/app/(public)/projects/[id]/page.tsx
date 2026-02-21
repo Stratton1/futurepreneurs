@@ -182,9 +182,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             {/* Reward Tiers */}
             {rewardTiers.length > 0 && (
               <div className="bg-white rounded-2xl border border-gray-100 p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Backer Rewards</h2>
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Supporter Rewards</h2>
                 <p className="text-sm text-gray-500 mb-4">
-                  Back this project at the right amount to claim a reward!
+                  Support this project at the right amount to claim a reward!
                 </p>
                 <div className="space-y-3">
                   {rewardTiers.map((tier) => (
@@ -266,7 +266,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               <div className="grid grid-cols-2 gap-3 mt-6 pt-6 border-t border-gray-100">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-gray-900">{project.backer_count}</div>
-                  <div className="text-xs text-gray-500">backers</div>
+                  <div className="text-xs text-gray-500">supporters</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-gray-900">{percentage}%</div>

@@ -55,7 +55,7 @@ export function RewardTierForm({ projectId, currency }: RewardTierFormProps) {
           placeholder="e.g., Thank You Card"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          hint="What will backers receive?"
+          hint="What will supporters receive?"
         />
         <Textarea
           label="Description"

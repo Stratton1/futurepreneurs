@@ -211,7 +211,7 @@ export default function AboutPage() {
           </AnimateIn>
           <AnimateIn delay={100}>
             <p className="text-xl text-emerald-100 mb-10 font-light">
-              Sign up as a student, teacher, parent/guardian, or backer today.
+              Sign up as a student, teacher, parent/guardian, or supporter today.
             </p>
           </AnimateIn>
           <AnimateIn delay={200}>

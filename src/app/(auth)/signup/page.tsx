@@ -27,8 +27,8 @@ const ROLE_OPTIONS: { value: UserRole; label: string; description: string }[] = 
   },
   {
     value: 'investor',
-    label: 'Backer / Supporter',
-    description: 'I want to fund young entrepreneurs',
+    label: 'Supporter',
+    description: 'I want to support young entrepreneurs',
   },
 ];
 

@@ -49,7 +49,7 @@ export function FundingProgressBar({
           <div className="flex items-center gap-3">
             {backerCount !== undefined && (
               <span className="text-xs text-gray-500">
-                {backerCount} {backerCount === 1 ? 'backer' : 'backers'}
+                {backerCount} {backerCount === 1 ? 'supporter' : 'supporters'}
               </span>
             )}
             <span className={`text-xs font-medium ${isFunded ? 'text-emerald-600' : 'text-gray-500'}`}>

@@ -140,8 +140,23 @@ export async function POST() {
       `lily.g@${stmarys.domain}`, 'Lily G.', 'student', stmarys.id, parentGreen
     );
 
-    // ── 5. Create an investor/backer ──
+    // ── 5. Create an investor/supporter ──
     await createUser('mark.investor@gmail.com', 'Mark Thompson', 'investor');
+
+    // ── Extra parents + students for 3 additional projects at original schools ──
+    const parentNguyen = await createUser('trang.nguyen@gmail.com', 'Trang Nguyen', 'parent');
+    const parentHarris = await createUser('steve.harris@outlook.com', 'Steve Harris', 'parent');
+    const parentOConnor = await createUser('fiona.oconnor@yahoo.co.uk', 'Fiona O\'Connor', 'parent');
+
+    const studentLeo = await createUser(
+      `leo.n@${riverside.domain}`, 'Leo N.', 'student', riverside.id, parentNguyen
+    );
+    const studentFreya = await createUser(
+      `freya.h@${oakwood.domain}`, 'Freya H.', 'student', oakwood.id, parentHarris
+    );
+    const studentNoah = await createUser(
+      `noah.o@${stmarys.domain}`, 'Noah O.', 'student', stmarys.id, parentOConnor
+    );
 
     // ── Additional schools for new students ──
     const greenfield = schoolMap['greenfield.sch.uk'];
@@ -317,6 +332,74 @@ export async function POST() {
           { title: 'Website and marketing', description: 'Simple portfolio site and Instagram ads', amount: 100, sort_order: 3 },
         ],
       },
+      // ── 3 More Projects at original schools ──
+      {
+        student_id: studentLeo,
+        mentor_id: teacherMsClark,
+        title: 'FreshJuice Bar',
+        description: 'I love making fresh smoothies and juices for my friends. I want to start a juice bar at school events, sports days, and local markets. Everything is made from real fruit — no added sugar. I need funding for a commercial blender, cups, a portable table, and my first big fruit order.',
+        short_description: 'Fresh fruit smoothies and juices at school events and local markets.',
+        category: 'Food & Drink',
+        goal_amount: 650,
+        total_raised: 310,
+        backer_count: 19,
+        status: 'live',
+        is_featured: false,
+        images: [
+          'https://picsum.photos/seed/juice1/800/600',
+          'https://picsum.photos/seed/juice2/800/600',
+          'https://picsum.photos/seed/juice3/800/600',
+        ],
+        milestones: [
+          { title: 'Commercial blender', description: 'Heavy-duty blender for smoothies and juices', amount: 250, sort_order: 1 },
+          { title: 'Portable setup', description: 'Folding table, banner, cups, lids, and straws', amount: 200, sort_order: 2 },
+          { title: 'First fruit order', description: 'Bulk fresh fruit from wholesale market', amount: 200, sort_order: 3 },
+        ],
+      },
+      {
+        student_id: studentFreya,
+        mentor_id: teacherMrPatel,
+        title: 'PixelPets — Digital Sticker Shop',
+        description: 'I draw cute digital animal characters and turn them into sticker packs for messaging apps and printed vinyl stickers. My friends already use my stickers every day! I need funding for a drawing tablet, sticker printing, and an online shop to sell worldwide.',
+        short_description: 'Cute digital animal stickers for messaging apps and printed vinyl stickers.',
+        category: 'Arts & Entertainment',
+        goal_amount: 500,
+        total_raised: 500,
+        backer_count: 45,
+        status: 'funded',
+        is_featured: true,
+        images: [
+          'https://picsum.photos/seed/stickers1/800/600',
+          'https://picsum.photos/seed/stickers2/800/600',
+        ],
+        milestones: [
+          { title: 'Drawing tablet', description: 'Professional graphics tablet for digital illustration', amount: 200, sort_order: 1 },
+          { title: 'Sticker printing', description: 'First batch of 500 vinyl stickers from printer', amount: 150, sort_order: 2 },
+          { title: 'Online shop', description: 'Etsy shop setup, packaging, and shipping supplies', amount: 150, sort_order: 3 },
+        ],
+      },
+      {
+        student_id: studentNoah,
+        mentor_id: teacherMrsJones,
+        title: 'TutorConnect — Peer Tutoring',
+        description: 'I got top marks in Maths and Science and I want to help other students do well too. TutorConnect is a peer tutoring service where older students help younger ones with homework, revision, and exam prep. I need funding for a booking website, study materials, and a quiet study space after school.',
+        short_description: 'Peer tutoring service connecting older students with younger learners.',
+        category: 'Education',
+        goal_amount: 400,
+        total_raised: 165,
+        backer_count: 14,
+        status: 'live',
+        is_featured: false,
+        images: [
+          'https://picsum.photos/seed/tutor1/800/600',
+          'https://picsum.photos/seed/tutor2/800/600',
+        ],
+        milestones: [
+          { title: 'Booking website', description: 'Simple website for students to book sessions', amount: 150, sort_order: 1 },
+          { title: 'Study materials', description: 'Workbooks, whiteboards, and stationery for sessions', amount: 150, sort_order: 2 },
+          { title: 'Space hire', description: 'After-school room hire for the first term', amount: 100, sort_order: 3 },
+        ],
+      },
       // ── 3 New Projects (only if additional schools exist) ──
       ...(studentElla && teacherMrWilliams && studentRyan && studentMia && teacherMsDiaz ? [
       {
@@ -447,6 +530,9 @@ export async function POST() {
         : proj.student_id === studentFinn ? parentBrown
         : proj.student_id === studentAmara ? parentAhmed
         : proj.student_id === studentJake ? parentTaylor
+        : proj.student_id === studentLeo ? parentNguyen
+        : proj.student_id === studentFreya ? parentHarris
+        : proj.student_id === studentNoah ? parentOConnor
         : proj.student_id === studentElla ? parentMorris
         : proj.student_id === studentRyan ? parentKhan
         : proj.student_id === studentMia ? parentEvans

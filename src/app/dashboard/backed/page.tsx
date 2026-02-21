@@ -16,15 +16,15 @@ export default async function BackedPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Projects I&apos;ve backed</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Projects I&apos;ve Supported</h1>
         <p className="text-gray-600 mt-1">Your support for young entrepreneurs.</p>
       </div>
 
       {backings.length === 0 ? (
         <div className="bg-gray-50 rounded-2xl p-12 text-center">
           <Wallet className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h2 className="text-lg font-semibold text-gray-700 mb-2">No backings yet</h2>
-          <p className="text-gray-500 mb-4">When you back a project, it will appear here.</p>
+          <h2 className="text-lg font-semibold text-gray-700 mb-2">No contributions yet</h2>
+          <p className="text-gray-500 mb-4">When you support a project, it will appear here.</p>
           <Link
             href="/projects"
             className="inline-flex items-center justify-center rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700"

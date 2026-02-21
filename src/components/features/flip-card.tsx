@@ -49,9 +49,9 @@ export function FlipCard({
         </div>
 
         {/* ═══ BACK ═══ */}
-        <div className={`flip-card-face flip-card-back rounded-2xl p-6 border border-gray-100 shadow-lg ${color} text-white`}>
-          <div className="flex items-center gap-2 mb-4">
-            <span className="text-sm font-bold text-white/80">Step {step}</span>
+        <div className={`flip-card-face flip-card-back rounded-2xl p-7 sm:p-8 border border-gray-100 shadow-lg ${color} text-white`}>
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-xs font-bold text-white/70 uppercase tracking-wide">Step {step}</span>
           </div>
           <div className="flex-1">{backContent}</div>
         </div>

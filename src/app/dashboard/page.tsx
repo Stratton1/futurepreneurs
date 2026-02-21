@@ -115,7 +115,7 @@ export default async function DashboardPage() {
     ],
     investor: [
       { label: 'Browse Projects', href: '/dashboard/browse', icon: Heart, description: 'Find projects to support' },
-      { label: 'Backed Projects', href: '/dashboard/backed', icon: Wallet, description: 'Projects you\'ve supported' },
+      { label: 'Supported Projects', href: '/dashboard/backed', icon: Wallet, description: 'Projects you\'ve supported' },
     ],
   };
 

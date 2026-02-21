@@ -160,7 +160,7 @@ export function RelationshipSection({ role, parentInfo, linkedChildren, mentored
 
       {/* Investor: nothing to show */}
       {role === 'investor' && (
-        <p className="text-sm text-gray-500">As a backer, you&apos;ll see your backed projects on your dashboard.</p>
+        <p className="text-sm text-gray-500">As a supporter, you&apos;ll see the projects you&apos;ve supported on your dashboard.</p>
       )}
 
       {role === 'admin' && (

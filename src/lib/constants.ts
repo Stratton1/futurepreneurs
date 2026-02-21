@@ -36,6 +36,6 @@ export const USER_ROLE_LABELS: Record<string, string> = {
   student: 'Student',
   teacher: 'Teacher / Mentor',
   parent: 'Parent / Guardian',
-  investor: 'Investor / Backer',
+  investor: 'Supporter',
   admin: 'Admin',
 };

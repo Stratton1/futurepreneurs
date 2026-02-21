@@ -141,7 +141,7 @@ export function BackProjectForm({
         onClick={openModal}
       >
         <Heart className="h-5 w-5" />
-        Back This Project
+        Support This Project
       </Button>
 
       <dialog
@@ -155,7 +155,7 @@ export function BackProjectForm({
           <div className="flex items-start justify-between gap-4 mb-6">
             <div>
               <h2 id="back-dialog-title" className="text-xl font-bold text-gray-900">
-                Back this project
+                Support this project
               </h2>
               <p id="back-dialog-desc" className="text-sm text-gray-500 mt-1">
                 {projectTitle}
@@ -235,7 +235,7 @@ export function BackProjectForm({
                 onChange={(e) => setIsAnonymous(e.target.checked)}
                 className="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
               />
-              <span className="text-sm text-gray-700">Back as anonymous</span>
+              <span className="text-sm text-gray-700">Support anonymously</span>
             </label>
 
             {rewardTiers.length > 0 && (

@@ -19,7 +19,7 @@ const generalFAQs = [
   {
     question: 'Who can use Futurepreneurs?',
     answer:
-      'Students under 18 with a school-issued email can create projects. Teachers and parents play supporting roles — verifying projects and giving consent. Anyone can back a project, whether they have an account or not.',
+      'Students under 18 with a school-issued email can create projects. Teachers and parents play supporting roles — verifying projects and giving consent. Anyone can support a project, whether they have an account or not.',
   },
   {
     question: 'Is Futurepreneurs free to use?',
@@ -52,12 +52,12 @@ const studentFAQs = [
   {
     question: 'What if my project does not reach its goal?',
     answer:
-      'Futurepreneurs uses an all-or-nothing model. If your project does not hit its funding goal, no money is collected from backers and no fees are charged. You can always try again with a new or updated project.',
+      'Futurepreneurs uses an all-or-nothing model. If your project does not hit its funding goal, no money is collected from supporters and no fees are charged. You can always try again with a new or updated project.',
   },
   {
     question: 'Can I edit my project after it goes live?',
     answer:
-      'Yes, you can edit your project details before it is fully funded. Once the goal is reached and funds are being collected, the core details are locked to protect backers.',
+      'Yes, you can edit your project details before it is fully funded. Once the goal is reached and funds are being collected, the core details are locked to protect supporters.',
   },
 ];
 
@@ -79,11 +79,11 @@ const teacherFAQs = [
   },
 ];
 
-const backerFAQs = [
+const supporterFAQs = [
   {
-    question: 'How do I back a project?',
+    question: 'How do I support a project?',
     answer:
-      'Browse the projects on our site, find one you like, and click "Back This Project". You can pay with a card, Apple Pay, or Google Pay. You do not even need an account — guest checkout is available.',
+      'Browse the projects on our site, find one you like, and click "Support This Project". You can pay with a card, Apple Pay, or Google Pay. You do not even need an account — guest checkout is available.',
   },
   {
     question: 'When am I charged?',
@@ -124,7 +124,7 @@ const sections = [
   { id: 'general', label: 'General', icon: HelpCircle, color: 'text-gray-600', bg: 'bg-gray-100', faqs: generalFAQs },
   { id: 'students', label: 'Students', icon: Rocket, color: 'text-emerald-600', bg: 'bg-emerald-50', faqs: studentFAQs },
   { id: 'teachers', label: 'Teachers', icon: GraduationCap, color: 'text-blue-600', bg: 'bg-blue-50', faqs: teacherFAQs },
-  { id: 'backers', label: 'Backers', icon: Heart, color: 'text-purple-600', bg: 'bg-purple-50', faqs: backerFAQs },
+  { id: 'supporters', label: 'Supporters', icon: Heart, color: 'text-purple-600', bg: 'bg-purple-50', faqs: supporterFAQs },
   { id: 'parents', label: 'Parents', icon: Users, color: 'text-amber-600', bg: 'bg-amber-50', faqs: parentFAQs },
 ];
 

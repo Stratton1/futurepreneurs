@@ -75,7 +75,7 @@ export default async function BrowseProjectsPage() {
                   </span>
                 </div>
                 <div className="text-xs text-gray-500 mt-1">
-                  {project.backer_count} {project.backer_count === 1 ? 'backer' : 'backers'}
+                  {project.backer_count} {project.backer_count === 1 ? 'supporter' : 'supporters'}
                 </div>
               </div>
             );

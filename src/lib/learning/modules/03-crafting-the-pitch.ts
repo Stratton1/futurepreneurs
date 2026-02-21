@@ -39,7 +39,7 @@ Tell them why YOU are the right person to make this happen.
 > "I've been cooking since I was 10, I've already tested my recipes with 20 classmates, and my food tech teacher Mrs. Patel is mentoring me."
 
 **5. The Ask (10 seconds)**
-Be clear about what you need and what backers' money will do.
+Be clear about what you need and what supporters' money will do.
 
 > "I'm raising £180 on Futurepreneurs to buy ingredients, packaging, and a market stall. Your £5 buys enough ingredients for 15 flapjacks."
 
@@ -121,7 +121,7 @@ Your pitch should feel like you're having a conversation, not giving a lecture. 
             { text: 'Because you shouldn\'t prepare what to say', isCorrect: false },
             { text: 'Because formal language sounds more professional', isCorrect: false },
           ],
-          explanation: 'People connect with authenticity. A conversational tone makes you relatable and approachable — which makes backers more likely to support you. Be natural, not robotic!',
+          explanation: 'People connect with authenticity. A conversational tone makes you relatable and approachable — which makes supporters more likely to support you. Be natural, not robotic!',
         },
       ],
       tasks: [
@@ -145,7 +145,7 @@ Your pitch should feel like you're having a conversation, not giving a lecture. 
       readingTime: 4,
       content: `## Tell Your Story
 
-People don't just back projects — they back **people**. Your personal story is what connects backers to you emotionally and makes them want to help.
+People don't just back projects — they back **people**. Your personal story is what connects supporters to you emotionally and makes them want to help.
 
 ### The problem → solution → impact structure
 
@@ -159,7 +159,7 @@ Every great campaign story follows this arc:
 
 ### Making it personal
 
-Backers want to know WHY this matters to **you**. Share your personal connection:
+Supporters want to know WHY this matters to **you**. Share your personal connection:
 
 - "I noticed this problem when my younger brother needed new PE kit and we couldn't afford it"
 - "I've always loved cooking and I want to share that with my school"
@@ -228,11 +228,11 @@ Read your story out loud to someone who doesn't know your project. If they look 
           question: 'Why should your story include a personal connection to the problem?',
           options: [
             { text: 'To make people feel sorry for you', isCorrect: false },
-            { text: 'Because backers connect with real people and authentic motivations', isCorrect: true },
+            { text: 'Because supporters connect with real people and authentic motivations', isCorrect: true },
             { text: 'Because teachers require a personal statement', isCorrect: false },
             { text: 'To fill up space on your project page', isCorrect: false },
           ],
-          explanation: 'Sharing why this matters to you personally makes your story authentic and relatable. Backers want to support real people with genuine motivations — not just ideas.',
+          explanation: 'Sharing why this matters to you personally makes your story authentic and relatable. Supporters want to support real people with genuine motivations — not just ideas.',
         },
         {
           question: 'Which emotional trigger is LEAST effective for crowdfunding?',
@@ -276,7 +276,7 @@ Read your story out loud to someone who doesn't know your project. If they look 
       readingTime: 4,
       content: `## Show Your Numbers
 
-Numbers build credibility. When backers see real figures — researched prices, survey data, and clear budgets — they trust you more and feel confident their money is in good hands.
+Numbers build credibility. When supporters see real figures — researched prices, survey data, and clear budgets — they trust you more and feel confident their money is in good hands.
 
 ### Types of numbers that impress
 
@@ -300,7 +300,7 @@ Numbers build credibility. When backers see real figures — researched prices, 
 Don't just list numbers — make them easy to understand:
 
 **The milestone breakdown:**
-Show backers exactly where their money goes with clear milestones. Each milestone should have a purpose and a specific amount.
+Show supporters exactly where their money goes with clear milestones. Each milestone should have a purpose and a specific amount.
 
 **The "your £X buys" statement:**
 This makes donations feel tangible:
@@ -310,8 +310,8 @@ This makes donations feel tangible:
 
 **Progress indicators:**
 Share exciting numbers as they happen:
-- "We're 62% funded with 23 backers!"
-- "Just £45 to go — that's less than 10 backers at £5 each"
+- "We're 62% funded with 23 supporters!"
+- "Just £45 to go — that's less than 10 supporters at £5 each"
 
 ### Realistic projections
 
@@ -320,7 +320,7 @@ If you're showing potential revenue, keep it realistic:
 **Too optimistic:** "We'll make £10,000 in our first month!"
 **Realistic:** "If we sell 25 items per week at £1.50, that's £37.50 per week or £150 per month"
 
-Show your working — backers respect transparency:
+Show your working — supporters respect transparency:
 
 > **Revenue projection:**
 > 25 items/week × £1.50 = £37.50/week
@@ -337,13 +337,13 @@ Before publishing, ask yourself:
 
 ### Top tip
 
-Under-promise and over-deliver. If you think you'll sell 30 items per week, say 20. When you exceed expectations, backers are delighted. When you fall short of wild promises, they're disappointed.`,
+Under-promise and over-deliver. If you think you'll sell 30 items per week, say 20. When you exceed expectations, supporters are delighted. When you fall short of wild promises, they're disappointed.`,
       quiz: [
         {
           question: 'Why are numbers important in your pitch?',
           options: [
             { text: 'They make your page look more professional', isCorrect: false },
-            { text: 'They build credibility and help backers trust that their money is in good hands', isCorrect: true },
+            { text: 'They build credibility and help supporters trust that their money is in good hands', isCorrect: true },
             { text: 'Futurepreneurs requires a minimum number of statistics', isCorrect: false },
             { text: 'They fill space on your project page', isCorrect: false },
           ],
@@ -354,10 +354,10 @@ Under-promise and over-deliver. If you think you'll sell 30 items per week, say 
           options: [
             { text: 'A minimum donation requirement', isCorrect: false },
             { text: 'A tangible description of what a specific donation amount achieves', isCorrect: true },
-            { text: 'A refund policy for backers', isCorrect: false },
+            { text: 'A refund policy for supporters', isCorrect: false },
             { text: 'A pricing strategy for your products', isCorrect: false },
           ],
-          explanation: '"Your £X buys..." statements make donations feel real and tangible. "£5 buys enough flour for 30 flapjacks" helps backers visualise exactly what their support achieves.',
+          explanation: '"Your £X buys..." statements make donations feel real and tangible. "£5 buys enough flour for 30 flapjacks" helps supporters visualise exactly what their support achieves.',
         },
         {
           question: 'What does "under-promise and over-deliver" mean?',
@@ -367,7 +367,7 @@ Under-promise and over-deliver. If you think you'll sell 30 items per week, say 
             { text: 'Promise less than competitors', isCorrect: false },
             { text: 'Deliver products late to build suspense', isCorrect: false },
           ],
-          explanation: 'It means setting realistic (even slightly conservative) expectations. If you predict 20 sales but achieve 30, backers are thrilled. If you predict 50 but get 30, they\'re disappointed — even though you sold the same amount!',
+          explanation: 'It means setting realistic (even slightly conservative) expectations. If you predict 20 sales but achieve 30, supporters are thrilled. If you predict 50 but get 30, they\'re disappointed — even though you sold the same amount!',
         },
         {
           question: 'A student plans to sell 25 items per week at £1.50 each, with weekly costs of £17. What is their weekly profit?',
@@ -387,7 +387,7 @@ Under-promise and over-deliver. If you think you'll sell 30 items per week, say 
             { text: 'Last year\'s prices', isCorrect: false },
             { text: 'The cheapest prices you can imagine', isCorrect: false },
           ],
-          explanation: 'Always use real, current prices from actual shops and websites. Include links or screenshots as proof. This shows backers your budget is based on reality, not guesswork.',
+          explanation: 'Always use real, current prices from actual shops and websites. Include links or screenshots as proof. This shows supporters your budget is based on reality, not guesswork.',
         },
       ],
       tasks: [
@@ -483,7 +483,7 @@ Don't aim for perfection — aim for authenticity. A slightly imperfect but genu
             { text: 'Because Futurepreneurs promotes video projects more', isCorrect: false },
             { text: 'Because text is too difficult to read', isCorrect: false },
           ],
-          explanation: 'Video creates a personal connection that text can\'t match. Backers can see and hear the real person behind the project, which builds trust and emotional connection.',
+          explanation: 'Video creates a personal connection that text can\'t match. Supporters can see and hear the real person behind the project, which builds trust and emotional connection.',
         },
         {
           question: 'What is the ideal length for a project pitch video?',
@@ -510,7 +510,7 @@ Don't aim for perfection — aim for authenticity. A slightly imperfect but genu
           options: [
             { text: 'Post it publicly on TikTok', isCorrect: false },
             { text: 'Upload to YouTube as Unlisted or Vimeo with password protection', isCorrect: true },
-            { text: 'Email it directly to backers', isCorrect: false },
+            { text: 'Email it directly to supporters', isCorrect: false },
             { text: 'Upload it to your school\'s website', isCorrect: false },
           ],
           explanation: 'Upload to YouTube as "Unlisted" (only people with the link can watch) or Vimeo with password protection. Then paste the link into your Futurepreneurs project page.',

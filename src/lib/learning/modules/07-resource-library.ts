@@ -204,7 +204,7 @@ When you log in, your dashboard shows:
 When you give consent, you're agreeing that:
 - Your child can publish a project on the platform
 - Their display name and avatar will be publicly visible
-- Backers can donate to their project via Stripe
+- Supporters can donate to their project via Stripe
 - Their teacher will oversee spending through the drawdown system
 - You'll monitor activity through your parent dashboard
 
@@ -216,7 +216,7 @@ You can withdraw consent at any time by contacting support.
 Yes. Students use display names, avatars (not photos), and never share school names publicly. No personal contact details are visible.
 
 **"What happens if the project doesn't reach its goal?"**
-Nothing — backers are only charged when the full goal is reached (all-or-nothing model). No money changes hands until the target is hit.
+Nothing — supporters are only charged when the full goal is reached (all-or-nothing model). No money changes hands until the target is hit.
 
 **"Can my child spend the money on anything?"**
 No. Every penny must go through the milestone drawdown system, approved by their teacher. The money can only be used for what was planned.
@@ -242,11 +242,11 @@ Futurepreneurs is designed to teach real entrepreneurial skills in a safe enviro
           question: 'What happens to money if a project doesn\'t reach its funding goal?',
           options: [
             { text: 'The student keeps whatever was raised', isCorrect: false },
-            { text: 'Backers are charged and the money is donated to charity', isCorrect: false },
-            { text: 'Nothing — backers are only charged when the full goal is reached', isCorrect: true },
+            { text: 'Supporters are charged and the money is donated to charity', isCorrect: false },
+            { text: 'Nothing — supporters are only charged when the full goal is reached', isCorrect: true },
             { text: 'The platform keeps the money as a fee', isCorrect: false },
           ],
-          explanation: 'Futurepreneurs uses an all-or-nothing model. Backers are only charged if the project reaches its full funding goal. If it falls short, no money changes hands.',
+          explanation: 'Futurepreneurs uses an all-or-nothing model. Supporters are only charged if the project reaches its full funding goal. If it falls short, no money changes hands.',
         },
         {
           question: 'Who must approve every spending request?',
@@ -274,7 +274,7 @@ Futurepreneurs is designed to teach real entrepreneurial skills in a safe enviro
             { text: 'No — once given, consent is permanent', isCorrect: false },
             { text: 'Yes — by contacting support at any time', isCorrect: true },
             { text: 'Only within the first 24 hours', isCorrect: false },
-            { text: 'Only if the project hasn\'t received any backers', isCorrect: false },
+            { text: 'Only if the project hasn\'t received any supporters', isCorrect: false },
           ],
           explanation: 'Parents can withdraw consent at any time by contacting Futurepreneurs support. We take parental rights seriously and ensure parents always have control over their child\'s participation.',
         },

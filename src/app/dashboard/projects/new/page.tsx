@@ -197,7 +197,7 @@ export default function NewProjectPage() {
         <div className="space-y-5">
           <GuidedTip
             title="Why a good title matters"
-            body="Your title is the first thing people see. A catchy, clear title helps backers instantly understand your idea and makes them want to learn more. Think about what makes your project special!"
+            body="Your title is the first thing people see. A catchy, clear title helps supporters instantly understand your idea and makes them want to learn more. Think about what makes your project special!"
             learnMoreHref="/learn/pitch-writing/hook-your-audience"
             learnMoreLabel="Learn about hooks"
           />
@@ -308,7 +308,7 @@ export default function NewProjectPage() {
         <div className="space-y-5">
           <GuidedTip
             title="How to set a realistic goal"
-            body="Think carefully about exactly how much money you need. Research the costs of materials, tools, and anything else your project requires. A realistic goal builds trust with backers!"
+            body="Think carefully about exactly how much money you need. Research the costs of materials, tools, and anything else your project requires. A realistic goal builds trust with supporters!"
             learnMoreHref="/learn/business-plan/setting-goals"
             learnMoreLabel="Learn about goal setting"
           />
@@ -326,7 +326,7 @@ export default function NewProjectPage() {
             error={goalNum > MAX_FUNDING_GOAL ? `Maximum is ${CURRENCY_SYMBOL}${MAX_FUNDING_GOAL.toLocaleString()}` : undefined}
           />
           <div className="bg-blue-50 rounded-xl p-4 text-sm text-blue-800">
-            <strong>How funding works:</strong> Your project uses all-or-nothing funding. Backers are only charged if you reach your goal — so set a realistic amount!
+            <strong>How funding works:</strong> Your project uses all-or-nothing funding. Supporters are only charged if you reach your goal — so set a realistic amount!
           </div>
         </div>
       )}
@@ -394,7 +394,7 @@ export default function NewProjectPage() {
         <div className="space-y-5">
           <GuidedTip
             title="Why your teacher is important"
-            body="Your teacher is your project's trust anchor. They review your idea, approve it before it goes live, and help you manage your funding responsibly. Backers feel more confident knowing a teacher is supporting you!"
+            body="Your teacher is your project's trust anchor. They review your idea, approve it before it goes live, and help you manage your funding responsibly. Supporters feel more confident knowing a teacher is supporting you!"
           />
 
           {/* Show selected mentor if found via email */}
