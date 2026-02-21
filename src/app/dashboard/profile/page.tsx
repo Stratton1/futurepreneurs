@@ -105,7 +105,6 @@ export default async function ProfilePage() {
           </p>
           <AvatarBuilder
             initialConfig={user.avatar_config ?? null}
-            onSaved={() => {}}
           />
         </section>
       )}

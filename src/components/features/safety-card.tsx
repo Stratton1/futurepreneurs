@@ -2,10 +2,9 @@
 
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
 
 interface SafetyCardProps {
-  icon: LucideIcon;
+  icon: React.ReactNode;
   title: string;
   description: string;
   color: string;
@@ -15,7 +14,7 @@ interface SafetyCardProps {
 }
 
 export function SafetyCard({
-  icon: Icon,
+  icon,
   title,
   description,
   color,
@@ -35,7 +34,7 @@ export function SafetyCard({
 
       <div className="p-8">
         <div className={`${lightBg} w-14 h-14 rounded-2xl flex items-center justify-center mb-6 ${expanded ? 'animate-pulse-soft' : ''}`}>
-          <Icon className={`h-7 w-7 ${iconColor}`} />
+          {icon}
         </div>
         <h3 className="text-xl font-bold text-gray-900 mb-3">{title}</h3>
         <p className="text-gray-500 leading-relaxed">{description}</p>

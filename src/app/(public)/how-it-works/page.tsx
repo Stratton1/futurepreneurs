@@ -157,7 +157,7 @@ export default function HowItWorksPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
             <AnimateIn delay={0} animation="fade-up">
               <SafetyCard
-                icon={CheckCircle2}
+                icon={<CheckCircle2 className="h-7 w-7 text-amber-600" />}
                 title="Give consent"
                 description="No project goes live without your approval. You review the full project before it is shown to the public."
                 color="from-amber-400 to-orange-400"
@@ -173,7 +173,7 @@ export default function HowItWorksPage() {
             </AnimateIn>
             <AnimateIn delay={150} animation="fade-up">
               <SafetyCard
-                icon={Eye}
+                icon={<Eye className="h-7 w-7 text-amber-600" />}
                 title="Full visibility"
                 description="See everything — the funding progress, each milestone, and every drawdown request. Nothing is hidden."
                 color="from-amber-500 to-amber-600"
@@ -189,7 +189,7 @@ export default function HowItWorksPage() {
             </AnimateIn>
             <AnimateIn delay={300} animation="fade-up">
               <SafetyCard
-                icon={ShieldCheck}
+                icon={<ShieldCheck className="h-7 w-7 text-orange-600" />}
                 title="Peace of mind"
                 description="A teacher verifies every project. Funds are released in stages, not as a lump sum. Your child learns safely."
                 color="from-orange-400 to-red-400"

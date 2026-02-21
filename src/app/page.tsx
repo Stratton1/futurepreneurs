@@ -155,7 +155,7 @@ export default async function Home() {
                 step="01"
                 title="Create your project"
                 description="Tell the world about your idea. Set your funding goal, plan milestones, and pick your teacher mentor."
-                icon={Sparkles}
+                icon={<Sparkles className="h-6 w-6 text-emerald-600" />}
                 color="bg-emerald-500"
                 lightColor="bg-emerald-50"
                 iconColor="text-emerald-600"
@@ -176,7 +176,7 @@ export default async function Home() {
                 step="02"
                 title="Get verified"
                 description="Your teacher reviews your plan and gives the thumbs up. Then your parent/guardian gives consent — you are good to go."
-                icon={CheckCircle2}
+                icon={<CheckCircle2 className="h-6 w-6 text-blue-600" />}
                 color="bg-blue-500"
                 lightColor="bg-blue-50"
                 iconColor="text-blue-600"
@@ -198,7 +198,7 @@ export default async function Home() {
                 step="03"
                 title="Get funded"
                 description="Share your project with the world. Watch the support roll in as backers believe in your vision."
-                icon={Heart}
+                icon={<Heart className="h-6 w-6 text-amber-600" />}
                 color="bg-amber-500"
                 lightColor="bg-amber-50"
                 iconColor="text-amber-600"
@@ -224,7 +224,7 @@ export default async function Home() {
                 step="04"
                 title="Build it"
                 description="Hit your milestones, draw down funds with teacher approval, and turn your idea into a real business."
-                icon={Rocket}
+                icon={<Rocket className="h-6 w-6 text-purple-600" />}
                 color="bg-purple-500"
                 lightColor="bg-purple-50"
                 iconColor="text-purple-600"
@@ -283,7 +283,7 @@ export default async function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <AnimateIn delay={0} animation="fade-up">
               <SafetyCard
-                icon={Shield}
+                icon={<Shield className="h-7 w-7 text-blue-600" />}
                 title="School-verified"
                 description="Students sign up with their school email. Every project is checked and approved by a real teacher at their school before it goes live."
                 color="from-blue-500 to-blue-600"
@@ -299,7 +299,7 @@ export default async function Home() {
             </AnimateIn>
             <AnimateIn delay={150} animation="fade-up">
               <SafetyCard
-                icon={GraduationCap}
+                icon={<GraduationCap className="h-7 w-7 text-emerald-600" />}
                 title="Teacher-mentored"
                 description="Every student picks a teacher as their mentor. The teacher guides the project and approves every fund withdrawal, step by step."
                 color="from-emerald-500 to-emerald-600"
@@ -315,7 +315,7 @@ export default async function Home() {
             </AnimateIn>
             <AnimateIn delay={300} animation="fade-up">
               <SafetyCard
-                icon={Heart}
+                icon={<Heart className="h-7 w-7 text-amber-600" />}
                 title="Parent/Guardian-approved"
                 description="Parents and guardians give consent before any project goes live. They can see everything — funding progress, milestones, and how money is being spent."
                 color="from-amber-500 to-amber-600"

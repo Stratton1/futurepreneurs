@@ -1,13 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import type { LucideIcon } from 'lucide-react';
 
 interface FlipCardProps {
   step: string;
   title: string;
   description: string;
-  icon: LucideIcon;
+  icon: React.ReactNode;
   color: string;
   lightColor: string;
   iconColor: string;
@@ -18,7 +17,7 @@ export function FlipCard({
   step,
   title,
   description,
-  icon: Icon,
+  icon,
   color,
   lightColor,
   iconColor,
@@ -38,7 +37,7 @@ export function FlipCard({
         <div className="flip-card-face flip-card-front bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
           <div className="flex items-center gap-3 mb-4">
             <div className={`${lightColor} w-12 h-12 rounded-xl flex items-center justify-center`}>
-              <Icon className={`h-6 w-6 ${iconColor}`} />
+              {icon}
             </div>
             <span className={`${color} text-white text-sm font-bold rounded-full w-9 h-9 flex items-center justify-center shadow-lg`}>
               {step}
@@ -52,7 +51,6 @@ export function FlipCard({
         {/* ═══ BACK ═══ */}
         <div className={`flip-card-face flip-card-back rounded-2xl p-6 border border-gray-100 shadow-lg ${color} text-white`}>
           <div className="flex items-center gap-2 mb-4">
-            <Icon className="h-5 w-5 text-white/80" />
             <span className="text-sm font-bold text-white/80">Step {step}</span>
           </div>
           <div className="flex-1">{backContent}</div>
