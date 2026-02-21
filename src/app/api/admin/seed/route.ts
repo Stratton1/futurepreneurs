@@ -1,13 +1,32 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/server';
+import { getCurrentUser } from '@/lib/supabase/auth-helpers';
 
 /**
  * POST /api/admin/seed
  * Seeds the database with sample users, projects, and milestones.
- * Only works in development / when ALLOW_SEED=true.
+ * Protected: requires ALLOW_SEED=true env var AND authenticated admin user.
  */
 export async function POST() {
   try {
+    // Guard 1: Environment flag must be enabled
+    if (process.env.ALLOW_SEED !== 'true') {
+      return NextResponse.json(
+        { error: 'Seed endpoint is disabled. Set ALLOW_SEED=true to enable.' },
+        { status: 503 }
+      );
+    }
+
+    // Guard 2: Caller must be an authenticated admin
+    const caller = await getCurrentUser();
+    if (!caller || caller.role !== 'admin') {
+      return NextResponse.json(
+        { error: 'Unauthorized — admin access required' },
+        { status: 403 }
+      );
+    }
+
+    const seedPassword = process.env.SEED_DEFAULT_PASSWORD || 'SeedPassword123!';
     const supabase = createAdminClient();
 
     // ── 0. Seed schools if they don't exist ──
@@ -68,7 +87,7 @@ export async function POST() {
       // Create auth user
       const { data: authUser, error: authError } = await supabase.auth.admin.createUser({
         email,
-        password: 'SeedPassword123!',
+        password: seedPassword,
         email_confirm: true,
       });
 

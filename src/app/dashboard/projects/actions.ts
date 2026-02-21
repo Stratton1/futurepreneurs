@@ -335,12 +335,22 @@ export async function approveProject(projectId: string) {
   return { success: true };
 }
 
+/** Sanitize user-provided text: trim, limit length, strip HTML tags */
+function sanitizeText(text: string, maxLength: number = 500): string {
+  return text.trim().replace(/<[^>]*>/g, '').slice(0, maxLength);
+}
+
 /** Teacher requests changes on a project */
 export async function requestChanges(projectId: string, feedback: string) {
   const user = await getCurrentUser();
   if (!user || user.role !== 'teacher') {
     return { error: 'Only teachers can request changes' };
   }
+
+  if (!feedback || feedback.trim().length === 0) {
+    return { error: 'Please provide feedback about what changes are needed' };
+  }
+  feedback = sanitizeText(feedback);
 
   const supabase = await createClient();
 
@@ -391,6 +401,11 @@ export async function rejectProject(projectId: string, reason: string) {
   if (!user || user.role !== 'teacher') {
     return { error: 'Only teachers can reject projects' };
   }
+
+  if (!reason || reason.trim().length === 0) {
+    return { error: 'Please provide a reason for the rejection' };
+  }
+  reason = sanitizeText(reason);
 
   const supabase = await createClient();
 
@@ -458,24 +473,27 @@ export async function giveConsent(projectId: string) {
   // Verify this parent has a consent record for this project
   const { data: consent } = await adminClient
     .from('parental_consents')
-    .select('id')
+    .select('id, status')
     .eq('project_id', projectId)
     .eq('parent_id', user.id)
     .single();
 
   if (!consent) return { error: 'You do not have permission to consent to this project' };
+  if (consent.status === 'approved') return { success: true }; // Already consented
 
   // Update consent record
   await adminClient
     .from('parental_consents')
     .update({ status: 'approved', consented_at: new Date().toISOString() })
-    .eq('id', consent.id);
+    .eq('id', consent.id)
+    .eq('status', 'pending'); // Only update if still pending (prevents race)
 
-  // Set project to live
+  // Set project to live — conditional update prevents double-transition
   const { error } = await adminClient
     .from('projects')
     .update({ status: 'live' })
-    .eq('id', projectId);
+    .eq('id', projectId)
+    .eq('status', 'pending_consent');
 
   if (error) return { error: 'Failed to update project status' };
 
@@ -531,6 +549,11 @@ export async function declineConsent(projectId: string, reason: string) {
   if (!user || user.role !== 'parent') {
     return { error: 'Only parents can decline consent' };
   }
+
+  if (!reason || reason.trim().length === 0) {
+    return { error: 'Please provide a reason for declining consent' };
+  }
+  reason = sanitizeText(reason);
 
   // Use admin client — parent can't read pending_consent projects or parental_consents via RLS
   const adminClient = createAdminClient();

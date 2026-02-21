@@ -24,6 +24,12 @@ export async function PATCH(
       return NextResponse.json({ error: 'Missing userId' }, { status: 400 });
     }
 
+    // Validate UUID format to prevent path traversal
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(userId)) {
+      return NextResponse.json({ error: 'Invalid userId format' }, { status: 400 });
+    }
+
     const body = await _request.json();
     const avatarConfig = body?.avatar_config ?? null;
 

@@ -10,9 +10,10 @@ import Stripe from 'stripe';
  * POST /api/webhooks/stripe
  * Handles Stripe webhook events for payment lifecycle.
  *
- * Key events:
- * - checkout.session.completed → Mark backing as "held", update project totals
- * - charge.refunded → Mark backing as "refunded", reduce project totals
+ * Security:
+ * - Stripe signature verification prevents forged webhooks
+ * - Idempotency check via stripe_session_id prevents duplicate processing
+ * - Atomic RPC calls prevent race conditions on project totals
  */
 export async function POST(request: NextRequest) {
   const body = await request.text();
@@ -49,12 +50,25 @@ export async function POST(request: NextRequest) {
         break;
       }
 
-      // Update backing status to "held" and store payment intent
+      // Idempotency: check if this session was already processed
+      const { data: existingBacking } = await supabase
+        .from('backings')
+        .select('id, status, stripe_session_id, reward_tier_id')
+        .eq('id', backingId)
+        .single();
+
+      if (existingBacking?.stripe_session_id === session.id) {
+        console.log(`Skipping duplicate webhook for session ${session.id}`);
+        break;
+      }
+
+      // Update backing: mark as "held", store payment intent + session ID
       const { error: updateError } = await supabase
         .from('backings')
         .update({
           status: 'held',
           stripe_payment_intent_id: session.payment_intent as string,
+          stripe_session_id: session.id,
         })
         .eq('id', backingId);
 
@@ -64,56 +78,54 @@ export async function POST(request: NextRequest) {
       }
 
       // Increment reward tier claimed count if applicable
-      const { data: backingRow } = await supabase
-        .from('backings')
-        .select('reward_tier_id')
-        .eq('id', backingId)
-        .single();
-      if (backingRow?.reward_tier_id) {
-        await incrementClaimedCount(backingRow.reward_tier_id);
+      if (existingBacking?.reward_tier_id) {
+        await incrementClaimedCount(existingBacking.reward_tier_id);
       }
 
-      // Update project totals
+      // Atomic increment of project totals via RPC
       const amountPounds = toPounds(session.amount_total || 0);
-      const { data: project } = await supabase
-        .from('projects')
-        .select('total_raised, backer_count, goal_amount, status, student_id')
-        .eq('id', projectId)
-        .single();
+      const { data: updated, error: rpcError } = await supabase.rpc(
+        'increment_project_funding',
+        {
+          p_project_id: projectId,
+          p_amount: amountPounds,
+          p_backer_increment: 1,
+        }
+      );
 
-      if (project) {
-        const newTotal = Number(project.total_raised) + amountPounds;
-        const newCount = Number(project.backer_count) + 1;
-        const goalMet = newTotal >= Number(project.goal_amount);
+      if (rpcError) {
+        console.error('Error incrementing project funding:', rpcError);
+        break;
+      }
 
-        // Update project
-        await supabase
-          .from('projects')
-          .update({
-            total_raised: newTotal,
-            backer_count: newCount,
-            // If goal is met, transition to "funded"
-            ...(goalMet && project.status === 'live' ? { status: 'funded' } : {}),
-          })
-          .eq('id', projectId);
+      const result = Array.isArray(updated) ? updated[0] : updated;
+      if (result) {
+        const goalMet = Number(result.new_total) >= Number(result.goal_amount);
 
         // Check and mark micro-goals as reached
-        await checkAndMarkMicroGoals(projectId, newTotal);
+        await checkAndMarkMicroGoals(projectId, Number(result.new_total));
 
-        // If goal is met, mark all held backings as "collected" and award badge
-        if (goalMet) {
+        // If goal is met, transition to "funded" and collect all held backings
+        if (goalMet && result.current_status === 'live') {
+          await supabase
+            .from('projects')
+            .update({ status: 'funded' })
+            .eq('id', projectId)
+            .eq('status', 'live');
+
           await supabase
             .from('backings')
             .update({ status: 'collected' })
             .eq('project_id', projectId)
             .eq('status', 'held');
-          if (project.student_id) {
-            await awardFullyFunded(project.student_id, projectId);
+
+          if (result.student_id) {
+            await awardFullyFunded(result.student_id, projectId);
           }
         }
       }
 
-      console.log(`✅ Backing ${backingId} for project ${projectId} — payment held`);
+      console.log(`Backing ${backingId} for project ${projectId} — payment held`);
       break;
     }
 
@@ -137,31 +149,21 @@ export async function POST(request: NextRequest) {
           .update({ status: 'refunded' })
           .eq('id', backing.id);
 
-        // Reduce project totals
-        const { data: project } = await supabase
-          .from('projects')
-          .select('total_raised, backer_count')
-          .eq('id', backing.project_id)
-          .single();
+        // Atomic decrement of project totals via RPC
+        await supabase.rpc('decrement_project_funding', {
+          p_project_id: backing.project_id,
+          p_amount: Number(backing.amount),
+          p_backer_decrement: 1,
+        });
 
-        if (project) {
-          await supabase
-            .from('projects')
-            .update({
-              total_raised: Math.max(0, Number(project.total_raised) - Number(backing.amount)),
-              backer_count: Math.max(0, Number(project.backer_count) - 1),
-            })
-            .eq('id', backing.project_id);
-        }
-
-        console.log(`↩️ Backing ${backing.id} refunded`);
+        console.log(`Backing ${backing.id} refunded`);
       }
       break;
     }
 
     case 'payment_intent.payment_failed': {
       const intent = event.data.object as Stripe.PaymentIntent;
-      console.warn(`⚠️ Payment failed: ${intent.id}`);
+      console.warn(`Payment failed: ${intent.id}`);
 
       // Find and remove the pending backing
       const { data: backing } = await supabase
@@ -180,7 +182,6 @@ export async function POST(request: NextRequest) {
     }
 
     default:
-      // Unhandled event type — acknowledge it
       break;
   }
 

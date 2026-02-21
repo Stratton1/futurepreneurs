@@ -1,7 +1,9 @@
 import { createAdminClient } from '@/lib/supabase/server';
+import { requireAdmin } from '@/lib/supabase/auth-helpers';
 import { AdminReportActions } from './report-actions';
 
 export default async function AdminReportsPage() {
+  await requireAdmin();
   const supabase = createAdminClient();
 
   const { data: reports } = await supabase

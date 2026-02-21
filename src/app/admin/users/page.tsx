@@ -1,10 +1,12 @@
 import { createAdminClient } from '@/lib/supabase/server';
+import { requireAdmin } from '@/lib/supabase/auth-helpers';
 
 export default async function AdminUsersPage({
   searchParams,
 }: {
   searchParams: Promise<{ q?: string }>;
 }) {
+  await requireAdmin();
   const supabase = createAdminClient();
   const { q } = await searchParams;
 

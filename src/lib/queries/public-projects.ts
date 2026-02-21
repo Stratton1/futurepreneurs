@@ -80,14 +80,14 @@ function normaliseProject(raw: any): any {
 const LIST_SELECT = `
   id, title, short_description, category, goal_amount, total_raised, backer_count,
   images, status, is_featured, logo_config, logo_approved, project_type, group_name, created_at,
-  student:user_profiles!projects_student_id_fkey(id, full_name, display_handle, avatar_url, avatar_config, school:schools(name, city))
+  student:user_profiles!projects_student_id_fkey(id, full_name, avatar_url, school:schools(name, city))
 `;
 
 // Full select for detail page
 const DETAIL_SELECT = `
   id, title, short_description, description, category, goal_amount, total_raised, backer_count,
   images, video_url, status, is_featured, logo_config, logo_approved, project_type, group_name, created_at,
-  student:user_profiles!projects_student_id_fkey(id, full_name, display_handle, avatar_url, avatar_config, bio, school:schools(name, city)),
+  student:user_profiles!projects_student_id_fkey(id, full_name, avatar_url, bio, school:schools(name, city)),
   mentor:user_profiles!projects_mentor_id_fkey(id, full_name),
   milestones(id, title, description, amount, sort_order, status)
 `;

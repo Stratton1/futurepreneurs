@@ -2,20 +2,30 @@ import { NextRequest, NextResponse } from 'next/server';
 import type Stripe from 'stripe';
 import { stripe, toPence } from '@/lib/stripe';
 import { createAdminClient } from '@/lib/supabase/server';
+import { isRateLimited, getClientIp } from '@/lib/rate-limit';
 
 /**
  * POST /api/checkout
  * Creates a Stripe Checkout Session for backing a project.
  *
- * Body: { projectId, amount, backerName, backerEmail, isAnonymous?, backerId? }
+ * Body: { projectId, amount, backerName, backerEmail, isAnonymous?, backerId?, rewardTierId? }
  *
- * All-or-nothing model: funds are captured immediately via Checkout, but
- * only "collected" (released to the project) when the goal is met.
- * Until then they sit as "held" backings. If the project is cancelled,
- * refunds are issued.
+ * Security:
+ * - Rate limited to 5 requests per minute per IP
+ * - Backing record created as "pending" before Stripe redirect
+ * - Webhook confirms payment and transitions to "held"
  */
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting: 5 requests per minute per IP
+    const clientIp = getClientIp(request.headers);
+    if (isRateLimited(`checkout:${clientIp}`, 5, 60_000)) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please wait a moment and try again.' },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const { projectId, amount, backerName, backerEmail, isAnonymous, backerId, rewardTierId } = body;
 
@@ -65,7 +75,7 @@ export async function POST(request: NextRequest) {
     const amountPence = toPence(amountNum);
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://futurepreneurs-sigma.vercel.app';
 
-    // Create a backing record (pending)
+    // Create a backing record (pending — confirmed by webhook on checkout.session.completed)
     const { data: backing, error: backingError } = await supabase
       .from('backings')
       .insert({
@@ -115,11 +125,14 @@ export async function POST(request: NextRequest) {
     };
     const session = await stripe.checkout.sessions.create(sessionParams);
 
-    // Store the payment intent ID on the backing
-    if (session.payment_intent) {
+    // Store the session ID on the backing for idempotency tracking
+    if (session.payment_intent || session.id) {
       await supabase
         .from('backings')
-        .update({ stripe_payment_intent_id: session.payment_intent as string })
+        .update({
+          stripe_payment_intent_id: (session.payment_intent as string) || null,
+          stripe_session_id: session.id,
+        })
         .eq('id', backing.id);
     }
 

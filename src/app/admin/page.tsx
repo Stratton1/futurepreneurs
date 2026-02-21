@@ -1,8 +1,10 @@
 import Link from 'next/link';
 import { createAdminClient } from '@/lib/supabase/server';
+import { requireAdmin } from '@/lib/supabase/auth-helpers';
 import { Users, FolderKanban, Flag, Wallet } from 'lucide-react';
 
 export default async function AdminOverviewPage() {
+  await requireAdmin();
   const supabase = createAdminClient();
 
   const [

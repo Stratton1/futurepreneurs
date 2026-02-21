@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { createAdminClient } from '@/lib/supabase/server';
+import { requireAdmin } from '@/lib/supabase/auth-helpers';
 import { CURRENCY_SYMBOL } from '@/lib/constants';
 
 export default async function AdminProjectsPage({
@@ -7,6 +8,7 @@ export default async function AdminProjectsPage({
 }: {
   searchParams: Promise<{ status?: string }>;
 }) {
+  await requireAdmin();
   const supabase = createAdminClient();
   const { status } = await searchParams;
 

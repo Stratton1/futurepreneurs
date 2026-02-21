@@ -1,4 +1,5 @@
 import { createClient } from './server';
+import { redirect } from 'next/navigation';
 import type { UserProfile, UserRole } from '@/types/database';
 
 /**
@@ -57,6 +58,18 @@ export async function isRegisteredSchoolEmail(email: string): Promise<{
   }
 
   return { isValid: false, schoolId: null, schoolName: null };
+}
+
+/**
+ * Require the current user to be an admin. Redirects to /dashboard if not.
+ * Defence-in-depth: use in admin page server components alongside the layout check.
+ */
+export async function requireAdmin(): Promise<UserProfile> {
+  const user = await getCurrentUser();
+  if (!user || user.role !== 'admin') {
+    redirect('/dashboard');
+  }
+  return user;
 }
 
 /**
