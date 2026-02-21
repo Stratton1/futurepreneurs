@@ -155,7 +155,7 @@ The public Browse Projects page and homepage use the **service-role** client to 
 - [x] **Reward tier max_claims enforcement** — Server-side validation in checkout API: checks approval status, minimum amount, and sold-out status before creating Stripe session.
 - [x] **Group project creation UI polish** — Polished type selector with icons (User/Users), descriptions, info callouts, group name field with guidance, and edit page now supports switching project type.
 
-### Epic 4: Youth-Centric Digital Wallet & Card System (FUTURE)
+### Epic 4: Youth-Centric Digital Wallet & Card System (PLANNED — see docs/epic-4-plan.md)
 
 > **Model:** Zero-Trust Spending — every transaction requires explicit approval from BOTH the student's Parent AND their verified Mentor before funds deploy. Fully COPPA and GDPR-K compliant. Custodial Account model where a verified adult holds legal liability, but the minor gets an empowering, educational dashboard.
 
