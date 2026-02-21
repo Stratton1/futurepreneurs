@@ -23,7 +23,7 @@ export async function POST() {
       const { data: existing } = await supabase
         .from('schools')
         .select('id')
-        .eq('name', school.name)
+        .eq('email_domain', school.email_domain)
         .maybeSingle();
 
       if (!existing) {
@@ -40,9 +40,10 @@ export async function POST() {
       return NextResponse.json({ error: 'School seeding failed — not enough schools found' }, { status: 500 });
     }
 
+    // Index by email_domain for reliable lookups (names may differ from seed data)
     const schoolMap: Record<string, { id: string; domain: string }> = {};
     for (const s of schools) {
-      schoolMap[s.name] = { id: s.id, domain: s.email_domain };
+      schoolMap[s.email_domain] = { id: s.id, domain: s.email_domain };
     }
 
     // Helper: create auth user + profile
@@ -97,9 +98,9 @@ export async function POST() {
     }
 
     // ── 2. Create Teachers ──
-    const riverside = schoolMap['Riverside Academy'];
-    const oakwood = schoolMap['Oakwood High School'];
-    const stmarys = schoolMap["St Mary's School"];
+    const riverside = schoolMap['riverside.sch.uk'];
+    const oakwood = schoolMap['oakwood.sch.uk'];
+    const stmarys = schoolMap['stmarys.ac.uk'];
 
     const teacherMsClark = await createUser(
       `ms.clark@${riverside.domain}`, 'Ms. Sarah Clark', 'teacher', riverside.id
@@ -143,8 +144,8 @@ export async function POST() {
     await createUser('mark.investor@gmail.com', 'Mark Thompson', 'investor');
 
     // ── Additional schools for new students ──
-    const greenfield = schoolMap['Greenfield Comprehensive'];
-    const bridge = schoolMap['The Bridge School'];
+    const greenfield = schoolMap['greenfield.sch.uk'];
+    const bridge = schoolMap['bridgeschool.sch.uk'];
 
     // Create additional users only if schools exist
     let studentElla: string | undefined;
@@ -501,7 +502,7 @@ export async function POST() {
       message: `Seeded ${createdProjects.length} projects with users, milestones, consent records, and sample backings.`,
       projectIds: createdProjects,
       debug: {
-        schoolsFound: Object.keys(schoolMap),
+        schoolDomains: Object.keys(schoolMap),
         greenfieldExists: !!greenfield,
         bridgeExists: !!bridge,
         newStudentsCreated: !!(studentElla && studentRyan && studentMia),
