@@ -27,7 +27,10 @@ export async function POST() {
         .maybeSingle();
 
       if (!existing) {
-        await supabase.from('schools').insert(school);
+        const { error: schoolError } = await supabase.from('schools').insert(school);
+        if (schoolError) {
+          console.error(`Error inserting school ${school.name}:`, schoolError);
+        }
       }
     }
 
@@ -140,14 +143,6 @@ export async function POST() {
     await createUser('mark.investor@gmail.com', 'Mark Thompson', 'investor');
 
     // ── Additional schools for new students ──
-    // Re-fetch schools to pick up any newly inserted ones
-    const { data: allSchools } = await supabase.from('schools').select('id, name, email_domain');
-    if (allSchools) {
-      for (const s of allSchools) {
-        schoolMap[s.name] = { id: s.id, domain: s.email_domain };
-      }
-    }
-
     const greenfield = schoolMap['Greenfield Comprehensive'];
     const bridge = schoolMap['The Bridge School'];
 
@@ -374,7 +369,7 @@ export async function POST() {
         title: 'GoalGetters — Girls Football Academy',
         description: 'There is no girls football team at my school or in my area. I want to start a weekly football academy for girls aged 8 to 16. I need funding for footballs, bibs, cones, first aid kit, and to hire a local pitch. Everyone deserves the chance to play.',
         short_description: 'A weekly football academy giving girls the chance to play and compete.',
-        category: 'Sports',
+        category: 'Sports & Fitness',
         goal_amount: 550,
         total_raised: 550,
         backer_count: 38,
@@ -505,6 +500,13 @@ export async function POST() {
       success: true,
       message: `Seeded ${createdProjects.length} projects with users, milestones, consent records, and sample backings.`,
       projectIds: createdProjects,
+      debug: {
+        schoolsFound: Object.keys(schoolMap),
+        greenfieldExists: !!greenfield,
+        bridgeExists: !!bridge,
+        newStudentsCreated: !!(studentElla && studentRyan && studentMia),
+        projectsDataCount: projectsData.length,
+      },
     });
   } catch (error) {
     console.error('Seed error:', error);
