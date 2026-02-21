@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, BookOpen, GraduationCap } from 'lucide-react';
+import { ArrowLeft, BookOpen, GraduationCap, BarChart3 } from 'lucide-react';
 import { getCurrentUser } from '@/lib/supabase/auth-helpers';
 import { getModuleCompletionCounts } from '@/lib/queries/learning';
 import { LEARNING_MODULES, getTotalLessonCount } from '@/lib/learning-modules';
@@ -53,6 +53,17 @@ export default async function LearningDashboardPage() {
             <span className="font-medium text-sm">All modules complete! You&apos;ve earned the Scholar badge.</span>
           </div>
         )}
+      </div>
+
+      {/* View progress link */}
+      <div className="mb-6">
+        <Link
+          href="/dashboard/learning/progress"
+          className="inline-flex items-center gap-2 text-sm text-purple-600 hover:text-purple-700 font-medium"
+        >
+          <BarChart3 className="h-4 w-4" />
+          View detailed progress &amp; quiz scores
+        </Link>
       </div>
 
       {/* Module cards */}

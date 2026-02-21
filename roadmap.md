@@ -26,7 +26,7 @@
 **Migrations:** Apply all Supabase migrations to your **production** Supabase project so the schema matches the app. Run them in order via Supabase Dashboard → SQL Editor, or `supabase db push` if using linked project.
 
 - **Committed (001–006):** initial schema, drawdown RLS, reports/backings RLS, avatar_config, display_handle, user_badges. Apply these for the deployed MVP.
-- **Built but uncommitted (007–012):** learning_progress, micro_goals, reward_tiers, project_logos, pitch_drafts, group_projects. Apply these before deploying Epics 2 & 3.
+- **Built but uncommitted (007–013):** learning_progress, micro_goals, reward_tiers, project_logos, pitch_drafts, group_projects, task_progress. Apply these before deploying Epics 2 & 3.
 
 If migrations are missing, the app may show empty project lists or layout errors.
 
@@ -117,11 +117,30 @@ The public Browse Projects page and homepage use the **service-role** client to 
 - [x] **Safe Usernames** — Auto-generated display handles (e.g. BrightSpark42); assign on first profile load for students; regenerate in profile; public project card and detail use display_handle.
 - [x] **Trophy Room** — Badges: First Project, Fully Funded, Milestone Master; user_badges table; award on project create, webhook funded, drawdown approval; /dashboard/trophy-room page; backfill script.
 
-### Epic 2: Educational Hub & Onboarding (BUILT — needs commit, migrations 007, deploy)
+### Epic 2: Educational Hub & Onboarding (BUILT — needs commit, migrations 007 + 013, deploy)
 
-- [x] **Learning Platform** — 4 modules (Business Plan Basics, Pitch Writing, Marketing Your Project, Managing Your Money) with 22 lessons, quizzes with explanations, and per-user progress tracking. Public hub at `/learn` with module/lesson pages. Student dashboard at `/dashboard/learning` with completion stats. Database: `learning_progress` table (migration 007).
+- [x] **Learning Platform (Expanded)** — Comprehensive "Founder's Bootcamp" with **7 modules, 29 lessons, 145+ quiz questions, 60+ practical tasks**. Based on JA/DECA educational frameworks, targeting ages 14–18.
+  - Module 1: The Entrepreneurial Mindset (3 lessons) — growth mindset, design thinking, needs vs wants
+  - Module 2: The Blueprint (7 lessons) — Lean Canvas, MVP, revenue models, school-based enterprise, market research, goal setting
+  - Module 3: Crafting the Perfect Pitch (5 lessons) — pitch anatomy, storytelling, financials, video, safe branding
+  - Module 4: Budgeting & Financial Literacy (3 lessons) — materials budgets, micro-goals, stretch goals & rewards
+  - Module 5: Launch & Marketing (5 lessons) — inner circle, social media, visuals, sponsorships, engagement updates
+  - Module 6: Managing Your Business (3 lessons) — dashboard navigation, dual-approval system, gratitude & impact
+  - Module 7: Resource Library & Toolkits (3 resource pages) — student, parent, and educator resources with downloadable templates
+- [x] **Multi-Question Quiz System** — QuizSection component that steps through 5+ questions per lesson with progress bar, per-question feedback, and final summary with score. Scores saved to database.
+- [x] **Task Checklist System** — LessonTask types (reflection, research, exercise, download) with coloured cards, checkbox toggling, download buttons. Database: `task_progress` table (migration 013).
+- [x] **Learning Progress Page** — `/dashboard/learning/progress` with per-module progress bars, average quiz scores, and overall completion stats.
+- [x] **Module Architecture** — Split from monolithic 986-line file into 7 per-module files under `src/lib/learning/modules/` with re-export shim for backward compatibility.
+- [x] **Downloadable Resources** — Placeholder PDFs in `/public/resources/` (Lean Canvas, Video Storyboard, Budget Template, Pitch Script Outline).
+- [x] **Public Learn Page Updated** — Shows all 7 modules with icons, lesson counts, and correct colour coding.
 - [x] **Guided Setup Flows** — GuidedTip component with "Why?" explanations linked from project creation steps. "First time? Start here" entry point from student dashboard linking to /learn.
-- [x] **Components** — LearningModuleCard, LessonProgressBar, QuizQuestion, GuidedTip.
+- [x] **Components** — LearningModuleCard, LessonProgressBar, QuizSection, QuizQuestion, TaskChecklist, GuidedTip.
+
+### Epic 2b: Dashboard Polish & Fixes (BUILT — needs commit, deploy)
+
+- [x] **Student Dashboard Redesign** — Gradient hero banner with time-of-day greeting, avatar display, display handle, and role badge. Animated stats row (Projects, Learning %, Badges, Total Raised) with staggered AnimateIn. Colorful quick action cards with distinct gradients per card, hover effects, and arrow indicators. Learning progress mini-widget with "Continue" CTA pointing to next incomplete lesson. Non-student roles keep their existing layout.
+- [x] **Navbar Name Removal** — Removed user's full name from the navbar header bar (both desktop and mobile) for cleaner appearance and privacy.
+- [x] **Profile Page Defensive Error Handling** — Added try-catch wrapping around school, parent, children, and mentored projects queries so individual section failures don't crash the whole page.
 
 ### Epic 3: Campaign Management & Teamwork (BUILT — needs commit, migrations 008–012, deploy)
 
@@ -248,6 +267,27 @@ POST   /api/webhooks/stripe-issuing       — Stripe Issuing webhook (authorizat
 - [ ] **Stretch Goals** — Allowing projects to set secondary funding targets (e.g. "If we hit £600, we will also buy a logo design") that unlock automatically if the initial goal is met early.
 - [ ] **Corporate Matching Grants Integration** — Automated matching from corporate sponsors who pledge to double contributions to qualifying student projects, increasing funding impact.
 - [ ] **Youth Grant Matching Integration** — Integration with youth entrepreneurship grant programmes (e.g. Prince's Trust, Young Enterprise) that can top up or match student-raised funds.
+
+---
+
+## Known Improvements (Identified Feb 2026 Testing)
+
+**Bugs:**
+- Homepage sparkle particles hydration mismatch (cosmetic — `Math.random()` differs server vs client). Fix: use seeded random or client-only generation.
+
+**UX Improvements:**
+- Public `/learn` page module cards should link to public module preview pages
+- Long pages (Learn, About, How It Works) could benefit from a "Back to top" button
+- Browse page search could have autocomplete or recent search suggestions
+- Dashboard learning page could show a "Recommended next" section at top
+
+**Accessibility:**
+- Homepage flip cards lack keyboard interaction (Enter/Space keypresses)
+- Quiz option buttons could benefit from ARIA labels for correct/incorrect state
+
+**Content:**
+- Placeholder PDFs in `/public/resources/` need real designed content before launch
+- Module 7 (Resource Library) download tasks reference these placeholder PDFs
 
 ---
 

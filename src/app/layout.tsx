@@ -42,7 +42,7 @@ export default async function RootLayout({
         className={`${outfit.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
         style={{ fontFamily: 'var(--font-outfit), sans-serif' }}
       >
-        <Navbar user={user ? { fullName: user.full_name, role: user.role } : null} />
+        <Navbar user={user ? { role: user.role } : null} />
         <main className="flex-1">{children}</main>
         <Footer />
       </body>

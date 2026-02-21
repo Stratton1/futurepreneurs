@@ -30,61 +30,69 @@ export default async function ProfilePage() {
   const adminClient = createAdminClient();
   const supabase = await createClient();
 
-  // Get school info (schools are readable by everyone via RLS)
+  // Get school info — defensive so missing tables/columns don't crash the page
   let schoolName = null;
-  if (user.school_id) {
-    const { data: school } = await supabase
-      .from('schools')
-      .select('name')
-      .eq('id', user.school_id)
-      .single();
-    schoolName = school?.name;
-  }
+  try {
+    if (user.school_id) {
+      const { data: school } = await supabase
+        .from('schools')
+        .select('name')
+        .eq('id', user.school_id)
+        .single();
+      schoolName = school?.name;
+    }
+  } catch { /* school lookup failed — skip */ }
 
   // Get parent info (for students)
   let parentInfo = null;
-  if (user.role === 'student' && user.parent_id) {
-    const { data: parent } = await adminClient
-      .from('user_profiles')
-      .select('id, full_name, email')
-      .eq('id', user.parent_id)
-      .single();
-    parentInfo = parent;
-  }
+  try {
+    if (user.role === 'student' && user.parent_id) {
+      const { data: parent } = await adminClient
+        .from('user_profiles')
+        .select('id, full_name, email')
+        .eq('id', user.parent_id)
+        .single();
+      parentInfo = parent;
+    }
+  } catch { /* parent lookup failed — skip */ }
 
   // Get children info (for parents)
   let children: { id: string; full_name: string; email: string }[] = [];
-  if (user.role === 'parent') {
-    const { data } = await adminClient
-      .from('user_profiles')
-      .select('id, full_name, email')
-      .eq('parent_id', user.id)
-      .eq('role', 'student');
-    children = data ?? [];
-  }
+  try {
+    if (user.role === 'parent') {
+      const { data } = await adminClient
+        .from('user_profiles')
+        .select('id, full_name, email')
+        .eq('parent_id', user.id)
+        .eq('role', 'student');
+      children = data ?? [];
+    }
+  } catch { /* children lookup failed — skip */ }
 
   // Get mentored students (for teachers)
   const mentoredProjects: { id: string; title: string; student_name: string }[] = [];
-  if (user.role === 'teacher') {
-    const { data: projects } = await supabase
-      .from('projects')
-      .select('id, title, student_id')
-      .eq('mentor_id', user.id);
-    if (projects) {
-      for (const p of projects) {
-        const { data: student } = await adminClient
-          .from('user_profiles')
-          .select('full_name')
-          .eq('id', p.student_id)
-          .single();
-        mentoredProjects.push({
-          id: p.id,
-          title: p.title,
-          student_name: student?.full_name || 'Unknown',
-        });
+  try {
+    if (user.role === 'teacher') {
+      const { data: projects } = await supabase
+        .from('projects')
+        .select('id, title, student_id')
+        .eq('mentor_id', user.id);
+      if (projects) {
+        for (const p of projects) {
+          const { data: student } = await adminClient
+            .from('user_profiles')
+            .select('full_name')
+            .eq('id', p.student_id)
+            .single();
+          mentoredProjects.push({
+            id: p.id,
+            title: p.title,
+            student_name: student?.full_name || 'Unknown',
+          });
+        }
       }
     }
-  }
+  } catch { /* mentored projects lookup failed — skip */ }
 
   const roleLabel = USER_ROLE_LABELS[user.role] || user.role;
 

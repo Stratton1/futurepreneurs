@@ -8,7 +8,6 @@ import { LogoutButton } from '@/components/features/logout-button';
 
 interface NavbarProps {
   user?: {
-    fullName: string;
     role: string;
   } | null;
 }
@@ -65,7 +64,6 @@ export function Navbar({ user }: NavbarProps) {
             </Link>
             {user ? (
               <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-500">{user.fullName}</span>
                 <Link href="/dashboard">
                   <Button variant="primary" size="sm" asChild>
                     Dashboard
@@ -126,7 +124,6 @@ export function Navbar({ user }: NavbarProps) {
               </Link>
               {user ? (
                 <>
-                  <p className="px-3 py-1 text-sm text-gray-500">{user.fullName}</p>
                   <Link href="/dashboard" onClick={() => setIsOpen(false)}>
                     <Button variant="primary" size="sm" className="w-full">
                       Dashboard

@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, CheckCircle, Clock, BookOpen } from 'lucide-reac
 import { getLessonById } from '@/lib/learning-modules';
 import { getCurrentUser } from '@/lib/supabase/auth-helpers';
 import { getModuleProgress } from '@/lib/queries/learning';
+import { getTaskCompletionForLesson } from '@/app/dashboard/learning/actions';
 import { LessonContent } from './lesson-content';
 
 interface LessonPageProps {
@@ -32,6 +33,7 @@ export default async function DashboardLessonPage({ params }: LessonPageProps) {
 
   const completedLessons = await getModuleProgress(user.id, moduleId);
   const isCompleted = completedLessons.has(lessonId);
+  const completedTaskIds = await getTaskCompletionForLesson(user.id, moduleId, lessonId);
 
   const currentIndex = mod.lessons.findIndex((l) => l.id === lessonId);
   const prevLesson = currentIndex > 0 ? mod.lessons[currentIndex - 1] : null;
@@ -50,11 +52,11 @@ export default async function DashboardLessonPage({ params }: LessonPageProps) {
           <span className="flex items-center gap-1">
             <Clock className="h-3.5 w-3.5" /> {lesson.readingTime} min read
           </span>
-          {lesson.quiz && (
+          {lesson.quiz && lesson.quiz.length > 0 && (
             <>
               <span className="text-gray-300">|</span>
               <span className="flex items-center gap-1">
-                <BookOpen className="h-3.5 w-3.5" /> Includes quiz
+                <BookOpen className="h-3.5 w-3.5" /> {lesson.quiz.length} quiz question{lesson.quiz.length !== 1 ? 's' : ''}
               </span>
             </>
           )}
@@ -75,6 +77,8 @@ export default async function DashboardLessonPage({ params }: LessonPageProps) {
         lessonId={lessonId}
         content={lesson.content}
         quiz={lesson.quiz ?? null}
+        tasks={lesson.tasks ?? null}
+        completedTaskIds={Array.from(completedTaskIds)}
         alreadyCompleted={isCompleted}
       />
 

@@ -3,15 +3,18 @@
 import { useState } from 'react';
 import { CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { QuizQuestion } from '@/components/features/quiz-question';
-import { markLessonComplete, submitQuizAnswer } from '@/app/dashboard/learning/actions';
-import type { QuizQuestion as QuizQuestionType } from '@/types/learning';
+import { QuizSection } from '@/components/features/quiz-section';
+import { TaskChecklist } from '@/components/features/task-checklist';
+import { markLessonComplete, submitQuizAnswers, toggleTaskComplete } from '@/app/dashboard/learning/actions';
+import type { QuizQuestion as QuizQuestionType, LessonTask } from '@/types/learning';
 
 interface LessonContentProps {
   moduleId: string;
   lessonId: string;
   content: string;
-  quiz: QuizQuestionType | null;
+  quiz: QuizQuestionType[] | null;
+  tasks: LessonTask[] | null;
+  completedTaskIds: string[];
   alreadyCompleted: boolean;
 }
 
@@ -160,7 +163,7 @@ function renderContent(markdown: string) {
   return elements;
 }
 
-export function LessonContent({ moduleId, lessonId, content, quiz, alreadyCompleted }: LessonContentProps) {
+export function LessonContent({ moduleId, lessonId, content, quiz, tasks, completedTaskIds, alreadyCompleted }: LessonContentProps) {
   const [completed, setCompleted] = useState(alreadyCompleted);
   const [markingComplete, setMarkingComplete] = useState(false);
 
@@ -171,12 +174,15 @@ export function LessonContent({ moduleId, lessonId, content, quiz, alreadyComple
     setMarkingComplete(false);
   };
 
-  const handleQuizSubmit = async (selectedIndex: number) => {
-    const result = await submitQuizAnswer(moduleId, lessonId, selectedIndex);
+  const handleQuizComplete = async (answers: number[]) => {
+    const result = await submitQuizAnswers(moduleId, lessonId, answers);
     if ('error' in result && result.error) return null;
     setCompleted(true);
-    const r = result as { isCorrect: boolean; explanation: string };
-    return { isCorrect: r.isCorrect, explanation: r.explanation };
+    return result as { correctCount: number; totalQuestions: number; results: { isCorrect: boolean; explanation: string }[] };
+  };
+
+  const handleTaskToggle = async (taskId: string) => {
+    await toggleTaskComplete(moduleId, lessonId, taskId);
   };
 
   return (
@@ -185,20 +191,37 @@ export function LessonContent({ moduleId, lessonId, content, quiz, alreadyComple
         {renderContent(content)}
       </div>
 
-      {quiz && (
+      {/* Tasks section */}
+      {tasks && tasks.length > 0 && (
         <div className="mt-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-3">Quick Quiz</h2>
-          <QuizQuestion
+          <TaskChecklist
+            tasks={tasks}
+            completedTaskIds={new Set(completedTaskIds)}
+            moduleId={moduleId}
+            lessonId={lessonId}
+            onToggle={handleTaskToggle}
+          />
+        </div>
+      )}
+
+      {/* Quiz section */}
+      {quiz && quiz.length > 0 && (
+        <div className="mt-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-3">
+            Quiz — {quiz.length} question{quiz.length !== 1 ? 's' : ''}
+          </h2>
+          <QuizSection
             quiz={quiz}
             moduleId={moduleId}
             lessonId={lessonId}
-            onComplete={handleQuizSubmit}
+            onAllComplete={handleQuizComplete}
             alreadyCompleted={alreadyCompleted}
           />
         </div>
       )}
 
-      {!quiz && !completed && (
+      {/* Mark complete button (only for lessons without quizzes) */}
+      {(!quiz || quiz.length === 0) && !completed && (
         <div className="mt-6 text-center">
           <Button
             variant="primary"
@@ -210,7 +233,7 @@ export function LessonContent({ moduleId, lessonId, content, quiz, alreadyComple
         </div>
       )}
 
-      {completed && !quiz && (
+      {completed && (!quiz || quiz.length === 0) && (
         <div className="mt-6 flex items-center justify-center gap-2 text-emerald-600">
           <CheckCircle className="h-5 w-5" />
           <span className="font-medium">Lesson completed!</span>

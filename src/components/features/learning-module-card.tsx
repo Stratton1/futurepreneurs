@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Lightbulb, PenLine, Megaphone, PiggyBank, CheckCircle } from 'lucide-react';
+import { Lightbulb, PenLine, Megaphone, PiggyBank, Presentation, Wallet, BookOpen, CheckCircle } from 'lucide-react';
 import type { LearningModule } from '@/types/learning';
 
 const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -7,6 +7,9 @@ const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   PenLine,
   Megaphone,
   PiggyBank,
+  Presentation,
+  Wallet,
+  BookOpen,
 };
 
 const COLOUR_CLASSES: Record<string, { bg: string; iconBg: string; iconText: string; progress: string }> = {
@@ -14,6 +17,9 @@ const COLOUR_CLASSES: Record<string, { bg: string; iconBg: string; iconText: str
   blue: { bg: 'bg-blue-50 hover:bg-blue-100', iconBg: 'bg-blue-100', iconText: 'text-blue-700', progress: 'bg-blue-500' },
   purple: { bg: 'bg-purple-50 hover:bg-purple-100', iconBg: 'bg-purple-100', iconText: 'text-purple-700', progress: 'bg-purple-500' },
   emerald: { bg: 'bg-emerald-50 hover:bg-emerald-100', iconBg: 'bg-emerald-100', iconText: 'text-emerald-700', progress: 'bg-emerald-500' },
+  pink: { bg: 'bg-pink-50 hover:bg-pink-100', iconBg: 'bg-pink-100', iconText: 'text-pink-700', progress: 'bg-pink-500' },
+  indigo: { bg: 'bg-indigo-50 hover:bg-indigo-100', iconBg: 'bg-indigo-100', iconText: 'text-indigo-700', progress: 'bg-indigo-500' },
+  slate: { bg: 'bg-slate-50 hover:bg-slate-100', iconBg: 'bg-slate-100', iconText: 'text-slate-700', progress: 'bg-slate-500' },
 };
 
 interface LearningModuleCardProps {

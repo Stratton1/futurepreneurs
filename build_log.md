@@ -2,7 +2,7 @@
 
 **Purpose:** Chronological record of everything built, changed, or decided during development.
 
-**Last Updated:** 2026-02-20
+**Last Updated:** 2026-02-21
 
 ---
 
@@ -483,3 +483,152 @@
 - `src/app/dashboard/drawdowns/actions.ts` — awardMilestoneMaster on approve
 - `roadmap.md` — Epic 1 DONE
 - `build_log.md`, `project_memory.md` — Epic 1 entries
+
+---
+
+## Epic 2 — Educational Hub Expansion (Founder's Bootcamp)
+
+### Entry: Epic 2 Complete
+- **Date:** 2026-02-21
+- **Status:** Complete
+- **Goal:** Expand learning hub from 4 modules / 20 lessons to 7 modules / 29 lessons with 5+ quiz questions per lesson, practical tasks, and downloadable resources.
+
+### What was built
+
+1. **Module architecture overhaul:**
+   - Split monolithic `src/lib/learning-modules.ts` (986 lines, 4 modules) into 7 per-module files under `src/lib/learning/modules/`
+   - Created `src/lib/learning/index.ts` with exports and helpers (`getModuleById`, `getLessonById`, `getTotalLessonCount`)
+   - Rewrote `src/lib/learning-modules.ts` as a re-export shim — zero import-site changes needed
+
+2. **Type system expansion:**
+   - `quiz` changed from `QuizQuestion` (single) to `QuizQuestion[]` (array, min 5 per lesson)
+   - Added `LessonTask` interface: `{ id, title, description, type: 'reflection' | 'research' | 'exercise' | 'download', downloadUrl? }`
+   - Added `tasks?: LessonTask[]` to `Lesson` interface
+   - Added `sectionNumber: number` to `LearningModule`
+
+3. **Multi-question quiz system:**
+   - New `QuizSection` component stepping through questions one at a time
+   - Progress indicator ("Question 2 of 5")
+   - Per-question feedback with "Check Answer" → "Next Question" flow
+   - Final results summary: score, per-question review, emoji feedback
+   - `submitQuizAnswers` server action validates all questions and calculates percentage score
+   - Legacy `submitQuizAnswer` kept for backward compatibility
+
+4. **Task checklist system:**
+   - New `TaskChecklist` component with type-specific colours (reflection=purple, research=blue, exercise=emerald, download=amber)
+   - Checkbox toggling with `useTransition` for optimistic UI
+   - Download buttons for download-type tasks
+   - Progress bar showing tasks done/total
+   - `toggleTaskComplete` and `getTaskCompletionForLesson` server actions
+   - Migration `013_task_progress.sql`: `task_progress` table with unique constraint on (user_id, module_id, lesson_id, task_id)
+
+5. **29 lessons of educational content (JA/DECA framework):**
+   - Module 1: The Entrepreneurial Mindset (3 lessons) — Lightbulb/amber
+   - Module 2: The Blueprint (7 lessons) — Lightbulb/blue
+   - Module 3: Crafting the Perfect Pitch (5 lessons) — Presentation/purple
+   - Module 4: Budgeting & Financial Literacy (3 lessons) — PiggyBank/emerald
+   - Module 5: Launch & Marketing (5 lessons) — Megaphone/pink
+   - Module 6: Managing Your Business (3 lessons) — Wallet/indigo
+   - Module 7: Resource Library & Toolkits (3 resource pages) — BookOpen/slate
+   - Each lesson: 200-500 words of markdown content, 5+ quiz questions (4 options each with explanations), 2-3 practical tasks
+
+6. **Downloadable resources:**
+   - `public/resources/lean-canvas-template.pdf`
+   - `public/resources/video-storyboard-template.pdf`
+   - `public/resources/budget-template.pdf`
+   - `public/resources/pitch-script-outline.pdf`
+   - (Placeholder PDFs — need real content before launch)
+
+7. **Learning progress page:**
+   - `/dashboard/learning/progress` with overall stats (completion %, lessons done, quizzes taken)
+   - Per-module progress bars with colour coding
+   - Average quiz score per module
+   - Links back to module detail pages
+   - Link added from learning dashboard page
+
+8. **Supporting file updates:**
+   - `src/components/features/learning-module-card.tsx` — added Presentation, Wallet, BookOpen icons; pink, indigo, slate colours
+   - `src/app/(public)/learn/page.tsx` — updated icon/colour maps for 7 modules; updated copy
+   - `src/app/dashboard/learning/[moduleId]/[lessonId]/lesson-content.tsx` — uses QuizSection + TaskChecklist; updated props
+   - `src/app/dashboard/learning/[moduleId]/[lessonId]/page.tsx` — fetches task completion, passes tasks + completedTaskIds
+
+### Files created (14 files)
+- `src/lib/learning/index.ts`
+- `src/lib/learning/modules/01-entrepreneurial-mindset.ts`
+- `src/lib/learning/modules/02-the-blueprint.ts`
+- `src/lib/learning/modules/03-crafting-the-pitch.ts`
+- `src/lib/learning/modules/04-budgeting-financial.ts`
+- `src/lib/learning/modules/05-launch-marketing.ts`
+- `src/lib/learning/modules/06-managing-business.ts`
+- `src/lib/learning/modules/07-resource-library.ts`
+- `src/components/features/quiz-section.tsx`
+- `src/components/features/task-checklist.tsx`
+- `src/app/dashboard/learning/progress/page.tsx`
+- `supabase/migrations/013_task_progress.sql`
+- `public/resources/` (4 placeholder PDFs)
+
+### Files modified (8 files)
+- `src/types/learning.ts` — quiz array, LessonTask, sectionNumber
+- `src/lib/learning-modules.ts` — re-export shim
+- `src/app/dashboard/learning/actions.ts` — submitQuizAnswers, toggleTaskComplete, getTaskCompletionForLesson
+- `src/app/dashboard/learning/[moduleId]/[lessonId]/lesson-content.tsx` — QuizSection + TaskChecklist
+- `src/app/dashboard/learning/[moduleId]/[lessonId]/page.tsx` — task completion fetching
+- `src/components/features/learning-module-card.tsx` — new icons + colours
+- `src/app/(public)/learn/page.tsx` — 7 modules + updated copy
+- `src/app/dashboard/learning/page.tsx` — progress link
+
+---
+
+## Epic 2b — Dashboard Polish & Quick Fixes
+
+### Entry: Epic 2b Complete
+- **Date:** 2026-02-21
+- **Status:** Complete
+- **Goal:** Polish student dashboard with animations and stats; remove name from navbar; fix profile page errors.
+
+### What was built
+
+1. **Student dashboard redesign:**
+   - Gradient hero banner (emerald → blue) with time-of-day greeting, avatar with ring, display handle, role badge, badge count
+   - Animated stats row: 4 cards with staggered AnimateIn (Projects, Learning %, Badges X/6, Total Raised £X)
+   - Stats cards pulled up into hero with negative margin for overlapping effect
+   - Learning progress mini-widget: GraduationCap icon, next lesson title, progress bar, "Continue" CTA
+   - Completion state: Sparkles icon with congratulatory message when all lessons done
+   - Colorful quick action cards: 6 cards with distinct gradient backgrounds per card (emerald, blue, amber, purple, pink, slate), hover lift + shadow + arrow slide effects
+   - Non-student roles: existing layout preserved unchanged
+
+2. **Data fetching for stats:**
+   - Projects count and total raised from admin client query
+   - Badge count from user_badges
+   - Learning completion from getModuleCompletionCounts + getTotalLessonCount
+   - Next incomplete lesson calculation (iterates modules/lessons in order)
+   - All fetched in parallel with Promise.all
+
+3. **Navbar name removal:**
+   - Removed `<span>` showing `user.fullName` from desktop navbar
+   - Removed `<p>` showing `user.fullName` from mobile navbar drawer
+   - Updated NavbarProps interface: removed `fullName` from user prop
+   - Updated layout.tsx: removed `fullName` from user prop passed to Navbar
+
+4. **Profile page defensive error handling:**
+   - Wrapped school lookup query in try-catch
+   - Wrapped parent lookup query in try-catch
+   - Wrapped children lookup query in try-catch
+   - Wrapped mentored projects query in try-catch
+   - Each section fails independently without crashing the whole page
+
+### Files modified (4 files)
+- `src/app/dashboard/page.tsx` — full student dashboard redesign
+- `src/components/features/navbar.tsx` — removed name display, updated types
+- `src/app/layout.tsx` — removed fullName from user prop
+- `src/app/dashboard/profile/page.tsx` — defensive try-catch wrapping
+
+### Headless testing results (17 public + 7 dashboard pages)
+- All public pages: 200 OK, no errors (except cosmetic sparkle hydration mismatch on homepage)
+- All dashboard pages: correctly redirect to /login when unauthenticated
+- Mobile responsiveness (375px): homepage and learn page render correctly with hamburger nav
+
+### Verification
+- `npm run build`: **PASS** (zero errors)
+- Playwright headless testing: all pages load correctly
+- Roadmap and build_log updated

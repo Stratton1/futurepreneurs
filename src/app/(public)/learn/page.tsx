@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { BookOpen, ArrowRight, Lightbulb, Megaphone, PiggyBank, Presentation, Lock, Sparkles, Users, Heart, Zap, CheckCircle2 } from 'lucide-react';
+import { BookOpen, ArrowRight, Lightbulb, Megaphone, PiggyBank, Presentation, Wallet, Lock, Sparkles, Users, Heart, Zap, CheckCircle2 } from 'lucide-react';
 import { AnimateIn } from '@/components/ui/animate-in';
 import { LEARNING_MODULES } from '@/lib/learning-modules';
 import { getCurrentUser } from '@/lib/supabase/auth-helpers';
@@ -15,13 +15,18 @@ const ICON_MAP: Record<string, typeof BookOpen> = {
   Presentation,
   Megaphone,
   PiggyBank,
+  Wallet,
+  BookOpen,
 };
 
 const COLOUR_MAP: Record<string, { bg: string; text: string; lightBg: string }> = {
   amber: { bg: 'bg-amber-500', text: 'text-amber-600', lightBg: 'bg-amber-50' },
   blue: { bg: 'bg-blue-500', text: 'text-blue-600', lightBg: 'bg-blue-50' },
-  pink: { bg: 'bg-pink-500', text: 'text-pink-600', lightBg: 'bg-pink-50' },
+  purple: { bg: 'bg-purple-500', text: 'text-purple-600', lightBg: 'bg-purple-50' },
   emerald: { bg: 'bg-emerald-500', text: 'text-emerald-600', lightBg: 'bg-emerald-50' },
+  pink: { bg: 'bg-pink-500', text: 'text-pink-600', lightBg: 'bg-pink-50' },
+  indigo: { bg: 'bg-indigo-500', text: 'text-indigo-600', lightBg: 'bg-indigo-50' },
+  slate: { bg: 'bg-slate-500', text: 'text-slate-600', lightBg: 'bg-slate-50' },
 };
 
 export default async function LearnPage() {
@@ -121,7 +126,7 @@ export default async function LearnPage() {
                 What you&apos;ll learn
               </h2>
               <p className="text-lg text-gray-500 max-w-2xl mx-auto">
-                Four modules covering everything from writing your business plan to managing your money after you get funded.
+                Seven modules covering everything from entrepreneurial mindset to post-funding management — your complete Founder&apos;s Bootcamp.
               </p>
             </div>
           </AnimateIn>
@@ -172,8 +177,8 @@ export default async function LearnPage() {
           <div className="space-y-6">
             {[
               { step: '1', title: 'Bite-sized lessons', desc: 'Each lesson takes 3-5 minutes to read. Short, focused, and full of real examples.', emoji: '📖' },
-              { step: '2', title: 'Quizzes to test yourself', desc: 'Quick quizzes at the end of most lessons help you check your understanding.', emoji: '✅' },
-              { step: '3', title: 'Track your progress', desc: 'See which lessons you have completed and how far through each module you are.', emoji: '📊' },
+              { step: '2', title: 'Quizzes and tasks', desc: 'Each lesson includes multi-question quizzes and practical tasks to build real skills.', emoji: '✅' },
+              { step: '3', title: 'Track your progress', desc: 'See which lessons and tasks you have completed and how far through each module you are.', emoji: '📊' },
               { step: '4', title: 'Earn the Scholar badge', desc: 'Complete all modules and earn the Scholar badge on your profile — show backers you mean business.', emoji: '🏆' },
             ].map((item, i) => (
               <AnimateIn key={item.step} delay={i * 100} animation="fade-left">

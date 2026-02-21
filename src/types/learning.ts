@@ -11,12 +11,21 @@ export interface QuizQuestion {
   explanation: string;
 }
 
+export interface LessonTask {
+  id: string;
+  title: string;
+  description: string;
+  type: 'reflection' | 'research' | 'exercise' | 'download';
+  downloadUrl?: string;
+}
+
 export interface Lesson {
   id: string;
   title: string;
   readingTime: number; // minutes
   content: string; // markdown
-  quiz?: QuizQuestion;
+  quiz?: QuizQuestion[];
+  tasks?: LessonTask[];
 }
 
 export interface LearningModule {
@@ -25,6 +34,7 @@ export interface LearningModule {
   description: string;
   icon: string; // lucide icon name
   colour: string; // tailwind colour class (e.g. 'emerald', 'blue')
+  sectionNumber: number;
   lessons: Lesson[];
 }
 
