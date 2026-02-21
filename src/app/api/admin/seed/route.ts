@@ -140,31 +140,49 @@ export async function POST() {
     await createUser('mark.investor@gmail.com', 'Mark Thompson', 'investor');
 
     // ── Additional schools for new students ──
+    // Re-fetch schools to pick up any newly inserted ones
+    const { data: allSchools } = await supabase.from('schools').select('id, name, email_domain');
+    if (allSchools) {
+      for (const s of allSchools) {
+        schoolMap[s.name] = { id: s.id, domain: s.email_domain };
+      }
+    }
+
     const greenfield = schoolMap['Greenfield Comprehensive'];
     const bridge = schoolMap['The Bridge School'];
 
-    // Create additional students + parents for new projects
-    const parentMorris = await createUser('karen.morris@gmail.com', 'Karen Morris', 'parent');
-    const parentKhan = await createUser('hassan.khan@outlook.com', 'Hassan Khan', 'parent');
-    const parentEvans = await createUser('claire.evans@yahoo.co.uk', 'Claire Evans', 'parent');
+    // Create additional users only if schools exist
+    let studentElla: string | undefined;
+    let studentRyan: string | undefined;
+    let studentMia: string | undefined;
+    let teacherMrWilliams: string | undefined;
+    let teacherMsDiaz: string | undefined;
+    let parentMorris: string | undefined;
+    let parentKhan: string | undefined;
+    let parentEvans: string | undefined;
 
-    const studentElla = await createUser(
-      `ella.m@${greenfield.domain}`, 'Ella M.', 'student', greenfield.id, parentMorris
-    );
-    const studentRyan = await createUser(
-      `ryan.k@${greenfield.domain}`, 'Ryan K.', 'student', greenfield.id, parentKhan
-    );
-    const studentMia = await createUser(
-      `mia.e@${bridge.domain}`, 'Mia E.', 'student', bridge.id, parentEvans
-    );
+    if (greenfield && bridge) {
+      parentMorris = await createUser('karen.morris@gmail.com', 'Karen Morris', 'parent');
+      parentKhan = await createUser('hassan.khan@outlook.com', 'Hassan Khan', 'parent');
+      parentEvans = await createUser('claire.evans@yahoo.co.uk', 'Claire Evans', 'parent');
 
-    // Create additional teachers for new schools
-    const teacherMrWilliams = await createUser(
-      `mr.williams@${greenfield.domain}`, 'Mr. Tom Williams', 'teacher', greenfield.id
-    );
-    const teacherMsDiaz = await createUser(
-      `ms.diaz@${bridge.domain}`, 'Ms. Ana Diaz', 'teacher', bridge.id
-    );
+      studentElla = await createUser(
+        `ella.m@${greenfield.domain}`, 'Ella M.', 'student', greenfield.id, parentMorris
+      );
+      studentRyan = await createUser(
+        `ryan.k@${greenfield.domain}`, 'Ryan K.', 'student', greenfield.id, parentKhan
+      );
+      studentMia = await createUser(
+        `mia.e@${bridge.domain}`, 'Mia E.', 'student', bridge.id, parentEvans
+      );
+
+      teacherMrWilliams = await createUser(
+        `mr.williams@${greenfield.domain}`, 'Mr. Tom Williams', 'teacher', greenfield.id
+      );
+      teacherMsDiaz = await createUser(
+        `ms.diaz@${bridge.domain}`, 'Ms. Ana Diaz', 'teacher', bridge.id
+      );
+    }
 
     // ── 6. Create Projects ──
     const projectsData = [
@@ -303,7 +321,8 @@ export async function POST() {
           { title: 'Website and marketing', description: 'Simple portfolio site and Instagram ads', amount: 100, sort_order: 3 },
         ],
       },
-      // ── 3 New Projects ──
+      // ── 3 New Projects (only if additional schools exist) ──
+      ...(studentElla && teacherMrWilliams && studentRyan && studentMia && teacherMsDiaz ? [
       {
         student_id: studentElla,
         mentor_id: teacherMrWilliams,
@@ -372,6 +391,7 @@ export async function POST() {
           { title: 'Promotion and kit', description: 'Flyers, social media, and team t-shirts', amount: 100, sort_order: 3 },
         ],
       },
+      ] : []),
     ];
 
     const createdProjects: string[] = [];
