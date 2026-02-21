@@ -3,6 +3,7 @@
 import { getCurrentUser } from '@/lib/supabase/auth-helpers';
 import { createClient, createAdminClient } from '@/lib/supabase/server';
 import { awardTeamPlayer } from '@/lib/badges';
+import { sendNotificationEmail, notificationEmailHtml } from '@/lib/email/resend';
 import { revalidatePath } from 'next/cache';
 
 /** Invite a student to collaborate on a project (by email, same school only) */
@@ -66,6 +67,14 @@ export async function inviteCollaborator(
 
   if (error) return { error: 'Failed to send invitation' };
 
+  // Fetch project title for a better notification message
+  const { data: projDetails } = await admin
+    .from('projects')
+    .select('title')
+    .eq('id', projectId)
+    .single();
+  const projTitle = projDetails?.title ?? 'a group project';
+
   // Create notification for the invitee
   await admin
     .from('notifications')
@@ -73,9 +82,20 @@ export async function inviteCollaborator(
       user_id: invitee.id,
       type: 'team_invitation',
       title: 'Team Invitation',
-      message: `You've been invited to join a group project!`,
+      message: `You've been invited to join "${projTitle}"!`,
       link: `/dashboard`,
     });
+
+  // Send email notification to the invitee
+  await sendNotificationEmail(
+    invitee.id,
+    'You\'ve been invited to join a project on Futurepreneurs!',
+    notificationEmailHtml(
+      'Team Invitation',
+      `${user.full_name} has invited you to collaborate on "${projTitle}". Log in to accept or decline the invitation.`,
+      '/dashboard'
+    )
+  );
 
   revalidatePath(`/dashboard/projects/${projectId}/team`);
   return {};
@@ -130,6 +150,17 @@ export async function acceptInvitation(
         message: `${user.full_name} has joined your project "${project.title}"!`,
         link: `/dashboard/projects/${collab.project_id}/team`,
       });
+
+    // Send email notification to the project owner
+    await sendNotificationEmail(
+      project.student_id,
+      'A team member has joined your project!',
+      notificationEmailHtml(
+        'Invitation Accepted',
+        `${user.full_name} has accepted your invitation and joined "${project.title}". Visit your team page to see your full team.`,
+        `/dashboard/projects/${collab.project_id}/team`
+      )
+    );
   }
 
   revalidatePath('/dashboard');
@@ -155,12 +186,48 @@ export async function declineInvitation(
   if (!collab) return { error: 'Invitation not found' };
   if (collab.user_id !== user.id) return { error: 'Not your invitation' };
 
+  // Fetch project details before deleting so we can notify the owner
+  const { data: projForDecline } = await admin
+    .from('project_collaborators')
+    .select('project_id')
+    .eq('id', collaboratorId)
+    .single();
+
   const { error } = await admin
     .from('project_collaborators')
     .delete()
     .eq('id', collaboratorId);
 
   if (error) return { error: 'Failed to decline invitation' };
+
+  // Notify the project owner that the invitation was declined
+  if (projForDecline?.project_id) {
+    const { data: projOwner } = await admin
+      .from('projects')
+      .select('student_id, title')
+      .eq('id', projForDecline.project_id)
+      .single();
+
+    if (projOwner) {
+      await admin.from('notifications').insert({
+        user_id: projOwner.student_id,
+        type: 'team_declined',
+        title: 'Invitation Declined',
+        message: `${user.full_name} has declined the invitation to join "${projOwner.title}".`,
+        link: `/dashboard/projects/${projForDecline.project_id}/team`,
+      });
+
+      await sendNotificationEmail(
+        projOwner.student_id,
+        'Team invitation declined',
+        notificationEmailHtml(
+          'Invitation Declined',
+          `${user.full_name} has declined the invitation to join "${projOwner.title}".`,
+          `/dashboard/projects/${projForDecline.project_id}/team`
+        )
+      );
+    }
+  }
 
   revalidatePath('/dashboard');
   return {};

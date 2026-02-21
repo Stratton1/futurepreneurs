@@ -11,7 +11,7 @@ import { Alert } from '@/components/ui/alert';
 import { ImageUpload } from '@/components/ui/image-upload';
 import { PROJECT_CATEGORIES, MAX_FUNDING_GOAL, CURRENCY_SYMBOL } from '@/lib/constants';
 import { createProject } from '../actions';
-import { ArrowLeft, ArrowRight, Plus, Trash2, Rocket } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Plus, Trash2, Rocket, User, Users } from 'lucide-react';
 import { GuidedTip } from '@/components/features/guided-tip';
 
 interface MilestoneInput {
@@ -234,36 +234,57 @@ export default function NewProjectPage() {
               <button
                 type="button"
                 onClick={() => { setProjectType('individual'); setGroupName(''); }}
-                className={`flex-1 rounded-xl border-2 px-4 py-3 text-sm font-medium transition-colors ${
+                className={`flex-1 rounded-xl border-2 p-4 text-left transition-all ${
                   projectType === 'individual'
-                    ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
-                    : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                    ? 'border-emerald-500 bg-emerald-50 ring-1 ring-emerald-500'
+                    : 'border-gray-200 hover:border-gray-300'
                 }`}
               >
-                Solo Project
+                <div className="flex items-center gap-3">
+                  <div className={`rounded-lg p-2 ${projectType === 'individual' ? 'bg-emerald-100' : 'bg-gray-100'}`}>
+                    <User className={`h-5 w-5 ${projectType === 'individual' ? 'text-emerald-600' : 'text-gray-500'}`} />
+                  </div>
+                  <div>
+                    <p className={`text-sm font-semibold ${projectType === 'individual' ? 'text-emerald-700' : 'text-gray-700'}`}>Solo Project</p>
+                    <p className="text-xs text-gray-500 mt-0.5">Just you — your own business idea</p>
+                  </div>
+                </div>
               </button>
               <button
                 type="button"
                 onClick={() => setProjectType('group')}
-                className={`flex-1 rounded-xl border-2 px-4 py-3 text-sm font-medium transition-colors ${
+                className={`flex-1 rounded-xl border-2 p-4 text-left transition-all ${
                   projectType === 'group'
-                    ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
-                    : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                    ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-500'
+                    : 'border-gray-200 hover:border-gray-300'
                 }`}
               >
-                Group / Club Project
+                <div className="flex items-center gap-3">
+                  <div className={`rounded-lg p-2 ${projectType === 'group' ? 'bg-blue-100' : 'bg-gray-100'}`}>
+                    <Users className={`h-5 w-5 ${projectType === 'group' ? 'text-blue-600' : 'text-gray-500'}`} />
+                  </div>
+                  <div>
+                    <p className={`text-sm font-semibold ${projectType === 'group' ? 'text-blue-700' : 'text-gray-700'}`}>Group / Club</p>
+                    <p className="text-xs text-gray-500 mt-0.5">Team up with classmates</p>
+                  </div>
+                </div>
               </button>
             </div>
           </div>
           {projectType === 'group' && (
-            <Input
-              label="Group / Club Name"
-              id="groupName"
-              placeholder="e.g., Year 10 Entrepreneurs Club"
-              value={groupName}
-              onChange={(e) => setGroupName(e.target.value)}
-              hint="Give your team a name"
-            />
+            <div className="space-y-3">
+              <Input
+                label="Group / Club Name"
+                id="groupName"
+                placeholder="e.g., Year 10 Entrepreneurs Club"
+                value={groupName}
+                onChange={(e) => setGroupName(e.target.value)}
+                hint="Give your team a name — you can invite members after creating the project"
+              />
+              <div className="bg-blue-50 rounded-xl p-4 text-sm text-blue-800">
+                <strong>Group projects</strong> let you invite other students from your school to collaborate. You&apos;ll be able to manage your team from the project dashboard after creating it.
+              </div>
+            </div>
           )}
         </div>
       )}
@@ -493,6 +514,16 @@ export default function NewProjectPage() {
             <div><span className="font-medium text-gray-500">Title:</span> <span className="text-gray-900">{title}</span></div>
             <div><span className="font-medium text-gray-500">Category:</span> <span className="text-gray-900">{category}</span></div>
             <div><span className="font-medium text-gray-500">Short Description:</span> <span className="text-gray-900">{shortDescription}</span></div>
+            <div>
+              <span className="font-medium text-gray-500">Type:</span>{' '}
+              <span className="text-gray-900">
+                {projectType === 'group' ? (
+                  <span className="inline-flex items-center gap-1"><Users className="h-3.5 w-3.5 text-blue-500" /> Group{groupName ? ` — ${groupName}` : ''}</span>
+                ) : (
+                  <span className="inline-flex items-center gap-1"><User className="h-3.5 w-3.5 text-emerald-500" /> Solo</span>
+                )}
+              </span>
+            </div>
             <div><span className="font-medium text-gray-500">Goal:</span> <span className="text-gray-900">{CURRENCY_SYMBOL}{goalNum.toFixed(2)}</span></div>
             <div><span className="font-medium text-gray-500">Milestones:</span> <span className="text-gray-900">{milestones.length}</span></div>
             {images.length > 0 && <div><span className="font-medium text-gray-500">Images:</span> <span className="text-gray-900">{images.length} uploaded</span></div>}

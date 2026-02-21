@@ -144,6 +144,10 @@ export async function updateProject(projectId: string, data: Partial<CreateProje
   if (data.videoUrl !== undefined) updateFields.video_url = data.videoUrl?.trim() || null;
   if (data.images) updateFields.images = data.images;
   if (data.mentorId) updateFields.mentor_id = data.mentorId;
+  if (data.projectType) {
+    updateFields.project_type = data.projectType;
+    updateFields.group_name = data.projectType === 'group' ? (data.groupName?.trim() || null) : null;
+  }
 
   const { error } = await supabase
     .from('projects')

@@ -9,7 +9,7 @@ import { Select } from '@/components/ui/select';
 import { Alert } from '@/components/ui/alert';
 import { PROJECT_CATEGORIES, CURRENCY_SYMBOL, MAX_FUNDING_GOAL } from '@/lib/constants';
 import { updateProject, submitForVerification } from '../../actions';
-import { ArrowLeft, Save, Send, Plus, Trash2, UserPlus, Gift, Paintbrush, Sparkles, Users } from 'lucide-react';
+import { ArrowLeft, Save, Send, Plus, Trash2, UserPlus, Gift, Paintbrush, Sparkles, Users, User } from 'lucide-react';
 import Link from 'next/link';
 
 interface Milestone {
@@ -59,6 +59,7 @@ export default function EditProjectPage() {
   const [mentorName, setMentorName] = useState('');
   const [status, setStatus] = useState('');
   const [projectType, setProjectType] = useState('');
+  const [groupName, setGroupName] = useState('');
 
   // Mentor search
   const [mentorEmail, setMentorEmail] = useState('');
@@ -93,6 +94,7 @@ export default function EditProjectPage() {
       setMentorName(data.mentor?.full_name || '');
       setStatus(data.status);
       setProjectType(data.project_type || 'individual');
+      setGroupName(data.group_name || '');
     } catch {
       setError('Failed to load project');
     }
@@ -181,6 +183,8 @@ export default function EditProjectPage() {
         amount: Number(m.amount),
       })),
       mentorId: mentorId || undefined,
+      projectType: projectType as 'individual' | 'group',
+      groupName: projectType === 'group' ? groupName : undefined,
     });
 
     if (result.error) {
@@ -431,23 +435,70 @@ export default function EditProjectPage() {
           </Link>
         </section>
 
-        {/* Team (group projects only) */}
-        {projectType === 'group' && (
-          <section className="bg-white rounded-xl border border-gray-200 p-5 space-y-3">
-            <h2 className="font-semibold text-gray-900 flex items-center gap-2">
-              <Users className="h-5 w-5 text-blue-500" /> Team Members
-            </h2>
-            <p className="text-sm text-gray-600">
-              Invite students from your school to collaborate on this project.
-            </p>
-            <Link
-              href={`/dashboard/projects/${projectId}/team`}
-              className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
+        {/* Project Type & Team */}
+        <section className="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
+          <h2 className="font-semibold text-gray-900 flex items-center gap-2">
+            <Users className="h-5 w-5 text-blue-500" /> Project Type
+          </h2>
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => { setProjectType('individual'); setGroupName(''); }}
+              className={`flex-1 rounded-xl border-2 p-4 text-left transition-all ${
+                projectType === 'individual'
+                  ? 'border-emerald-500 bg-emerald-50 ring-1 ring-emerald-500'
+                  : 'border-gray-200 hover:border-gray-300'
+              }`}
             >
-              <Users className="h-4 w-4" /> Manage Team →
-            </Link>
-          </section>
-        )}
+              <div className="flex items-center gap-3">
+                <div className={`rounded-lg p-2 ${projectType === 'individual' ? 'bg-emerald-100' : 'bg-gray-100'}`}>
+                  <User className={`h-5 w-5 ${projectType === 'individual' ? 'text-emerald-600' : 'text-gray-500'}`} />
+                </div>
+                <div>
+                  <p className={`text-sm font-semibold ${projectType === 'individual' ? 'text-emerald-700' : 'text-gray-700'}`}>Solo</p>
+                  <p className="text-xs text-gray-500 mt-0.5">Just you</p>
+                </div>
+              </div>
+            </button>
+            <button
+              type="button"
+              onClick={() => setProjectType('group')}
+              className={`flex-1 rounded-xl border-2 p-4 text-left transition-all ${
+                projectType === 'group'
+                  ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-500'
+                  : 'border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <div className={`rounded-lg p-2 ${projectType === 'group' ? 'bg-blue-100' : 'bg-gray-100'}`}>
+                  <Users className={`h-5 w-5 ${projectType === 'group' ? 'text-blue-600' : 'text-gray-500'}`} />
+                </div>
+                <div>
+                  <p className={`text-sm font-semibold ${projectType === 'group' ? 'text-blue-700' : 'text-gray-700'}`}>Group / Club</p>
+                  <p className="text-xs text-gray-500 mt-0.5">Team up</p>
+                </div>
+              </div>
+            </button>
+          </div>
+          {projectType === 'group' && (
+            <div className="space-y-3">
+              <Input
+                label="Group / Club Name"
+                id="groupName"
+                placeholder="e.g., Year 10 Entrepreneurs Club"
+                value={groupName}
+                onChange={(e) => setGroupName(e.target.value)}
+                hint="Give your team a name"
+              />
+              <Link
+                href={`/dashboard/projects/${projectId}/team`}
+                className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
+              >
+                <Users className="h-4 w-4" /> Manage Team Members →
+              </Link>
+            </div>
+          )}
+        </section>
 
         {/* Reward Tiers */}
         <section className="bg-white rounded-xl border border-gray-200 p-5 space-y-3">

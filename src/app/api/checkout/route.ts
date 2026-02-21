@@ -72,6 +72,38 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate reward tier if selected
+    if (rewardTierId) {
+      const { data: rewardTier, error: tierError } = await supabase
+        .from('reward_tiers')
+        .select('id, min_amount, max_claims, claimed_count, approval_status')
+        .eq('id', rewardTierId)
+        .eq('project_id', projectId)
+        .single();
+
+      if (tierError || !rewardTier) {
+        return NextResponse.json({ error: 'Selected reward tier not found' }, { status: 400 });
+      }
+
+      if (rewardTier.approval_status !== 'approved') {
+        return NextResponse.json({ error: 'Selected reward tier is not available' }, { status: 400 });
+      }
+
+      if (amountNum < Number(rewardTier.min_amount)) {
+        return NextResponse.json(
+          { error: `Minimum amount for this reward tier is £${Number(rewardTier.min_amount).toFixed(2)}` },
+          { status: 400 }
+        );
+      }
+
+      if (rewardTier.max_claims !== null && Number(rewardTier.claimed_count) >= Number(rewardTier.max_claims)) {
+        return NextResponse.json(
+          { error: 'This reward tier is sold out. Please choose a different reward or proceed without one.' },
+          { status: 400 }
+        );
+      }
+    }
+
     const amountPence = toPence(amountNum);
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://futurepreneurs-sigma.vercel.app';
 

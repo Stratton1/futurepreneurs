@@ -142,18 +142,18 @@ The public Browse Projects page and homepage use the **service-role** client to 
 - [x] **Navbar Name Removal** — Removed user's full name from the navbar header bar (both desktop and mobile) for cleaner appearance and privacy.
 - [x] **Profile Page Defensive Error Handling** — Added try-catch wrapping around school, parent, children, and mentored projects queries so individual section failures don't crash the whole page.
 
-### Epic 3: Campaign Management & Teamwork (BUILT — needs commit, migrations 008–012, deploy)
+### Epic 3: Campaign Management & Teamwork (DONE — needs commit, migrations 008–012, deploy)
 
 - [x] **AI Campaign Co-Pilot (Guided Pitch Builder)** — 5-question wizard (Problem, Solution, Audience, Funds, Uniqueness) with AI generation via Hugging Face (Meta-Llama). Student editing dashboard with apply-to-project flow. Automated PII scrubbing + content moderation (`src/lib/ai/content-moderation.ts`). Rate limiting (3 generations/24h). Migration 011 (`pitch_drafts`, `ai_generation_log`).
 - [x] **Business Logo Creator** — Template-based SVG generator (8 shapes: circle, square, shield, hexagon, badge, banner, diamond, oval; 10 colour palettes; 20+ Lucide icons). Real-time preview. Teacher approval before public display. Migration 010 (`logo_config` JSONB on projects).
 - [x] **Video Embed** — YouTube/Vimeo embed with privacy-enhanced mode. VideoEmbed component on project pages and teacher verification.
 - [x] **Scaffolded Micro-Goals** — Auto-generated at 25/50/75/100% of funding goal. Visual progress tracker with celebration animations (confetti component). Migration 008 (`micro_goals` table).
-- [x] **Safe Reward Tiers** — Students create tiers (title, description, min amount, max claims). Teacher approval required before public display. Reward selection UI for backers. Migration 009 (`reward_tiers` table + `reward_tier_id` on backings).
-- [x] **Group / Club Fundraising Mode** — `project_type` (individual/group) and `group_name` columns on projects. Migration 012 (`project_collaborators` table).
+- [x] **Safe Reward Tiers** — Students create tiers (title, description, min amount, max claims). Teacher approval required before public display. Reward selection UI for backers. Server-side max_claims enforcement in checkout API. Migration 009 (`reward_tiers` table + `reward_tier_id` on backings).
+- [x] **Group / Club Fundraising Mode** — `project_type` (individual/group) and `group_name` columns on projects. Polished type selector with icons and descriptions on both create and edit pages. Review step shows project type. Migration 012 (`project_collaborators` table).
 - [x] **Multi-User / One Project** — Invite collaborator form, team member list, pending invitations on dashboard. Accept/decline flow with RLS.
-- [ ] **Collaborator email notifications** — Not yet integrated with Resend
-- [ ] **Reward tier max_claims enforcement** — Column exists, enforcement in checkout needs testing
-- [ ] **Group project creation UI polish** — Type/group_name UI needs refinement
+- [x] **Collaborator email notifications** — Invite, accept, and decline actions all send Resend email notifications to the relevant party.
+- [x] **Reward tier max_claims enforcement** — Server-side validation in checkout API: checks approval status, minimum amount, and sold-out status before creating Stripe session.
+- [x] **Group project creation UI polish** — Polished type selector with icons (User/Users), descriptions, info callouts, group name field with guidance, and edit page now supports switching project type.
 
 ### Epic 4: Youth-Centric Digital Wallet & Card System (FUTURE)
 
