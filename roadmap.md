@@ -155,100 +155,70 @@ The public Browse Projects page and homepage use the **service-role** client to 
 - [x] **Reward tier max_claims enforcement** — Server-side validation in checkout API: checks approval status, minimum amount, and sold-out status before creating Stripe session.
 - [x] **Group project creation UI polish** — Polished type selector with icons (User/Users), descriptions, info callouts, group name field with guidance, and edit page now supports switching project type.
 
-### Epic 4: Youth-Centric Digital Wallet & Card System (PLANNED — see docs/epic-4-plan.md)
+### Epic 4: Youth-Centric Digital Wallet & Card System (BUILT — needs Stripe activation, migration 015, deploy)
 
 > **Model:** Zero-Trust Spending — every transaction requires explicit approval from BOTH the student's Parent AND their verified Mentor before funds deploy. Fully COPPA and GDPR-K compliant. Custodial Account model where a verified adult holds legal liability, but the minor gets an empowering, educational dashboard.
 
 #### 4.1 System Architecture & Tech Stack
 
-- [ ] **Stripe Connect (Custom Accounts)** — Each project gets a Connected Account (owned by the custodial adult) with platform-controlled payouts. Enables fund holding, routing, and compliance.
-- [ ] **Stripe Treasury (Wallet)** — Embedded financial accounts linked to each custodial Connected Account, providing balance tracking, fund segregation per project, and programmatic fund movement.
-- [ ] **Stripe Issuing (Virtual Cards)** — Virtual debit cards issued per-project that are only funded on demand after dual approval. Cards can be frozen/unfrozen programmatically per transaction.
-- [ ] **KYC/KYB Provider Integration** — Stripe Identity for Adult KYC (Gov ID, proof of address) on the custodial parent. Minor verification via school-issued email + Student ID upload + teacher attestation. Proof of Relationship captured via parental consent flow (shared surname, school records, or signed declaration).
+- [x] **Database Schema** — Migration 015: 7 new tables (custodial_accounts, wallet_balances, issued_cards, spending_requests, approval_logs, vendor_allowlists, blocked_mcc_categories) with full RLS policies, indexes, triggers, and seed data for blocked MCCs.
+- [x] **TypeScript Types** — Complete type definitions in `src/types/wallet.ts` for all wallet entities plus composite types for dashboard views.
+- [x] **Stripe Connect (Custom Accounts)** — `src/lib/stripe/connect.ts` — Create Connected Accounts, generate onboarding links, check KYC status, create payouts.
+- [x] **Stripe Treasury (Wallet)** — `src/lib/stripe/treasury.ts` — Create Financial Accounts, transfer funds, get balances, create outbound payments.
+- [x] **Stripe Issuing (Virtual Cards)** — `src/lib/stripe/issuing.ts` — Create virtual cards (frozen by default), freeze/unfreeze, set spending controls, cancel cards.
 
-**Proposed data model additions:**
+#### 4.2 Custodial Onboarding Flow
 
-```
-custodial_accounts
-  id, parent_id (FK → user_profiles), student_id (FK → user_profiles),
-  stripe_connected_account_id, stripe_treasury_financial_account_id,
-  kyc_status (pending | adult_verified | minor_verified | fully_verified),
-  relationship_verified, created_at, updated_at
+- [x] **Parent Onboarding Wizard** — Step-by-step UI (`/dashboard/wallet/onboard`) with child selection, Stripe hosted KYC redirect, status checking, and completion confirmation.
+- [x] **Onboarding Server Actions** — `initiateOnboarding()`, `checkOnboardingStatus()`, `refreshOnboardingLink()`, `updateSpendingLimits()` in `src/app/dashboard/wallet/actions.ts`.
+- [x] **Onboarding API Routes** — `POST /api/wallet/onboard`, `GET /api/wallet/onboard/status` for KYC initiation and status checking.
+- [x] **Stripe Connect Webhook** — `POST /api/webhooks/stripe-connect` handles `account.updated` events, updates KYC status, sends notifications to parent and student on verification completion or failure.
 
-wallet_balances
-  id, custodial_account_id, project_id, available_balance, held_balance,
-  total_disbursed, currency (GBP), updated_at
+#### 4.3 Dual-Approval Spending Flow
 
-issued_cards
-  id, custodial_account_id, project_id, stripe_card_id,
-  card_status (active | frozen | cancelled), last_four,
-  spending_limit_daily, spending_limit_weekly, created_at
-```
+- [x] **Spending Request Creation** — Student submits purchase request with vendor, amount, reason, optional milestone. Validates wallet balance, velocity limits, custodial account status. Notifies parent via platform + email.
+- [x] **Parent Approval** — Parent reviews and approves/declines. On approval, funds held in wallet, request moves to `pending_mentor`, mentor notified.
+- [x] **Mentor Approval** — Mentor reviews parent-approved requests. On approval, 1-hour cooling-off period starts, student notified.
+- [x] **Decline & Reversal** — Either approver can decline with reason. Either can reverse during cooling-off period. Held funds returned to available balance.
+- [x] **Full Audit Trail** — `approval_logs` table records every approval, decline, and reversal decision with timestamp and reason.
 
-#### 4.2 Custodial Onboarding Flow (Minor KYC)
+#### 4.4 Card Funding & Transaction Execution
 
-- [ ] **Step 1 — Parent Initiates** — Parent signs up, completes Adult KYC via Stripe Identity (Gov ID scan, address verification). System creates a Stripe Connected Account with the parent as the beneficial owner.
-- [ ] **Step 2 — Student Links** — Student signs up with school email. Parent receives a "link your child" request. Parent confirms the relationship (name, date of birth, school). System creates the custodial link.
-- [ ] **Step 3 — Minor Verification** — Student uploads school ID or teacher provides attestation via the Teacher Dashboard. System stores verification status without retaining raw PII images (hash + verified flag only, GDPR-K minimisation).
-- [ ] **Step 4 — Treasury & Card Provisioning** — Once both KYC tiers pass, system creates a Stripe Treasury Financial Account under the Connected Account and provisions a virtual Stripe Issuing card. Card starts in `frozen` state (unfrozen only during approved transactions).
-- [ ] **Step 5 — Dual-Account Ready** — Parent sees full financial controls in their dashboard. Student sees a read-only "Tween Wallet" view showing balance, micro-goals, and a "Request Purchase" button.
+- [x] **Execute Transaction** — `src/lib/wallet/execute-transaction.ts` orchestrates: unfreeze card → set 30-min window → notify student. Fallback path for no-card (payout to parent bank).
+- [x] **Auto-Refreeze Cron** — `/api/cron/refreeze-cards` runs every 5 minutes, refreezes expired cards, returns unused funds to wallet.
+- [x] **Fund Approved Requests** — Same cron funds approved requests past their cooling-off period.
+- [x] **Stripe Issuing Webhook** — `/api/webhooks/stripe-issuing` handles real-time authorization decisions (MCC check, amount validation), tracks authorizations, marks transactions complete.
+- [x] **Receipt Reminder Cron** — `/api/cron/receipt-reminders` runs daily, reminds students to upload receipts for purchases older than 24 hours.
 
-#### 4.3 Dual-Approval Spending Matrix (Parent & Mentor)
+#### 4.5 Spending Guardrails
 
-- [ ] **Purchase Request Flow** — Student submits a purchase request (vendor, amount, reason, linked milestone). Request enters `pending_parent` status. Push notification + email sent to Parent.
-- [ ] **Parent Approval** — Parent reviews request in their dashboard. If approved, status moves to `pending_mentor`. Push notification + email sent to Mentor. If declined, status moves to `declined_parent` with reason.
-- [ ] **Mentor Approval** — Mentor reviews request in their dashboard. If approved, status moves to `approved`. If declined, status moves to `declined_mentor` with reason.
-- [ ] **Transaction Execution** — On dual approval, system programmatically: (1) unfreezes the virtual card, (2) funds the card for the exact approved amount from the Treasury balance, (3) sets a 30-minute spending window, (4) auto-refreezes the card after window expires or transaction completes.
-- [ ] **Escrow Hold Pattern** — For online purchases, system creates a Stripe Authorization Hold for the exact amount. Funds are captured only when the merchant settles. If not settled within 7 days, the hold is released back to the Treasury balance.
+- [x] **MCC Blocking** — `src/lib/wallet/mcc-validation.ts` checks against `blocked_mcc_categories` table (gambling, alcohol, tobacco, adult content, cash advances). Enforced at webhook authorization.
+- [x] **Vendor Allowlists** — Per-project allowlists managed by teachers at `/dashboard/wallet/[projectId]/vendors`. If allowlist exists, only listed vendors permitted.
+- [x] **Velocity Limits** — `src/lib/wallet/velocity-limits.ts` enforces daily (£50), weekly (£200), and per-transaction (£100) limits. Parent can adjust via dashboard.
+- [x] **Cooling-Off Period** — 1-hour mandatory delay between dual approval and card funding. Either approver can reverse during this window.
+- [x] **Receipt Upload** — Student uploads receipt after purchase. Cron sends reminders at 24h and 48h if missing.
 
-**Proposed data model:**
+#### 4.6 Platform Dashboards (Wallet Views)
 
-```
-spending_requests
-  id, custodial_account_id, project_id, milestone_id (nullable),
-  student_id, parent_id, mentor_id,
-  vendor_name, vendor_mcc (Merchant Category Code), amount, currency,
-  reason, receipt_url (nullable),
-  status (pending_parent | pending_mentor | approved | declined_parent |
-          declined_mentor | funded | completed | expired),
-  parent_decision_at, mentor_decision_at, funded_at, completed_at,
-  stripe_authorization_id, created_at
+- [x] **Student Wallet** — `/dashboard/wallet` — Balance overview (available, held), per-project balances, spending request list with status badges, "Request Purchase" CTA.
+- [x] **Parent Financial Dashboard** — `/dashboard/wallet/parent` — Children overview with balances, approval queue with one-tap approve/decline, recent activity history.
+- [x] **Mentor Financial Dashboard** — `/dashboard/wallet/mentor` — Pending approval queue (parent-approved requests only), recent activity with status.
+- [x] **Admin Financial Dashboard** — `/admin/wallet` — Platform aggregates, KYC status overview, custodial accounts table, recent spending requests.
+- [x] **Spending Request Form** — `/dashboard/wallet/request` — Student-friendly form with step-by-step explanation.
+- [x] **Wallet Settings** — `/dashboard/wallet/settings` — Account status, virtual card display, spending limits, info about how the wallet works.
+- [x] **Dashboard Integration** — Wallet quick-action cards added to student, parent, and teacher dashboard pages.
 
-approval_logs
-  id, spending_request_id, approver_id, approver_role (parent | mentor),
-  decision (approved | declined), reason (nullable), decided_at
-```
+#### 4.7 Transition to Adulthood (Age 18+)
 
-**Key API endpoints:**
+- [x] **DOB Encryption** — `src/lib/wallet/dob-encryption.ts` with AES-256-GCM encryption, age calculation, days-until-age utilities.
+- [x] **Age Transition Cron** — `/api/cron/age-transition` runs daily, checks for 90-day warnings and 18th birthday transitions.
+- [x] **Transition Notifications** — Student and parent both notified at 90 days before and on the day of transition.
 
-```
-POST   /api/wallet/spending-request      — Student submits a purchase request
-PATCH  /api/wallet/spending-request/:id   — Parent or Mentor approves/declines
-GET    /api/wallet/spending-requests       — List requests (filtered by role)
-POST   /api/wallet/fund-card              — Internal: fund card after dual approval
-POST   /api/webhooks/stripe-issuing       — Stripe Issuing webhook (authorization, capture, decline)
-```
+#### 4.8 Integration & Infrastructure
 
-#### 4.4 Automated Spending Guardrails
-
-- [ ] **Vendor Whitelisting via MCC** — Virtual card configured with Stripe Issuing Spending Controls to only authorise transactions at approved Merchant Category Codes (e.g. 5411 Grocery, 5942 Book Stores, 5944 Craft Supplies). Blocked categories include: gambling, alcohol, tobacco, adult content, cash advances, money transfers.
-- [ ] **Per-Vendor Allowlists** — Optional per-project vendor allowlist where the teacher pre-approves specific merchants (e.g. "Amazon", "Hobbycraft") by name. Transactions at unlisted vendors trigger an additional review step.
-- [ ] **Velocity Limits** — Configurable daily cap (default £50/day), weekly cap (default £200/week), and single-transaction cap (default £100). Limits set by Parent in their dashboard, with Mentor able to request increases.
-- [ ] **Cooling-Off Period** — All spending requests have a mandatory 1-hour delay between approval and card funding, giving either approver time to reverse their decision.
-- [ ] **Receipt Upload Requirement** — After each purchase, student must upload a photo of the receipt within 48 hours. Failure to upload triggers a card freeze until resolved.
-
-#### 4.5 Platform Dashboards (Wallet Views)
-
-- [ ] **The Tween Wallet (Student View)** — A friendly, read-only dashboard showing: current project balance, funding progress, micro-goal tracker ("£15 more until baking trays!"), pending/completed purchase requests, a big "Request a Purchase" button, and a visual spending history timeline. No direct spending capability — all purchases go through the request flow.
-- [ ] **Parent Financial Dashboard** — Full 360° control centre showing: all linked children's wallets, pending approval requests with one-tap approve/decline, complete transaction history with receipts, spending analytics (by category, over time), card controls (freeze/unfreeze, adjust limits), and downloadable CSV statements.
-- [ ] **Mentor Financial Dashboard** — Project-focused view showing: all mentored students' wallets, pending approval queue (only requests already parent-approved), milestone-to-spending alignment check ("Is this purchase aligned with Milestone 2?"), and a flag button for suspicious requests.
-- [ ] **Admin Financial Dashboard** — Platform-wide view with: aggregate wallet balances, flagged transactions, KYC status overview, fee tracking, and compliance audit logs.
-
-#### 4.6 Transition to Adulthood (Age 18+)
-
-- [ ] **Birthday Tracking** — System stores date of birth (encrypted at rest) and runs a daily cron job checking for users approaching 18.
-- [ ] **90-Day Transition Flow** — At 17 years 9 months, student receives a "Growing Up" notification explaining upcoming changes. At 18, the system: (1) removes dual-approval requirement, (2) converts custodial Connected Account to an independent account, (3) runs full Adult KYC on the now-adult user, (4) preserves all transaction history, (5) notifies parent that oversight has ended.
-- [ ] **Graduated Independence** — Optional "training wheels" mode where 18+ users can voluntarily keep mentor oversight for their first independent project.
+- [x] **Drawdown → Wallet Integration** — When teacher approves a drawdown, funds automatically added to student's wallet balance if custodial account exists.
+- [x] **Vercel Cron Configuration** — `vercel.json` configures 3 cron jobs (refreeze every 5min, receipts daily 9am, age-transition midnight).
+- [x] **Fallback Path** — System works without Stripe Treasury/Issuing. Without cards, funds payout to parent's bank via Connect. Full dual-approval flow and audit trail still operational.
 
 ### Epic 5: Oversight, Privacy & Verification (PARTIAL — some items BUILT with Epic 3)
 

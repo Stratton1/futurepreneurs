@@ -11,6 +11,8 @@ import { canRequestDrawdown } from '@/lib/project-status';
 import { revalidatePath } from 'next/cache';
 import { sendNotificationEmail, notificationEmailHtml } from '@/lib/email/resend';
 import { awardMilestoneMaster } from '@/lib/badges';
+import { getCustodialAccountForProject } from '@/lib/queries/custodial-accounts';
+import { addFundsToWallet } from '@/lib/queries/wallet-balances';
 
 /** Student creates a drawdown request for a milestone. */
 export async function createDrawdownRequest(
@@ -122,13 +124,26 @@ export async function approveDrawdownRequest(drawdownId: string) {
       status: 'approved',
       approved_by: user.id,
       approved_at: new Date().toISOString(),
-      // stripe_transfer_id: reserved for Stripe Connect (Epic 4)
     })
     .eq('id', drawdownId);
 
   if (updateError) {
     console.error('Drawdown approve error:', updateError);
     return { error: 'Failed to approve drawdown' };
+  }
+
+  // Fund wallet if custodial account exists (Epic 4 integration)
+  const custodialAccount = await getCustodialAccountForProject(drawdown.project_id);
+  if (custodialAccount && custodialAccount.is_active) {
+    try {
+      await addFundsToWallet(
+        custodialAccount.id,
+        drawdown.project_id,
+        Number(drawdown.amount)
+      );
+    } catch (err) {
+      console.error('Wallet funding error (non-blocking):', err);
+    }
   }
 
   const approvedSum = await getApprovedAmountForMilestone(drawdown.milestone_id);
@@ -146,20 +161,24 @@ export async function approveDrawdownRequest(drawdownId: string) {
       .eq('id', drawdown.milestone_id);
   }
 
+  const walletMsg = custodialAccount
+    ? ' Funds have been added to the wallet.'
+    : '';
+
   await admin.from('notifications').insert({
     user_id: project.student_id,
     type: 'drawdown_approved',
     title: 'Drawdown approved',
-    message: `${user.full_name} has approved your request for £${Number(drawdown.amount).toFixed(2)}.`,
-    link: `/dashboard/projects/${project.id}/drawdowns`,
+    message: `${user.full_name} has approved your request for £${Number(drawdown.amount).toFixed(2)}.${walletMsg}`,
+    link: custodialAccount ? '/dashboard/wallet' : `/dashboard/projects/${project.id}/drawdowns`,
   });
   await sendNotificationEmail(
     project.student_id,
     'Drawdown approved',
     notificationEmailHtml(
       'Drawdown approved',
-      `${user.full_name} has approved your request for £${Number(drawdown.amount).toFixed(2)}.`,
-      `/dashboard/projects/${project.id}/drawdowns`
+      `${user.full_name} has approved your request for £${Number(drawdown.amount).toFixed(2)}.${walletMsg}`,
+      custodialAccount ? '/dashboard/wallet' : `/dashboard/projects/${project.id}/drawdowns`
     )
   );
 

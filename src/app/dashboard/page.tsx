@@ -108,10 +108,12 @@ export default async function DashboardPage() {
     teacher: [
       { label: 'Verify Projects', href: '/dashboard/verify', icon: ClipboardCheck, description: 'Review and approve student projects' },
       { label: 'Drawdown Requests', href: '/dashboard/drawdowns', icon: Banknote, description: 'Approve or reject funding requests' },
+      { label: 'Student Spending', href: '/dashboard/wallet/mentor', icon: Wallet, description: 'Review and approve student purchases' },
     ],
     parent: [
       { label: 'Consent Requests', href: '/dashboard/consent', icon: ShieldCheck, description: 'Review and consent to your child\'s projects' },
       { label: 'Drawdown Activity', href: '/dashboard/drawdowns', icon: Eye, description: 'View your child\'s funding requests and approvals' },
+      { label: 'Wallet Management', href: '/dashboard/wallet/parent', icon: Wallet, description: 'Manage wallets and approve purchases' },
     ],
     investor: [
       { label: 'Browse Projects', href: '/dashboard/browse', icon: Heart, description: 'Find projects to support' },
@@ -344,10 +346,10 @@ export default async function DashboardPage() {
                   iconColor: 'text-amber-600',
                 },
                 {
-                  label: 'Drawdowns',
-                  href: '/dashboard/projects',
-                  icon: Banknote,
-                  description: 'Request drawdowns for funded projects',
+                  label: 'My Wallet',
+                  href: '/dashboard/wallet',
+                  icon: Wallet,
+                  description: 'View balances and request purchases',
                   gradient: 'from-purple-50 to-purple-100/30',
                   hoverGradient: 'hover:from-purple-100 hover:to-purple-100/50',
                   iconBg: 'bg-purple-100',

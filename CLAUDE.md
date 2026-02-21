@@ -418,6 +418,7 @@ PLATFORM_FEE_PERCENTAGE=2.5
 | 2026-02-20 | Phase 2 complete — project creation, verification, consent | 16 new + 1 modified | Begin Phase 3 |
 | 2026-02-20 | Phase 3 complete — browse, project pages, static pages | 15 new + 3 modified | Begin Phase 4 |
 | 2026-02-21 | Epic 3 complete — collaborator emails, reward tier enforcement, group UI polish | 5 modified | Plan Epic 4 |
+| 2026-02-21 | Epic 4 complete — wallet system, dual-approval spending, card management, dashboards | 40+ new files, 3 modified | Activate Stripe Connect/Treasury/Issuing, apply migration 015, deploy |
 
 ---
 
