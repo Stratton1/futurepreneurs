@@ -7,7 +7,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'About — Futurepreneurs',
-  description: 'Futurepreneurs is a crowdfunding platform built specifically for young entrepreneurs under 18. Safe, teacher-verified, parent-approved.',
+  description: 'Futurepreneurs is a crowdfunding platform built specifically for young entrepreneurs under 18. Safe, teacher-verified, parent/guardian-approved.',
 };
 
 export default function AboutPage() {
@@ -58,7 +58,7 @@ export default function AboutPage() {
                     We are building the first crowdfunding platform designed specifically for young people under 18. Existing platforms were not built for minors — they lack the safety features, oversight, and trust that parents and teachers need.
                   </p>
                   <p>
-                    Futurepreneurs changes that. Every project on our platform is verified by a teacher, approved by a parent, and funded by the public. When the money comes in, it is released in stages through a milestone system — so young entrepreneurs learn financial responsibility from day one.
+                    Futurepreneurs changes that. Every project on our platform is verified by a teacher, approved by a parent or guardian, and funded by the public. When the money comes in, it is released in stages through a milestone system — so young entrepreneurs learn financial responsibility from day one.
                   </p>
                   <p className="font-medium text-gray-700">
                     We want every school in the UK to have students who are not just learning about business — they are doing it.
@@ -72,7 +72,7 @@ export default function AboutPage() {
                 {[
                   { icon: Shield, label: 'Safety first', description: 'Built for under-18s from day one', color: 'from-blue-500 to-blue-600', lightBg: 'bg-blue-50' },
                   { icon: GraduationCap, label: 'School-verified', description: 'Teacher approval on everything', color: 'from-emerald-500 to-emerald-600', lightBg: 'bg-emerald-50' },
-                  { icon: Heart, label: 'Parent-approved', description: 'Full visibility and consent', color: 'from-amber-500 to-amber-600', lightBg: 'bg-amber-50' },
+                  { icon: Heart, label: 'Parent/Guardian-approved', description: 'Full visibility and consent', color: 'from-amber-500 to-amber-600', lightBg: 'bg-amber-50' },
                   { icon: Target, label: 'Milestone-based', description: 'Structured fund releases', color: 'from-purple-500 to-purple-600', lightBg: 'bg-purple-50' },
                   { icon: Lightbulb, label: 'Real learning', description: 'Business skills by doing', color: 'from-orange-500 to-orange-600', lightBg: 'bg-orange-50' },
                   { icon: Rocket, label: 'Big dreams', description: 'No idea is too ambitious', color: 'from-pink-500 to-pink-600', lightBg: 'bg-pink-50' },
@@ -136,7 +136,7 @@ export default function AboutPage() {
             {[
               {
                 title: 'Built for under-18s',
-                description: 'This is not a regular crowdfunding site. Every feature has been designed with young people in mind — from school email sign-up to parent consent flows.',
+                description: 'This is not a regular crowdfunding site. Every feature has been designed with young people in mind — from school email sign-up to parent/guardian consent flows.',
                 gradient: 'from-emerald-500 to-teal-500',
               },
               {
@@ -211,7 +211,7 @@ export default function AboutPage() {
           </AnimateIn>
           <AnimateIn delay={100}>
             <p className="text-xl text-emerald-100 mb-10 font-light">
-              Sign up as a student, teacher, parent, or backer today.
+              Sign up as a student, teacher, parent/guardian, or backer today.
             </p>
           </AnimateIn>
           <AnimateIn delay={200}>

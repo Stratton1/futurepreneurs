@@ -50,7 +50,7 @@ export default function InviteParentPage() {
         <ArrowLeft className="h-4 w-4 mr-1" /> Back to My Projects
       </Link>
 
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">Invite Your Parent</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-2">Invite Your Parent/Guardian</h1>
       <p className="text-gray-600 mb-6">
         Your project needs parent/guardian consent before it can go live. Enter their email address below — they&apos;ll need a Futurepreneurs account as a parent.
       </p>

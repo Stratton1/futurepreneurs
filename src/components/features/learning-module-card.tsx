@@ -30,7 +30,7 @@ export function LearningModuleCard({ module, completedCount }: LearningModuleCar
 
   return (
     <Link
-      href={`/learn/${module.id}`}
+      href={`/dashboard/learning/${module.id}`}
       className={`block rounded-2xl p-6 transition-colors ${colours.bg}`}
     >
       <div className="flex items-start gap-4">

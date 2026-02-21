@@ -4,7 +4,7 @@ import type { ProjectStatus } from '@/types/database';
 const STATUS_CONFIG: Record<ProjectStatus, { label: string; color: string }> = {
   draft: { label: 'Draft', color: 'bg-gray-100 text-gray-700' },
   pending_verification: { label: 'Awaiting Verification', color: 'bg-amber-100 text-amber-700' },
-  pending_consent: { label: 'Awaiting Parent Consent', color: 'bg-orange-100 text-orange-700' },
+  pending_consent: { label: 'Awaiting Parent/Guardian Consent', color: 'bg-orange-100 text-orange-700' },
   live: { label: 'Live', color: 'bg-emerald-100 text-emerald-700' },
   funded: { label: 'Funded', color: 'bg-blue-100 text-blue-700' },
   completed: { label: 'Completed', color: 'bg-purple-100 text-purple-700' },

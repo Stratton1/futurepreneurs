@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Rocket, Sparkles, Star, Heart, Lightbulb, Zap } from 'lucide-react';
+import { ArrowRight, Rocket, Sparkles, Star, Heart, Lightbulb, Zap, Shield, GraduationCap } from 'lucide-react';
 
 const ROTATING_WORDS = [
   { text: 'bake cakes', color: '#f59e0b' },
@@ -162,8 +162,8 @@ export function HeroSection() {
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center">
         {/* Badge */}
         <div className="hero-fade-in" style={{ animationDelay: '0.1s' }}>
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-emerald-300 rounded-full px-5 py-2.5 text-sm font-semibold mb-10 border border-white/10">
-            <Sparkles className="h-4 w-4" />
+          <div className="inline-flex items-center gap-2.5 bg-white/10 backdrop-blur-md text-emerald-300 rounded-full px-6 py-3 text-base sm:text-lg font-semibold mb-10 border border-emerald-400/30 badge-glow">
+            <Sparkles className="h-5 w-5 animate-pulse-soft" />
             The UK&apos;s crowdfunding platform for under-18s
           </div>
         </div>
@@ -209,30 +209,27 @@ export function HeroSection() {
         </div>
 
         {/* Trust badges */}
-        <div className="hero-fade-in" style={{ animationDelay: '0.9s' }}>
-          <div className="flex flex-wrap items-center justify-center gap-8 px-4 py-3 rounded-2xl bg-white/5 backdrop-blur-sm text-white/60 text-base font-medium">
-            <div className="flex items-center gap-2.5">
-              <div className="w-3 h-3 rounded-full bg-emerald-400 shrink-0" />
-              <span>School verified</span>
+        <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 px-4 py-4 rounded-2xl bg-white/5 backdrop-blur-sm">
+          {[
+            { icon: Shield, label: 'School verified', color: 'text-emerald-400', glow: 'hover:shadow-emerald-400/20', delay: '0.9s' },
+            { icon: GraduationCap, label: 'Teacher mentored', color: 'text-blue-400', glow: 'hover:shadow-blue-400/20', delay: '1.0s' },
+            { icon: Heart, label: 'Parent/Guardian approved', color: 'text-amber-400', glow: 'hover:shadow-amber-400/20', delay: '1.1s' },
+            { icon: Sparkles, label: 'Free to use', color: 'text-purple-400', glow: 'hover:shadow-purple-400/20', delay: '1.2s' },
+          ].map((badge) => (
+            <div
+              key={badge.label}
+              className={`hero-fade-in flex items-center gap-2.5 text-white/70 text-lg sm:text-xl font-medium px-3 py-1.5 rounded-xl transition-all duration-300 hover:bg-white/5 hover:shadow-lg ${badge.glow} cursor-default`}
+              style={{ animationDelay: badge.delay }}
+            >
+              <badge.icon className={`h-5 w-5 ${badge.color} shrink-0`} />
+              <span>{badge.label}</span>
             </div>
-            <div className="flex items-center gap-2.5">
-              <div className="w-3 h-3 rounded-full bg-blue-400 shrink-0" />
-              <span>Teacher mentored</span>
-            </div>
-            <div className="flex items-center gap-2.5">
-              <div className="w-3 h-3 rounded-full bg-amber-400 shrink-0" />
-              <span>Parent approved</span>
-            </div>
-            <div className="flex items-center gap-2.5">
-              <div className="w-3 h-3 rounded-full bg-purple-400 shrink-0" />
-              <span>Free to start</span>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
 
       {/* Bottom gradient fade to white */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-white to-transparent" />
     </section>
   );
 }

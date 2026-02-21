@@ -4,6 +4,8 @@ import { ProjectCard } from "@/components/features/project-card";
 import { getFeaturedProjects, getRecentProjects } from "@/lib/queries/public-projects";
 import { AnimateIn } from "@/components/ui/animate-in";
 import { HeroSection } from "@/components/features/hero-section";
+import { FlipCard } from "@/components/features/flip-card";
+import { SafetyCard } from "@/components/features/safety-card";
 
 export default async function Home() {
   const [featured, recent] = await Promise.all([
@@ -21,7 +23,8 @@ export default async function Home() {
 
       {/* ═══ FEATURED PROJECTS ═══ */}
       {featured.length > 0 && (
-        <section className="py-20 sm:py-28 bg-white">
+        <section className="py-20 sm:py-28 bg-white relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-50/50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <AnimateIn>
               <div className="flex items-end justify-between mb-12">
@@ -76,7 +79,7 @@ export default async function Home() {
 
       {/* ═══ RECENTLY LAUNCHED ═══ */}
       {recentOnly.length > 0 && (
-        <section className="py-20 sm:py-28 bg-gray-50">
+        <section className="py-20 sm:py-28 bg-gradient-to-b from-gray-50 via-blue-50/20 to-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <AnimateIn>
               <div className="flex items-end justify-between mb-12">
@@ -125,9 +128,10 @@ export default async function Home() {
       )}
 
       {/* ═══ HOW IT WORKS ═══ */}
-      <section className="py-24 sm:py-32 bg-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-amber-50 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+      <section className="py-24 sm:py-32 bg-gradient-to-b from-white via-emerald-50/30 to-white relative overflow-hidden">
+        <div className="absolute inset-0 subtle-dots" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-amber-50 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimateIn>
@@ -140,38 +144,107 @@ export default async function Home() {
                 From idea to funded in four steps
               </h2>
               <p className="text-lg text-gray-500 max-w-2xl mx-auto">
-                Your teacher and parents are with you every step of the way. No experience needed.
+                Your teacher and parents/guardians are with you every step of the way. No experience needed.
               </p>
             </div>
           </AnimateIn>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
-            {[
-              { step: "01", title: "Create your project", description: "Tell the world about your idea. Set your funding goal, plan milestones, and pick your teacher mentor.", icon: Sparkles, color: "bg-emerald-500", lightColor: "bg-emerald-50", iconColor: "text-emerald-600" },
-              { step: "02", title: "Get verified", description: "Your teacher reviews your plan and gives the thumbs up. Then your parent gives consent — you are good to go.", icon: CheckCircle2, color: "bg-blue-500", lightColor: "bg-blue-50", iconColor: "text-blue-600" },
-              { step: "03", title: "Get funded", description: "Share your project with the world. Watch the support roll in as backers believe in your vision.", icon: Heart, color: "bg-amber-500", lightColor: "bg-amber-50", iconColor: "text-amber-600" },
-              { step: "04", title: "Build it", description: "Hit your milestones, draw down funds with teacher approval, and turn your idea into a real business.", icon: Rocket, color: "bg-purple-500", lightColor: "bg-purple-50", iconColor: "text-purple-600" },
-            ].map((item, i) => (
-              <AnimateIn key={item.step} delay={i * 150} animation="fade-up">
-                <div className="relative group">
-                  {i < 3 && (
-                    <div className="hidden lg:block absolute top-10 left-[calc(50%+2rem)] w-[calc(100%-2rem)] h-[2px] bg-gradient-to-r from-gray-200 to-gray-100" />
-                  )}
-                  <div className="relative bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className={`${item.lightColor} w-12 h-12 rounded-xl flex items-center justify-center`}>
-                        <item.icon className={`h-6 w-6 ${item.iconColor}`} />
-                      </div>
-                      <span className={`${item.color} text-white text-xs font-bold rounded-full w-7 h-7 flex items-center justify-center`}>
-                        {item.step}
-                      </span>
+            <AnimateIn delay={0} animation="fade-up">
+              <FlipCard
+                step="01"
+                title="Create your project"
+                description="Tell the world about your idea. Set your funding goal, plan milestones, and pick your teacher mentor."
+                icon={Sparkles}
+                color="bg-emerald-500"
+                lightColor="bg-emerald-50"
+                iconColor="text-emerald-600"
+                backContent={
+                  <div>
+                    <p className="font-bold text-lg mb-3">Example: Maya&apos;s Candle Co</p>
+                    <div className="bg-white/15 rounded-xl p-3 mb-3">
+                      <p className="text-sm text-white/80 mb-1">Funding goal</p>
+                      <p className="text-2xl font-bold">£200</p>
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">{item.title}</h3>
-                    <p className="text-gray-500 text-sm leading-relaxed">{item.description}</p>
+                    <p className="text-sm text-white/70">Hand-poured soy candles made with love. Maya needs equipment and ingredients to take her candle hobby to the next level.</p>
                   </div>
-                </div>
-              </AnimateIn>
-            ))}
+                }
+              />
+            </AnimateIn>
+            <AnimateIn delay={150} animation="fade-up">
+              <FlipCard
+                step="02"
+                title="Get verified"
+                description="Your teacher reviews your plan and gives the thumbs up. Then your parent/guardian gives consent — you are good to go."
+                icon={CheckCircle2}
+                color="bg-blue-500"
+                lightColor="bg-blue-50"
+                iconColor="text-blue-600"
+                backContent={
+                  <div className="space-y-3">
+                    <p className="font-bold text-lg mb-3">Your checklist</p>
+                    {['Teacher reviewed your project', 'Parent/guardian gave consent', "You're live!"].map((item, i) => (
+                      <div key={i} className="flex items-center gap-2.5 bg-white/15 rounded-lg px-3 py-2">
+                        <span className="text-lg">✓</span>
+                        <span className="text-sm font-medium">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                }
+              />
+            </AnimateIn>
+            <AnimateIn delay={300} animation="fade-up">
+              <FlipCard
+                step="03"
+                title="Get funded"
+                description="Share your project with the world. Watch the support roll in as backers believe in your vision."
+                icon={Heart}
+                color="bg-amber-500"
+                lightColor="bg-amber-50"
+                iconColor="text-amber-600"
+                backContent={
+                  <div>
+                    <p className="font-bold text-lg mb-3">Watch it grow</p>
+                    <div className="bg-white/15 rounded-xl p-3 mb-3">
+                      <div className="flex justify-between text-sm mb-2">
+                        <span>£156 raised</span>
+                        <span>£200 goal</span>
+                      </div>
+                      <div className="w-full h-3 bg-white/20 rounded-full overflow-hidden">
+                        <div className="h-full bg-white rounded-full" style={{ width: '78%' }} />
+                      </div>
+                    </div>
+                    <p className="text-sm text-white/70">12 backers so far — share with family, friends, and your school community!</p>
+                  </div>
+                }
+              />
+            </AnimateIn>
+            <AnimateIn delay={450} animation="fade-up">
+              <FlipCard
+                step="04"
+                title="Build it"
+                description="Hit your milestones, draw down funds with teacher approval, and turn your idea into a real business."
+                icon={Rocket}
+                color="bg-purple-500"
+                lightColor="bg-purple-50"
+                iconColor="text-purple-600"
+                backContent={
+                  <div className="space-y-2.5">
+                    <p className="font-bold text-lg mb-3">Milestone by milestone</p>
+                    {[
+                      { name: 'Ingredients', amount: '£50', status: 'APPROVED' },
+                      { name: 'Equipment', amount: '£80', status: 'APPROVED' },
+                      { name: 'Packaging', amount: '£70', status: 'PENDING' },
+                    ].map((m) => (
+                      <div key={m.name} className="flex items-center justify-between bg-white/15 rounded-lg px-3 py-2">
+                        <span className="text-sm font-medium">{m.name} — {m.amount}</span>
+                        <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${m.status === 'APPROVED' ? 'bg-white/30' : 'bg-white/10'}`}>{m.status}</span>
+                      </div>
+                    ))}
+                  </div>
+                }
+              />
+            </AnimateIn>
           </div>
 
           <AnimateIn delay={600}>
@@ -185,9 +258,13 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Section transition */}
+      <div className="h-20 bg-gradient-to-b from-white to-gray-50/80" />
+
       {/* ═══ TRUST & SAFETY ═══ */}
-      <section className="py-24 sm:py-32 bg-gradient-to-b from-gray-50 to-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-24 sm:py-32 bg-gradient-to-b from-gray-50/80 via-white to-white relative overflow-hidden">
+        <div className="absolute inset-0 subtle-grid" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <AnimateIn>
             <div className="text-center mb-16">
               <div className="inline-flex items-center gap-2 text-blue-600 text-sm font-semibold mb-4">
@@ -204,28 +281,64 @@ export default async function Home() {
           </AnimateIn>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { icon: Shield, title: "School-verified", description: "Students sign up with their school email. Every project is checked and approved by a real teacher at their school before it goes live.", color: "from-blue-500 to-blue-600", lightBg: "bg-blue-50", iconColor: "text-blue-600" },
-              { icon: GraduationCap, title: "Teacher-mentored", description: "Every student picks a teacher as their mentor. The teacher guides the project and approves every fund withdrawal, step by step.", color: "from-emerald-500 to-emerald-600", lightBg: "bg-emerald-50", iconColor: "text-emerald-600" },
-              { icon: Heart, title: "Parent-approved", description: "Parents give consent before any project goes live. They can see everything — funding progress, milestones, and how money is being spent.", color: "from-amber-500 to-amber-600", lightBg: "bg-amber-50", iconColor: "text-amber-600" },
-            ].map((item, i) => (
-              <AnimateIn key={item.title} delay={i * 150} animation="fade-up">
-                <div className="relative bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 group overflow-hidden">
-                  <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${item.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-                  <div className={`${item.lightBg} w-14 h-14 rounded-2xl flex items-center justify-center mb-6`}>
-                    <item.icon className={`h-7 w-7 ${item.iconColor}`} />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">{item.title}</h3>
-                  <p className="text-gray-500 leading-relaxed">{item.description}</p>
-                </div>
-              </AnimateIn>
-            ))}
+            <AnimateIn delay={0} animation="fade-up">
+              <SafetyCard
+                icon={Shield}
+                title="School-verified"
+                description="Students sign up with their school email. Every project is checked and approved by a real teacher at their school before it goes live."
+                color="from-blue-500 to-blue-600"
+                lightBg="bg-blue-50"
+                iconColor="text-blue-600"
+                details={[
+                  "Students sign up with their school email only",
+                  "Every school on our verified list",
+                  "A real teacher checks your project before it goes live",
+                  "No personal information is shown publicly",
+                ]}
+              />
+            </AnimateIn>
+            <AnimateIn delay={150} animation="fade-up">
+              <SafetyCard
+                icon={GraduationCap}
+                title="Teacher-mentored"
+                description="Every student picks a teacher as their mentor. The teacher guides the project and approves every fund withdrawal, step by step."
+                color="from-emerald-500 to-emerald-600"
+                lightBg="bg-emerald-50"
+                iconColor="text-emerald-600"
+                details={[
+                  "They review your project before it goes live",
+                  "They approve every withdrawal request",
+                  "Not sure how to ask a teacher? We'll help you prepare",
+                  "Your mentor is there to guide you, not judge you",
+                ]}
+              />
+            </AnimateIn>
+            <AnimateIn delay={300} animation="fade-up">
+              <SafetyCard
+                icon={Heart}
+                title="Parent/Guardian-approved"
+                description="Parents and guardians give consent before any project goes live. They can see everything — funding progress, milestones, and how money is being spent."
+                color="from-amber-500 to-amber-600"
+                lightBg="bg-amber-50"
+                iconColor="text-amber-600"
+                details={[
+                  "Nothing goes live without their consent",
+                  "They see all funding activity in real time",
+                  "They can view every drawdown request",
+                  "Takes just 2 minutes to give consent",
+                ]}
+              />
+            </AnimateIn>
           </div>
         </div>
       </section>
 
+      {/* Section transition */}
+      <div className="h-20 bg-gradient-to-b from-white to-gray-50/30" />
+
       {/* ═══ WHO IT'S FOR ═══ */}
-      <section className="py-24 sm:py-32 bg-white">
+      <section className="py-24 sm:py-32 bg-gradient-to-b from-gray-50/30 to-white relative overflow-hidden">
+        <div className="absolute inset-0 subtle-diagonal" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimateIn>
             <div className="text-center mb-16">
@@ -237,7 +350,7 @@ export default async function Home() {
                 Built for the whole team
               </h2>
               <p className="text-lg text-gray-500 max-w-2xl mx-auto">
-                Young entrepreneurs, teachers, parents, and backers — everyone has a role to play.
+                Young entrepreneurs, teachers, parents/guardians, and backers — everyone has a role to play.
               </p>
             </div>
           </AnimateIn>
@@ -246,7 +359,7 @@ export default async function Home() {
             {[
               { emoji: "🎓", role: "Students", tagline: "Turn your idea into reality", description: "Create a project, set milestones, and raise funds for your business idea. Your teacher will guide you every step of the way.", cta: "Start a project", href: "/signup", bg: "bg-gradient-to-br from-emerald-50 to-emerald-100/50", border: "border-emerald-200/50" },
               { emoji: "👩‍🏫", role: "Teachers", tagline: "Mentor the next generation", description: "Verify projects, approve fund withdrawals, and help your students learn real-world business skills.", cta: "Join as teacher", href: "/signup", bg: "bg-gradient-to-br from-blue-50 to-blue-100/50", border: "border-blue-200/50" },
-              { emoji: "👨‍👩‍👧", role: "Parents", tagline: "Support with confidence", description: "Give consent, track progress, and watch your child develop real entrepreneurial skills in a safe environment.", cta: "Join as parent", href: "/signup", bg: "bg-gradient-to-br from-amber-50 to-amber-100/50", border: "border-amber-200/50" },
+              { emoji: "👨‍👩‍👧", role: "Parents/Guardians", tagline: "Support with confidence", description: "Give consent, track progress, and watch your child develop real entrepreneurial skills in a safe environment.", cta: "Join as parent/guardian", href: "/signup", bg: "bg-gradient-to-br from-amber-50 to-amber-100/50", border: "border-amber-200/50" },
               { emoji: "💰", role: "Backers", tagline: "Fund the future", description: "Back young entrepreneurs and help them launch their first business. Every pound makes a difference.", cta: "Browse projects", href: "/projects", bg: "bg-gradient-to-br from-purple-50 to-purple-100/50", border: "border-purple-200/50" },
             ].map((item, i) => (
               <AnimateIn key={item.role} delay={i * 100} animation="fade-up">

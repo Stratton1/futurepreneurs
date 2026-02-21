@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Menu, X, Rocket } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { LogoutButton } from '@/components/features/logout-button';
@@ -15,9 +15,31 @@ interface NavbarProps {
 
 export function Navbar({ user }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      // Never hide when mobile menu is open or near top of page
+      if (isOpen || currentY < 100) {
+        setHidden(false);
+      } else if (currentY > lastScrollY.current + 10) {
+        // Scrolling down — hide
+        setHidden(true);
+      } else if (currentY < lastScrollY.current - 10) {
+        // Scrolling up — show
+        setHidden(false);
+      }
+      lastScrollY.current = currentY;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isOpen]);
 
   return (
-    <nav className="bg-white border-b border-gray-100 sticky top-0 z-50">
+    <nav className={`bg-white border-b border-gray-100 sticky top-0 z-50 transition-transform duration-300 ${hidden ? '-translate-y-full' : 'translate-y-0'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -38,7 +60,7 @@ export function Navbar({ user }: NavbarProps) {
             <Link href="/how-it-works" className="text-gray-600 hover:text-gray-900 font-medium transition-colors">
               How It Works
             </Link>
-            <Link href="/learn" className="text-gray-600 hover:text-gray-900 font-medium transition-colors">
+            <Link href={user ? '/dashboard/learning' : '/learn'} className="text-gray-600 hover:text-gray-900 font-medium transition-colors">
               Learn
             </Link>
             {user ? (
@@ -96,7 +118,7 @@ export function Navbar({ user }: NavbarProps) {
                 How It Works
               </Link>
               <Link
-                href="/learn"
+                href={user ? '/dashboard/learning' : '/learn'}
                 className="px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 font-medium"
                 onClick={() => setIsOpen(false)}
               >

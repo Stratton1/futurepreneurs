@@ -2,6 +2,7 @@ import { Rocket, ClipboardCheck, ShieldCheck, Heart, Banknote, GraduationCap, Us
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { AnimateIn } from '@/components/ui/animate-in';
+import { SafetyCard } from '@/components/features/safety-card';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -14,6 +15,7 @@ export default function HowItWorksPage() {
     <div className="overflow-hidden">
       {/* ═══ HERO ═══ */}
       <section className="relative bg-gradient-to-br from-emerald-50 via-white to-blue-50 py-20 sm:py-28 overflow-hidden">
+        <div className="absolute inset-0 subtle-dots" />
         <div className="absolute top-10 right-10 w-72 h-72 bg-emerald-200/20 rounded-full blur-3xl animate-float-slow" />
         <div className="absolute bottom-10 left-10 w-64 h-64 bg-blue-200/20 rounded-full blur-3xl animate-float-slower" />
 
@@ -37,8 +39,12 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
+      {/* Transition */}
+      <div className="h-16 bg-gradient-to-b from-blue-50/30 to-white" />
+
       {/* ═══ THE JOURNEY (Students) ═══ */}
-      <section className="py-24 sm:py-32 bg-white relative">
+      <section className="py-24 sm:py-32 bg-gradient-to-b from-white via-emerald-50/20 to-white relative overflow-hidden">
+        <div className="absolute inset-0 subtle-grid" />
         <div className="absolute top-0 left-0 w-80 h-80 bg-emerald-50 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
 
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -62,7 +68,7 @@ export default function HowItWorksPage() {
                 { step: '1', icon: Sparkles, title: 'Sign up with your school email', desc: 'Create your account using your school email address. This is how we verify you are a real student at a real school.' },
                 { step: '2', icon: ClipboardCheck, title: 'Create your project', desc: 'Tell everyone about your business idea. Add a title, description, images, your funding goal, and plan your spending milestones.' },
                 { step: '3', icon: GraduationCap, title: 'Choose a teacher mentor', desc: 'Pick a teacher at your school to be your mentor. They will review your project and help guide you.' },
-                { step: '4', icon: CheckCircle2, title: 'Get verified and go live', desc: 'Your teacher approves your project, then your parent gives consent. Once both say yes, your project goes live for the public.' },
+                { step: '4', icon: CheckCircle2, title: 'Get verified and go live', desc: 'Your teacher approves your project, then your parent/guardian gives consent. Once both say yes, your project goes live for the public.' },
                 { step: '5', icon: Share2, title: 'Get funded by the public', desc: 'Share your project with family, friends, and the wider community. Watch the funding come in as people back your idea.' },
                 { step: '6', icon: PiggyBank, title: 'Draw down funds and build', desc: 'When your project is funded, request money against your milestones. Your teacher approves each drawdown. Build your business, step by step.' },
               ].map((item, i) => (
@@ -88,8 +94,12 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
+      {/* Transition */}
+      <div className="h-16 bg-gradient-to-b from-white to-gray-50/80" />
+
       {/* ═══ FOR TEACHERS ═══ */}
-      <section className="py-24 sm:py-32 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
+      <section className="py-24 sm:py-32 bg-gradient-to-b from-gray-50/80 via-blue-50/20 to-white relative overflow-hidden">
+        <div className="absolute inset-0 subtle-diagonal" />
         <div className="absolute top-20 right-0 w-96 h-96 bg-blue-50 rounded-full blur-3xl translate-x-1/2" />
 
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -124,8 +134,12 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
-      {/* ═══ FOR PARENTS ═══ */}
-      <section className="py-24 sm:py-32 bg-white relative overflow-hidden">
+      {/* Transition */}
+      <div className="h-16 bg-gradient-to-b from-white to-amber-50/30" />
+
+      {/* ═══ FOR PARENTS/GUARDIANS ═══ */}
+      <section className="py-24 sm:py-32 bg-gradient-to-b from-amber-50/30 via-white to-white relative overflow-hidden">
+        <div className="absolute inset-0 subtle-dots" />
         <div className="absolute bottom-20 left-0 w-80 h-80 bg-amber-50 rounded-full blur-3xl -translate-x-1/2" />
 
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -134,34 +148,71 @@ export default function HowItWorksPage() {
               <div className="bg-amber-100 p-2.5 rounded-xl">
                 <ShieldCheck className="h-6 w-6 text-amber-600" />
               </div>
-              <span className="text-amber-600 font-semibold text-sm uppercase tracking-wide">For Parents</span>
+              <span className="text-amber-600 font-semibold text-sm uppercase tracking-wide">For Parents/Guardians</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Full visibility, total peace of mind</h2>
-            <p className="text-lg text-gray-500 mb-12 max-w-2xl">Nothing happens without your approval. See everything, control everything, and watch your child grow.</p>
+            <p className="text-lg text-gray-500 mb-12 max-w-2xl">Nothing happens without your approval. See everything, stay informed, and watch your child grow.</p>
           </AnimateIn>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-            {[
-              { icon: CheckCircle2, title: 'Give consent', desc: 'No project goes live without your approval. You review the full project before it is shown to the public.', gradient: 'from-amber-400 to-orange-400' },
-              { icon: Eye, title: 'Full visibility', desc: 'See everything — the funding progress, each milestone, and every drawdown request. Nothing is hidden.', gradient: 'from-amber-500 to-amber-600' },
-              { icon: ShieldCheck, title: 'Peace of mind', desc: 'A teacher verifies every project. Funds are released in stages, not as a lump sum. Your child learns safely.', gradient: 'from-orange-400 to-red-400' },
-            ].map((item, i) => (
-              <AnimateIn key={item.title} delay={i * 150} animation="fade-up">
-                <div className="relative bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-8 border border-amber-100/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 h-full overflow-hidden group">
-                  <div className={`bg-gradient-to-br ${item.gradient} w-14 h-14 rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                    <item.icon className="h-7 w-7 text-white" />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">{item.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{item.desc}</p>
-                </div>
-              </AnimateIn>
-            ))}
+            <AnimateIn delay={0} animation="fade-up">
+              <SafetyCard
+                icon={CheckCircle2}
+                title="Give consent"
+                description="No project goes live without your approval. You review the full project before it is shown to the public."
+                color="from-amber-400 to-orange-400"
+                lightBg="bg-amber-50"
+                iconColor="text-amber-600"
+                details={[
+                  "You receive a clear notification when consent is needed",
+                  "Review the full project description and milestones",
+                  "Approve or ask questions before anything goes live",
+                  "Takes just 2 minutes to review and consent",
+                ]}
+              />
+            </AnimateIn>
+            <AnimateIn delay={150} animation="fade-up">
+              <SafetyCard
+                icon={Eye}
+                title="Full visibility"
+                description="See everything — the funding progress, each milestone, and every drawdown request. Nothing is hidden."
+                color="from-amber-500 to-amber-600"
+                lightBg="bg-amber-50"
+                iconColor="text-amber-600"
+                details={[
+                  "Real-time funding progress on your dashboard",
+                  "Every milestone and spending plan visible",
+                  "Notification when drawdown requests are made",
+                  "Full audit trail of all money movements",
+                ]}
+              />
+            </AnimateIn>
+            <AnimateIn delay={300} animation="fade-up">
+              <SafetyCard
+                icon={ShieldCheck}
+                title="Peace of mind"
+                description="A teacher verifies every project. Funds are released in stages, not as a lump sum. Your child learns safely."
+                color="from-orange-400 to-red-400"
+                lightBg="bg-orange-50"
+                iconColor="text-orange-600"
+                details={[
+                  "Teacher verification before anything goes public",
+                  "Milestone-based drawdowns, not lump sums",
+                  "All-or-nothing funding protects your child",
+                  "Built specifically with minor safety in mind",
+                ]}
+              />
+            </AnimateIn>
           </div>
         </div>
       </section>
 
+      {/* Transition */}
+      <div className="h-16 bg-gradient-to-b from-white to-gray-50/80" />
+
       {/* ═══ FOR BACKERS ═══ */}
-      <section className="py-24 sm:py-32 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
+      <section className="py-24 sm:py-32 bg-gradient-to-b from-gray-50/80 via-purple-50/15 to-white relative overflow-hidden">
+        <div className="absolute inset-0 subtle-grid" />
         <div className="absolute top-10 right-10 w-72 h-72 bg-purple-50 rounded-full blur-3xl" />
 
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -179,7 +230,7 @@ export default function HowItWorksPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
             {[
               { icon: Sparkles, title: 'Browse ideas', desc: 'Explore projects by young entrepreneurs across the UK. Filter by category, school, or search for something specific.' },
-              { icon: ShieldCheck, title: 'Back with confidence', desc: 'Every project is teacher-verified and parent-approved. All-or-nothing funding means the student only gets the money if the full goal is reached.' },
+              { icon: ShieldCheck, title: 'Back with confidence', desc: 'Every project is teacher-verified and parent/guardian-approved. All-or-nothing funding means the student only gets the money if the full goal is reached.' },
               { icon: Eye, title: 'See the impact', desc: 'Follow the projects you back. Get updates from the student and see how your contribution is making a difference.' },
             ].map((item, i) => (
               <AnimateIn key={item.title} delay={i * 150} animation="fade-up">

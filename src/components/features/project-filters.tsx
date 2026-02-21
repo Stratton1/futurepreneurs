@@ -51,11 +51,6 @@ export function ProjectFilters({ categoryCounts }: ProjectFiltersProps) {
               }`}
             >
               {cat}
-              {count > 0 && (
-                <span className={`ml-1.5 ${activeCategory === cat ? 'text-emerald-200' : 'text-gray-400'}`}>
-                  {count}
-                </span>
-              )}
             </button>
           );
         })}

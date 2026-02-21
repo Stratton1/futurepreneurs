@@ -139,6 +139,33 @@ export async function POST() {
     // ── 5. Create an investor/backer ──
     await createUser('mark.investor@gmail.com', 'Mark Thompson', 'investor');
 
+    // ── Additional schools for new students ──
+    const greenfield = schoolMap['Greenfield Comprehensive'];
+    const bridge = schoolMap['The Bridge School'];
+
+    // Create additional students + parents for new projects
+    const parentMorris = await createUser('karen.morris@gmail.com', 'Karen Morris', 'parent');
+    const parentKhan = await createUser('hassan.khan@outlook.com', 'Hassan Khan', 'parent');
+    const parentEvans = await createUser('claire.evans@yahoo.co.uk', 'Claire Evans', 'parent');
+
+    const studentElla = await createUser(
+      `ella.m@${greenfield.domain}`, 'Ella M.', 'student', greenfield.id, parentMorris
+    );
+    const studentRyan = await createUser(
+      `ryan.k@${greenfield.domain}`, 'Ryan K.', 'student', greenfield.id, parentKhan
+    );
+    const studentMia = await createUser(
+      `mia.e@${bridge.domain}`, 'Mia E.', 'student', bridge.id, parentEvans
+    );
+
+    // Create additional teachers for new schools
+    const teacherMrWilliams = await createUser(
+      `mr.williams@${greenfield.domain}`, 'Mr. Tom Williams', 'teacher', greenfield.id
+    );
+    const teacherMsDiaz = await createUser(
+      `ms.diaz@${bridge.domain}`, 'Ms. Ana Diaz', 'teacher', bridge.id
+    );
+
     // ── 6. Create Projects ──
     const projectsData = [
       {
@@ -153,6 +180,11 @@ export async function POST() {
         backer_count: 23,
         status: 'live',
         is_featured: true,
+        images: [
+          'https://picsum.photos/seed/cupcakes1/800/600',
+          'https://picsum.photos/seed/cupcakes2/800/600',
+          'https://picsum.photos/seed/cupcakes3/800/600',
+        ],
         milestones: [
           { title: 'Buy baking equipment', description: 'Professional mixer, baking trays, and piping sets', amount: 200, sort_order: 1 },
           { title: 'Packaging and branding', description: 'Custom boxes, stickers, and business cards', amount: 150, sort_order: 2 },
@@ -171,6 +203,10 @@ export async function POST() {
         backer_count: 31,
         status: 'live',
         is_featured: true,
+        images: [
+          'https://picsum.photos/seed/fashion1/800/600',
+          'https://picsum.photos/seed/fashion2/800/600',
+        ],
         milestones: [
           { title: 'Sewing machine', description: 'Professional-grade sewing machine for alterations', amount: 350, sort_order: 1 },
           { title: 'Fabrics and materials', description: 'Embellishments, thread, zips, and buttons', amount: 200, sort_order: 2 },
@@ -189,6 +225,11 @@ export async function POST() {
         backer_count: 42,
         status: 'live',
         is_featured: true,
+        images: [
+          'https://picsum.photos/seed/studyapp1/800/600',
+          'https://picsum.photos/seed/studyapp2/800/600',
+          'https://picsum.photos/seed/studyapp3/800/600',
+        ],
         milestones: [
           { title: 'App hosting and backend', description: 'Cloud hosting for the first year', amount: 400, sort_order: 1 },
           { title: 'UI/UX design', description: 'Professional app design and icons', amount: 500, sort_order: 2 },
@@ -207,6 +248,10 @@ export async function POST() {
         backer_count: 18,
         status: 'live',
         is_featured: false,
+        images: [
+          'https://picsum.photos/seed/henna1/800/600',
+          'https://picsum.photos/seed/henna2/800/600',
+        ],
         milestones: [
           { title: 'Professional supplies', description: 'Organic henna cones, practice skin, and stencils', amount: 150, sort_order: 1 },
           { title: 'Portfolio website', description: 'Website to showcase work and take bookings', amount: 150, sort_order: 2 },
@@ -225,6 +270,11 @@ export async function POST() {
         backer_count: 12,
         status: 'live',
         is_featured: false,
+        images: [
+          'https://picsum.photos/seed/garden1/800/600',
+          'https://picsum.photos/seed/garden2/800/600',
+          'https://picsum.photos/seed/garden3/800/600',
+        ],
         milestones: [
           { title: 'Lawnmower and tools', description: 'Electric mower, shears, rake, and gloves', amount: 350, sort_order: 1 },
           { title: 'Transport', description: 'Trailer attachment for bike to carry equipment', amount: 150, sort_order: 2 },
@@ -243,10 +293,83 @@ export async function POST() {
         backer_count: 27,
         status: 'funded',
         is_featured: false,
+        images: [
+          'https://picsum.photos/seed/petart1/800/600',
+          'https://picsum.photos/seed/petart2/800/600',
+        ],
         milestones: [
           { title: 'Art supplies', description: 'Professional pencils, markers, and sketchbooks', amount: 120, sort_order: 1 },
           { title: 'Frames and packaging', description: 'Quality frames and padded mailers', amount: 130, sort_order: 2 },
           { title: 'Website and marketing', description: 'Simple portfolio site and Instagram ads', amount: 100, sort_order: 3 },
+        ],
+      },
+      // ── 3 New Projects ──
+      {
+        student_id: studentElla,
+        mentor_id: teacherMrWilliams,
+        title: 'CodeClub Kits — Coding for Kids',
+        description: 'I run a coding club at my school and lots of younger kids want to learn but do not know where to start. I am creating beginner-friendly coding kits with activity cards, a micro:bit board, and an online guide. Each kit teaches the basics through fun projects like games and animations.',
+        short_description: 'Beginner coding kits with micro:bit boards and activity cards for young learners.',
+        category: 'Education',
+        goal_amount: 800,
+        total_raised: 445,
+        backer_count: 34,
+        status: 'live',
+        is_featured: true,
+        images: [
+          'https://picsum.photos/seed/codekit1/800/600',
+          'https://picsum.photos/seed/codekit2/800/600',
+          'https://picsum.photos/seed/codekit3/800/600',
+        ],
+        milestones: [
+          { title: 'Micro:bit boards', description: 'Bulk order of 20 micro:bit starter kits', amount: 400, sort_order: 1 },
+          { title: 'Activity cards and packaging', description: 'Printed cards, boxes, and instruction booklets', amount: 250, sort_order: 2 },
+          { title: 'Online guide hosting', description: 'Website for video tutorials and code downloads', amount: 150, sort_order: 3 },
+        ],
+      },
+      {
+        student_id: studentRyan,
+        mentor_id: teacherMrWilliams,
+        title: 'GreenCycle — School Composting',
+        description: 'Our school throws away loads of food waste every day. I want to set up a composting system that turns lunch leftovers into compost for the school garden and local allotments. I need funding for compost bins, collection buckets, and educational posters to get everyone involved.',
+        short_description: 'Turning school food waste into compost for the community.',
+        category: 'Environment',
+        goal_amount: 450,
+        total_raised: 210,
+        backer_count: 16,
+        status: 'live',
+        is_featured: false,
+        images: [
+          'https://picsum.photos/seed/compost1/800/600',
+          'https://picsum.photos/seed/compost2/800/600',
+        ],
+        milestones: [
+          { title: 'Compost bins and equipment', description: 'Three large compost tumblers and collection buckets', amount: 250, sort_order: 1 },
+          { title: 'Educational materials', description: 'Posters, stickers, and assembly presentation', amount: 100, sort_order: 2 },
+          { title: 'Distribution and bags', description: 'Bags and labels for selling finished compost', amount: 100, sort_order: 3 },
+        ],
+      },
+      {
+        student_id: studentMia,
+        mentor_id: teacherMsDiaz,
+        title: 'GoalGetters — Girls Football Academy',
+        description: 'There is no girls football team at my school or in my area. I want to start a weekly football academy for girls aged 8 to 16. I need funding for footballs, bibs, cones, first aid kit, and to hire a local pitch. Everyone deserves the chance to play.',
+        short_description: 'A weekly football academy giving girls the chance to play and compete.',
+        category: 'Sports',
+        goal_amount: 550,
+        total_raised: 550,
+        backer_count: 38,
+        status: 'funded',
+        is_featured: true,
+        images: [
+          'https://picsum.photos/seed/football1/800/600',
+          'https://picsum.photos/seed/football2/800/600',
+          'https://picsum.photos/seed/football3/800/600',
+        ],
+        milestones: [
+          { title: 'Equipment', description: 'Footballs, bibs, cones, goals, and first aid kit', amount: 200, sort_order: 1 },
+          { title: 'Pitch hire', description: 'Local astroturf hire for 12 weeks', amount: 250, sort_order: 2 },
+          { title: 'Promotion and kit', description: 'Flyers, social media, and team t-shirts', amount: 100, sort_order: 3 },
         ],
       },
     ];
@@ -263,6 +386,13 @@ export async function POST() {
 
       if (existingProject) {
         createdProjects.push(existingProject.id);
+        // Update images if the project exists but has none
+        if (proj.images && proj.images.length > 0) {
+          await supabase
+            .from('projects')
+            .update({ images: proj.images })
+            .eq('id', existingProject.id);
+        }
         continue;
       }
 
@@ -301,6 +431,9 @@ export async function POST() {
         : proj.student_id === studentFinn ? parentBrown
         : proj.student_id === studentAmara ? parentAhmed
         : proj.student_id === studentJake ? parentTaylor
+        : proj.student_id === studentElla ? parentMorris
+        : proj.student_id === studentRyan ? parentKhan
+        : proj.student_id === studentMia ? parentEvans
         : parentGreen;
 
       await supabase.from('parental_consents').insert({
@@ -312,9 +445,45 @@ export async function POST() {
       });
     }
 
+    // ── 7. Create sample backings ──
+    // Only create if we have projects and an investor
+    const { data: investorProfile } = await supabase
+      .from('user_profiles')
+      .select('id')
+      .eq('email', 'mark.investor@gmail.com')
+      .maybeSingle();
+
+    if (investorProfile && createdProjects.length > 0) {
+      const sampleBackings = [
+        { project_id: createdProjects[0], backer_id: investorProfile.id, amount: 25, status: 'completed' },
+        { project_id: createdProjects[1], backer_id: investorProfile.id, amount: 50, status: 'completed' },
+        { project_id: createdProjects[2], backer_id: investorProfile.id, amount: 30, status: 'completed' },
+        { project_id: createdProjects[6], backer_id: investorProfile.id, amount: 20, status: 'completed' },
+        { project_id: createdProjects[8], backer_id: investorProfile.id, amount: 40, status: 'completed' },
+      ];
+
+      for (const backing of sampleBackings) {
+        if (!backing.project_id) continue;
+        // Check if backing already exists
+        const { data: existing } = await supabase
+          .from('backings')
+          .select('id')
+          .eq('project_id', backing.project_id)
+          .eq('backer_id', backing.backer_id)
+          .maybeSingle();
+
+        if (!existing) {
+          await supabase.from('backings').insert({
+            ...backing,
+            stripe_payment_id: `seed_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+          });
+        }
+      }
+    }
+
     return NextResponse.json({
       success: true,
-      message: `Seeded ${createdProjects.length} projects with users, milestones, and consent records.`,
+      message: `Seeded ${createdProjects.length} projects with users, milestones, consent records, and sample backings.`,
       projectIds: createdProjects,
     });
   } catch (error) {

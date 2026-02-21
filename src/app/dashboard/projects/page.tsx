@@ -71,7 +71,7 @@ export default async function MyProjectsPage() {
                   )}
                   {project.status === 'pending_consent' && (
                     <Link href={`/dashboard/projects/${project.id}/invite-parent`}>
-                      <Button variant="secondary" size="sm" asChild>Invite Parent</Button>
+                      <Button variant="secondary" size="sm" asChild>Invite Parent/Guardian</Button>
                     </Link>
                   )}
                   {(project.status === 'funded' || project.status === 'completed') && (
