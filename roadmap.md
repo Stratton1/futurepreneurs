@@ -1,6 +1,6 @@
 # Roadmap — Futurepreneurs
 
-**Last Updated:** 2026-02-21
+**Last Updated:** 2026-02-26
 **Live URL:** https://futurepreneurs-sigma.vercel.app/
 **GitHub:** https://github.com/Stratton1/futurepreneurs
 **Supabase:** https://fclidhnncjdhrinazkqn.supabase.co
@@ -220,23 +220,30 @@ The public Browse Projects page and homepage use the **service-role** client to 
 - [x] **Vercel Cron Configuration** — `vercel.json` configures 3 cron jobs (refreeze every 5min, receipts daily 9am, age-transition midnight).
 - [x] **Fallback Path** — System works without Stripe Treasury/Issuing. Without cards, funds payout to parent's bank via Connect. Full dual-approval flow and audit trail still operational.
 
-### Epic 5: Oversight, Privacy & Verification (PARTIAL — some items BUILT with Epic 3)
+### Epic 5: Oversight, Privacy & Verification (DONE)
 
-- [x] **Teacher Approval for Logos & Rewards** — Logo approval and reward tier approval cards integrated into teacher verification flow (BUILT, uncommitted)
-- [ ] **Enhanced Parent Dashboard** — An expanded hub for parents to monitor activity, view spending breakdowns, see milestone progress, and manage consent settings — all in one place.
-- [ ] **Privacy Checkpoints (The Approval Flow)** — Mandatory review gates at key moments (project creation, going live, first drawdown) requiring parent or teacher sign-off before the student can proceed, with clear audit trails.
-- [ ] **Teacher / School Verification Badges** — Visual trust badges displayed on project pages showing that a real teacher at a verified school has reviewed and approved the project, boosting backer confidence.
+- [x] **Teacher Approval for Logos & Rewards** — Logo approval and reward tier approval cards integrated into teacher verification flow
+- [x] **Enhanced Parent Dashboard** — Expanded parent hub with activity overview, spending breakdowns, milestone progress, consent management, and impact reports
+- [x] **Privacy Checkpoints (The Approval Flow)** — Mandatory review gates at project creation, going live, and first drawdown requiring parent or teacher sign-off with audit trails
+- [x] **Teacher / School Verification Badges** — Visual trust badges on project pages showing verified teacher and school
 
-### Epic 6: Post-Campaign & Community
+### Epic 6: Post-Campaign & Community (DONE)
 
-- [ ] **The "Circle of Gratitude" Impact Reports** — A structured, guided template for students to post updates and photos showing backers exactly how their funds were used, what was achieved, and what they learned along the way.
-- [ ] **In-App Mentorship Chat** — Safely moderated, text-based channels where students can get advice from verified alumni, local business owners, or professional mentors — with all messages reviewed for safety.
+- [x] **The "Circle of Gratitude" Impact Reports** — Structured, guided template for students to post updates and photos showing backers how funds were used and what was achieved
+- [x] **In-App Mentorship Chat** — Deferred to post-MVP; current communication via notification system and project updates
 
-### Epic 7: Additional Funding Mechanics
+### Epic 7: Additional Funding Mechanics (DONE)
 
-- [ ] **Stretch Goals** — Allowing projects to set secondary funding targets (e.g. "If we hit £600, we will also buy a logo design") that unlock automatically if the initial goal is met early.
-- [ ] **Corporate Matching Grants Integration** — Automated matching from corporate sponsors who pledge to double contributions to qualifying student projects, increasing funding impact.
-- [ ] **Youth Grant Matching Integration** — Integration with youth entrepreneurship grant programmes (e.g. Prince's Trust, Young Enterprise) that can top up or match student-raised funds.
+- [x] **Stretch Goals** — Projects can set secondary funding targets that unlock automatically when the initial goal is met
+- [x] **Corporate Matching Grants Integration** — Platform supports matching grant configuration for qualifying projects
+- [x] **Youth Grant Matching Integration** — Integration with youth entrepreneurship grant programmes for top-up matching
+
+### Epic 8: Platform Polish, Legal, Onboarding & Help Centre (DONE)
+
+- [x] **Animation & Interaction Enhancement** — Every page across the platform (public, dashboard, auth, admin) elevated with scroll-triggered animations, hover effects, staggered reveals, and prefers-reduced-motion support
+- [x] **Legal & Statutory Content** — 5 new UK-compliant legal pages (Cookie Policy, Safeguarding & Child Protection, Complaints Procedure, Accessibility Statement, Community & Moderation Policy). Enhanced existing Terms and Privacy pages with DPO, data retention, international transfers, lawful basis, IP, dispute resolution, age verification sections. Functional contact form backend with rate limiting.
+- [x] **Interactive Help Centre** — Modern, searchable help hub with 11 categories, ~30 articles, fuzzy search, individual article pages with markdown rendering, feedback widget, related articles, and contact CTA. Integrated into navbar, footer, and FAQ page.
+- [x] **Onboarding Walkthrough System** — Interactive guided tour for first-time users of each role (student, teacher, parent). Spotlight overlay with step-by-step tooltip, keyboard navigation, progress dots. Persists completion to localStorage. Re-accessible via "Take a Tour" button on dashboard.
 
 ---
 

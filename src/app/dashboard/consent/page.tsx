@@ -6,6 +6,7 @@ import { ProjectStatusBadge } from '@/components/features/project-status-badge';
 import { CURRENCY_SYMBOL } from '@/lib/constants';
 import { ShieldCheck } from 'lucide-react';
 import { ConsentActions } from './[id]/consent-actions';
+import { AnimateIn } from '@/components/ui/animate-in';
 
 export default async function ParentConsentPage() {
   const user = await getCurrentUser();
@@ -17,25 +18,32 @@ export default async function ParentConsentPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Parent/Guardian Consent</h1>
-        <p className="text-gray-600 mt-1">Review and give consent for your child&apos;s projects.</p>
-      </div>
+      <AnimateIn animation="fade-up">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-900">Parent/Guardian Consent</h1>
+          <p className="text-gray-600 mt-1">Review and give consent for your child&apos;s projects.</p>
+        </div>
+      </AnimateIn>
 
-      <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-        <ShieldCheck className="h-5 w-5 text-orange-500" />
-        Awaiting Your Consent ({pendingProjects.length})
-      </h2>
+      <AnimateIn animation="fade-up" delay={50}>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          <ShieldCheck className="h-5 w-5 text-orange-500" />
+          Awaiting Your Consent ({pendingProjects.length})
+        </h2>
+      </AnimateIn>
 
       {pendingProjects.length === 0 ? (
-        <div className="bg-gray-50 rounded-xl p-8 text-center">
-          <p className="text-gray-500">No projects need your consent right now.</p>
-          <p className="text-gray-400 text-sm mt-2">When your child submits a project and their teacher approves it, you&apos;ll be asked to give consent here.</p>
-        </div>
+        <AnimateIn animation="fade-in" delay={100}>
+          <div className="bg-gray-50 rounded-xl p-8 text-center">
+            <p className="text-gray-500">No projects need your consent right now.</p>
+            <p className="text-gray-400 text-sm mt-2">When your child submits a project and their teacher approves it, you&apos;ll be asked to give consent here.</p>
+          </div>
+        </AnimateIn>
       ) : (
         <div className="space-y-6">
-          {pendingProjects.map((project) => (
-            <div key={project.id} className="bg-white rounded-xl border border-orange-200 p-5">
+          {pendingProjects.map((project, i) => (
+            <AnimateIn key={project.id} animation="fade-up" delay={100 + i * 80}>
+            <div className="bg-white rounded-xl border border-orange-200 p-5 hover:shadow-md hover:border-orange-300 transition-all duration-300">
               <div className="flex items-center gap-3 mb-1">
                 <h3 className="font-semibold text-gray-900 text-lg">{project.title}</h3>
                 <ProjectStatusBadge status={project.status} />
@@ -76,6 +84,7 @@ export default async function ParentConsentPage() {
                 View full project details
               </Link>
             </div>
+            </AnimateIn>
           ))}
         </div>
       )}

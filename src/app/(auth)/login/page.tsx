@@ -30,10 +30,10 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center py-12 px-4">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-md animate-fade-in-up">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-4">
-            <div className="bg-emerald-500 rounded-xl p-2">
+            <div className="bg-emerald-500 rounded-xl p-2.5 shadow-lg shadow-emerald-500/20 animate-float-slow">
               <Rocket className="h-6 w-6 text-white" />
             </div>
           </div>
@@ -41,7 +41,7 @@ export default function LoginPage() {
           <p className="text-gray-600">Log in to your Futurepreneurs account</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && <Alert type="error" message={error} />}
 

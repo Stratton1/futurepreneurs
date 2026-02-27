@@ -62,10 +62,10 @@ export default function SignUpPage() {
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center py-12 px-4">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-md animate-fade-in-up">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-4">
-            <div className="bg-emerald-500 rounded-xl p-2">
+            <div className="bg-emerald-500 rounded-xl p-2.5 shadow-lg shadow-emerald-500/20 animate-float-slow">
               <Rocket className="h-6 w-6 text-white" />
             </div>
           </div>
@@ -74,7 +74,7 @@ export default function SignUpPage() {
         </div>
 
         {success ? (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 text-center animate-scale-up">
             <Alert type="success" message={success} className="mb-4" />
             <p className="text-gray-600 text-sm">
               Once you&apos;ve verified your email, you can{' '}
@@ -85,7 +85,7 @@ export default function SignUpPage() {
             </p>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
             {/* Step 1: Choose role */}
             {!role ? (
               <div>
@@ -95,7 +95,7 @@ export default function SignUpPage() {
                     <button
                       key={option.value}
                       onClick={() => setRole(option.value)}
-                      className="w-full text-left p-4 rounded-xl border-2 border-gray-200 hover:border-emerald-400 hover:bg-emerald-50 transition-all"
+                      className="w-full text-left p-4 rounded-xl border-2 border-gray-200 hover:border-emerald-400 hover:bg-emerald-50 hover:shadow-sm hover:-translate-y-0.5 transition-all duration-300"
                     >
                       <span className="font-semibold text-gray-900">{option.label}</span>
                       <span className="block text-sm text-gray-500 mt-0.5">{option.description}</span>

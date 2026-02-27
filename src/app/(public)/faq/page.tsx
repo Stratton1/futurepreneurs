@@ -2,7 +2,7 @@ import { Accordion } from '@/components/ui/accordion';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { AnimateIn } from '@/components/ui/animate-in';
-import { HelpCircle, Rocket, GraduationCap, Heart, Users, ArrowRight, MessageCircle } from 'lucide-react';
+import { HelpCircle, Rocket, GraduationCap, Heart, Users, ArrowRight, MessageCircle, BookOpen } from 'lucide-react';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -131,6 +131,23 @@ const sections = [
 export default function FAQPage() {
   return (
     <div className="overflow-hidden">
+      {/* ═══ HELP CENTRE BANNER ═══ */}
+      <div className="bg-blue-600 text-white">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2 text-sm">
+            <BookOpen className="h-4 w-4 shrink-0" />
+            <span>Looking for more help? Visit our full Help Centre for guides, tutorials, and more.</span>
+          </div>
+          <Link
+            href="/help"
+            className="inline-flex items-center gap-1 bg-white/20 hover:bg-white/30 text-white text-sm font-semibold rounded-lg px-4 py-1.5 transition-colors shrink-0"
+          >
+            Help Centre
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+      </div>
+
       {/* ═══ HERO ═══ */}
       <section className="relative bg-gradient-to-br from-emerald-50 via-white to-amber-50 py-20 sm:py-28 overflow-hidden">
         <div className="absolute top-10 right-10 w-72 h-72 bg-emerald-200/20 rounded-full blur-3xl animate-float-slow" />

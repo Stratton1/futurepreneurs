@@ -1,4 +1,4 @@
-import { Shield, Eye, Lock, Database, UserCheck, Bell, Trash2, Globe, Baby } from 'lucide-react';
+import { Shield, Eye, Lock, Database, UserCheck, Bell, Trash2, Globe, Baby, Scale, Clock, Server } from 'lucide-react';
 import Link from 'next/link';
 import { AnimateIn } from '@/components/ui/animate-in';
 import type { Metadata } from 'next';
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: 'How Futurepreneurs collects, uses, and protects your personal data. Extra care taken for users under 18.',
 };
 
-const LAST_UPDATED = '20 February 2026';
+const LAST_UPDATED = '26 February 2026';
 
 const sections = [
   {
@@ -107,6 +107,55 @@ const sections = [
       'We use anonymous analytics to understand how the platform is used and where to improve.',
       'We do not use advertising cookies or tracking pixels from third parties.',
       'You can manage cookie preferences in your browser settings.',
+      'For full details, see our Cookie Policy.',
+    ],
+  },
+  {
+    icon: UserCheck,
+    title: '9. Data Protection Officer',
+    color: 'indigo',
+    content: [
+      'Our Data Protection Officer (DPO) oversees compliance with data protection law and is available to answer any questions about how we handle your data.',
+      'Contact the DPO at: dpo@futurepreneurs.co.uk.',
+      'You may contact the DPO regarding any data protection concern, including exercising your rights, reporting a data breach, or requesting more information about our data practices.',
+      'The DPO reports directly to the Futurepreneurs leadership team and operates independently in matters of data protection compliance.',
+    ],
+  },
+  {
+    icon: Clock,
+    title: '10. Data Retention',
+    color: 'orange',
+    content: [
+      'Active accounts: We retain your personal data for as long as your account is active and in use.',
+      'Inactive accounts: If your account is inactive for 24 months, we will notify you and may close the account after a further 30 days without response.',
+      'Deleted accounts: When you request account deletion, we delete your personal data within 30 days. Some anonymised data may be retained for aggregate analytics.',
+      'Project data: Funded project data (descriptions, milestones, financial records) is retained for 7 years after project completion, as required for financial record-keeping.',
+      'Financial records: Payment and drawdown records are retained for 7 years in compliance with UK tax and financial regulations (HMRC requirements).',
+      'Safeguarding records: Any safeguarding records are retained in accordance with statutory guidance — typically until the child reaches 25 years of age.',
+    ],
+  },
+  {
+    icon: Server,
+    title: '11. International Data Transfers',
+    color: 'sky',
+    content: [
+      'Your data is primarily stored and processed in the European Economic Area (EEA) and the United Kingdom.',
+      'Our database is hosted by Supabase, with servers located in the EU (Frankfurt, Germany).',
+      'Our website is hosted by Vercel, which may process some data in the United States. Vercel complies with the EU-US Data Privacy Framework.',
+      'Stripe processes payment data and may transfer data internationally. Stripe complies with the EU-US Data Privacy Framework and uses standard contractual clauses.',
+      'We ensure that any international data transfers comply with UK GDPR requirements and that appropriate safeguards are in place.',
+    ],
+  },
+  {
+    icon: Scale,
+    title: '12. Lawful Basis for Processing',
+    color: 'cyan',
+    content: [
+      'Contract: We process your data as necessary to provide the Futurepreneurs service (creating accounts, managing projects, processing payments).',
+      'Consent: For students under 18, we obtain parental consent before making project data publicly visible. You can withdraw consent at any time.',
+      'Legitimate interest: We process some data based on our legitimate interest in improving the platform, preventing fraud, and ensuring safety — balanced against your rights and freedoms.',
+      'Legal obligation: We retain financial and safeguarding records as required by UK law.',
+      'We do not use automated decision-making or profiling that produces legal effects or significantly affects users.',
     ],
   },
 ];
@@ -120,6 +169,10 @@ const colorMap: Record<string, { bg: string; text: string; border: string }> = {
   teal: { bg: 'bg-teal-100', text: 'text-teal-600', border: 'border-teal-100' },
   red: { bg: 'bg-red-100', text: 'text-red-600', border: 'border-red-100' },
   gray: { bg: 'bg-gray-100', text: 'text-gray-600', border: 'border-gray-200' },
+  indigo: { bg: 'bg-indigo-100', text: 'text-indigo-600', border: 'border-indigo-100' },
+  orange: { bg: 'bg-orange-100', text: 'text-orange-600', border: 'border-orange-100' },
+  sky: { bg: 'bg-sky-100', text: 'text-sky-600', border: 'border-sky-100' },
+  cyan: { bg: 'bg-cyan-100', text: 'text-cyan-600', border: 'border-cyan-100' },
 };
 
 export default function PrivacyPage() {

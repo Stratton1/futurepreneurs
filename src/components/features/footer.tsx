@@ -48,6 +48,11 @@ export function Footer() {
             <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">Support</h3>
             <ul className="space-y-2">
               <li>
+                <Link href="/help" className="text-sm hover:text-white transition-colors">
+                  Help Centre
+                </Link>
+              </li>
+              <li>
                 <Link href="/faq" className="text-sm hover:text-white transition-colors">
                   FAQ
                 </Link>
@@ -77,6 +82,31 @@ export function Footer() {
               <li>
                 <Link href="/privacy" className="text-sm hover:text-white transition-colors">
                   Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/cookies" className="text-sm hover:text-white transition-colors">
+                  Cookie Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/safeguarding" className="text-sm hover:text-white transition-colors">
+                  Safeguarding
+                </Link>
+              </li>
+              <li>
+                <Link href="/accessibility" className="text-sm hover:text-white transition-colors">
+                  Accessibility
+                </Link>
+              </li>
+              <li>
+                <Link href="/moderation" className="text-sm hover:text-white transition-colors">
+                  Community Guidelines
+                </Link>
+              </li>
+              <li>
+                <Link href="/complaints" className="text-sm hover:text-white transition-colors">
+                  Complaints
                 </Link>
               </li>
             </ul>

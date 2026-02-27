@@ -1,4 +1,4 @@
-import { FileText, Shield, AlertTriangle, Scale, Users, CreditCard, Ban, RefreshCw } from 'lucide-react';
+import { FileText, Shield, AlertTriangle, Scale, Users, CreditCard, Ban, RefreshCw, Globe, Lightbulb, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { AnimateIn } from '@/components/ui/animate-in';
 import type { Metadata } from 'next';
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: 'Terms of service for the Futurepreneurs crowdfunding platform for young entrepreneurs.',
 };
 
-const LAST_UPDATED = '20 February 2026';
+const LAST_UPDATED = '26 February 2026';
 
 const sections = [
   {
@@ -107,6 +107,65 @@ const sections = [
       'These terms are governed by the laws of England and Wales.',
     ],
   },
+  {
+    icon: Lightbulb,
+    title: '9. Intellectual Property',
+    color: 'indigo',
+    content: [
+      'Students retain full ownership of their business ideas, project content, and any intellectual property they create.',
+      'By uploading content to Futurepreneurs, students grant us a non-exclusive, royalty-free licence to display that content on the platform for the purpose of promoting and funding the project.',
+      'This licence ends when a project is removed from the platform.',
+      'Futurepreneurs\' own brand, logo, and platform design are our intellectual property and may not be used without written permission.',
+      'If you believe content on the platform infringes your intellectual property rights, please contact us at legal@futurepreneurs.co.uk with details of the alleged infringement.',
+    ],
+  },
+  {
+    icon: Scale,
+    title: '10. Dispute Resolution',
+    color: 'cyan',
+    content: [
+      'We aim to resolve all disputes informally and amicably. Please contact us at hello@futurepreneurs.co.uk in the first instance.',
+      'If a dispute cannot be resolved informally, our complaints procedure provides a structured three-stage process. See our Complaints Procedure page for details.',
+      'Disputes between supporters and students regarding project delivery are the responsibility of the student. Futurepreneurs facilitates the platform but does not act as an intermediary in project delivery disputes.',
+      'For payment-related disputes, Stripe\'s own dispute resolution process applies in addition to our internal procedures.',
+      'These terms are subject to the exclusive jurisdiction of the courts of England and Wales.',
+    ],
+  },
+  {
+    icon: Users,
+    title: '11. Age Verification',
+    color: 'sky',
+    content: [
+      'Student accounts are verified through school-issued email addresses. We do not accept personal email addresses (such as Gmail, Outlook, or Yahoo) for student registrations.',
+      'We maintain a list of verified UK school email domains. If your school is not listed, contact us to request its addition.',
+      'Teacher accounts are verified by matching their email to a registered school domain and through internal review.',
+      'Parent accounts are linked to student accounts through the parental consent process.',
+      'We reserve the right to request additional verification if there are concerns about the age or identity of a user.',
+    ],
+  },
+  {
+    icon: Globe,
+    title: '12. Platform Availability',
+    color: 'gray',
+    content: [
+      'We aim to keep Futurepreneurs available 24/7, but we do not guarantee uninterrupted access to the platform.',
+      'We may occasionally need to take the platform offline for maintenance, updates, or improvements. We will provide advance notice where possible.',
+      'We are not liable for any loss or inconvenience caused by temporary unavailability of the platform.',
+      'In the event of a prolonged outage affecting active funding campaigns, we will extend campaign deadlines where applicable.',
+    ],
+  },
+  {
+    icon: Clock,
+    title: '13. Changes to These Terms',
+    color: 'violet',
+    content: [
+      'We may update these Terms of Service from time to time. Changes will be posted on this page with an updated "Last updated" date.',
+      'For significant changes that materially affect your rights, we will notify all registered users via email at least 14 days before the changes take effect.',
+      'Continued use of the platform after changes take effect constitutes acceptance of the updated terms.',
+      'If you do not agree with any changes, you may close your account at any time.',
+      'Previous versions of these terms are available upon request by emailing legal@futurepreneurs.co.uk.',
+    ],
+  },
 ];
 
 const colorMap: Record<string, { bg: string; text: string; border: string }> = {
@@ -118,6 +177,11 @@ const colorMap: Record<string, { bg: string; text: string; border: string }> = {
   red: { bg: 'bg-red-100', text: 'text-red-600', border: 'border-red-100' },
   teal: { bg: 'bg-teal-100', text: 'text-teal-600', border: 'border-teal-100' },
   orange: { bg: 'bg-orange-100', text: 'text-orange-600', border: 'border-orange-100' },
+  indigo: { bg: 'bg-indigo-100', text: 'text-indigo-600', border: 'border-indigo-100' },
+  cyan: { bg: 'bg-cyan-100', text: 'text-cyan-600', border: 'border-cyan-100' },
+  sky: { bg: 'bg-sky-100', text: 'text-sky-600', border: 'border-sky-100' },
+  gray: { bg: 'bg-gray-100', text: 'text-gray-600', border: 'border-gray-200' },
+  violet: { bg: 'bg-violet-100', text: 'text-violet-600', border: 'border-violet-100' },
 };
 
 export default function TermsPage() {
