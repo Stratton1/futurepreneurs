@@ -156,8 +156,8 @@ export async function getTaskCompletionForLesson(
       .eq('lesson_id', lessonId);
 
     return new Set((data ?? []).map((r) => r.task_id));
-  } catch {
-    // Table may not exist yet if migration hasn't been applied
+  } catch (error) {
+    console.error(`Error fetching task completion for lesson ${lessonId}:`, error);
     return new Set();
   }
 }

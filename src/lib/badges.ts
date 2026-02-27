@@ -35,7 +35,11 @@ export async function awardFirstProject(userId: string, projectId: string): Prom
     badge_type: 'first_project',
     project_id: projectId,
   });
-  if (error && error.code !== '23505') return false; // 23505 = unique violation
+  if (error) {
+    if (error.code === '23505') return true; // badge already awarded
+    console.error(`Error awarding first_project to user ${userId}:`, error);
+    return false;
+  }
   return true;
 }
 
@@ -47,7 +51,11 @@ export async function awardFullyFunded(userId: string, projectId: string): Promi
     badge_type: 'fully_funded',
     project_id: projectId,
   });
-  if (error && error.code !== '23505') return false;
+  if (error) {
+    if (error.code === '23505') return true;
+    console.error(`Error awarding fully_funded to user ${userId}:`, error);
+    return false;
+  }
   return true;
 }
 
@@ -59,7 +67,11 @@ export async function awardMilestoneMaster(userId: string, projectId: string): P
     badge_type: 'milestone_master',
     project_id: projectId,
   });
-  if (error && error.code !== '23505') return false;
+  if (error) {
+    if (error.code === '23505') return true;
+    console.error(`Error awarding milestone_master to user ${userId}:`, error);
+    return false;
+  }
   return true;
 }
 
@@ -71,7 +83,11 @@ export async function awardLearningComplete(userId: string): Promise<boolean> {
     badge_type: 'learning_complete',
     project_id: null,
   });
-  if (error && error.code !== '23505') return false;
+  if (error) {
+    if (error.code === '23505') return true;
+    console.error(`Error awarding learning_complete to user ${userId}:`, error);
+    return false;
+  }
   return true;
 }
 
@@ -83,7 +99,11 @@ export async function awardPitchPro(userId: string, projectId: string): Promise<
     badge_type: 'pitch_pro',
     project_id: projectId,
   });
-  if (error && error.code !== '23505') return false;
+  if (error) {
+    if (error.code === '23505') return true;
+    console.error(`Error awarding pitch_pro to user ${userId}:`, error);
+    return false;
+  }
   return true;
 }
 
@@ -95,7 +115,11 @@ export async function awardTeamPlayer(userId: string, projectId: string): Promis
     badge_type: 'team_player',
     project_id: projectId,
   });
-  if (error && error.code !== '23505') return false;
+  if (error) {
+    if (error.code === '23505') return true;
+    console.error(`Error awarding team_player to user ${userId}:`, error);
+    return false;
+  }
   return true;
 }
 
