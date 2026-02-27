@@ -62,6 +62,9 @@ export function Navbar({ user }: NavbarProps) {
             <Link href={user ? '/dashboard/learning' : '/learn'} className="text-gray-600 hover:text-gray-900 font-medium transition-colors">
               Learn
             </Link>
+            <Link href="/help" className="text-gray-600 hover:text-gray-900 font-medium transition-colors">
+              Help
+            </Link>
             {user ? (
               <div className="flex items-center gap-3">
                 <Link href="/dashboard">
@@ -121,6 +124,13 @@ export function Navbar({ user }: NavbarProps) {
                 onClick={() => setIsOpen(false)}
               >
                 Learn
+              </Link>
+              <Link
+                href="/help"
+                className="px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 font-medium"
+                onClick={() => setIsOpen(false)}
+              >
+                Help
               </Link>
               {user ? (
                 <>

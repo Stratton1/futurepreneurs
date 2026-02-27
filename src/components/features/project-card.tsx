@@ -44,7 +44,7 @@ export function ProjectCard({
 
   return (
     <Link href={`/projects/${id}`} className="group block">
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md hover:border-gray-200 transition-all duration-200">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg hover:border-emerald-200 hover:-translate-y-1 transition-all duration-300">
         {/* Image */}
         <div className="aspect-[16/10] bg-gradient-to-br from-emerald-50 to-blue-50 relative overflow-hidden">
           {hasImage ? (

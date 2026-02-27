@@ -1,6 +1,7 @@
 import { Mail, MessageSquare, Clock, HelpCircle, Shield, Users } from 'lucide-react';
 import Link from 'next/link';
 import { AnimateIn } from '@/components/ui/animate-in';
+import { ContactForm } from './contact-form';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -71,10 +72,10 @@ export default function ContactPage() {
                   Find answers to common questions about using the platform.
                 </p>
                 <Link
-                  href="/faq"
+                  href="/help"
                   className="text-emerald-600 font-semibold hover:underline text-sm"
                 >
-                  Visit FAQ →
+                  Visit Help Centre →
                 </Link>
               </div>
             </AnimateIn>
@@ -111,94 +112,7 @@ export default function ContactPage() {
           </AnimateIn>
 
           <AnimateIn animation="fade-up" delay={100}>
-            <form className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 space-y-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1.5">
-                    Your name
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    required
-                    className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                    placeholder="e.g. Sarah Davies"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">
-                    Email address
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    required
-                    className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                    placeholder="you@example.com"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1.5">
-                  I am a...
-                </label>
-                <select
-                  id="role"
-                  name="role"
-                  className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-gray-700"
-                >
-                  <option value="">Select your role</option>
-                  <option value="student">Student</option>
-                  <option value="teacher">Teacher / Mentor</option>
-                  <option value="parent">Parent / Guardian</option>
-                  <option value="supporter">Supporter</option>
-                  <option value="school">School Administrator</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-
-              <div>
-                <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Subject
-                </label>
-                <input
-                  type="text"
-                  id="subject"
-                  name="subject"
-                  required
-                  className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                  placeholder="What is your message about?"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Message
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  rows={5}
-                  required
-                  className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition resize-none"
-                  placeholder="Tell us how we can help..."
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full bg-gradient-to-r from-blue-600 to-emerald-500 text-white font-bold py-3.5 rounded-xl hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 text-sm"
-              >
-                Send Message
-              </button>
-              <p className="text-xs text-gray-400 text-center">
-                By sending this message you agree to our{' '}
-                <Link href="/privacy" className="underline hover:text-gray-600">Privacy Policy</Link>.
-              </p>
-            </form>
+            <ContactForm />
           </AnimateIn>
         </div>
       </section>

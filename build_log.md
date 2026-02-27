@@ -2,7 +2,7 @@
 
 **Purpose:** Chronological record of everything built, changed, or decided during development.
 
-**Last Updated:** 2026-02-21
+**Last Updated:** 2026-02-26
 
 ---
 
@@ -632,3 +632,124 @@
 - `npm run build`: **PASS** (zero errors)
 - Playwright headless testing: all pages load correctly
 - Roadmap and build_log updated
+
+---
+
+## Epics 5, 6 & 7 — Parent Oversight, Impact Reports, Stretch Goals & Matching
+
+### Entry: Epics 5, 6 & 7 Complete
+- **Date:** 2026-02-25
+- **Status:** Complete (committed as e8693b7)
+- **Goal:** Enhanced parent oversight, impact reporting for backers, stretch goals, and corporate/youth matching grants.
+
+### What was built
+- Enhanced Parent Hub with activity overview, spending breakdowns, impact reports
+- Privacy checkpoints at key moments (project creation, going live, first drawdown)
+- Teacher/school verification badges on project pages
+- "Circle of Gratitude" impact report templates for students
+- Stretch goals for projects (secondary funding targets)
+- Corporate and youth matching grant integration
+- Teacher verification of stretch goals and project updates
+
+---
+
+## Epic 8 — Platform Polish, Legal, Onboarding & Help Centre
+
+### Entry: Epic 8 Complete
+- **Date:** 2026-02-26
+- **Status:** Complete
+- **Goal:** Elevate every page with modern animations, write all required UK legal pages, build interactive help centre, create onboarding walkthrough system.
+
+### Phase A: Animation & Interaction Enhancement
+
+1. **Enhanced animation utilities:**
+   - `src/components/ui/page-header.tsx` — Reusable animated page header with gradient accent
+   - `src/components/ui/stat-card.tsx` — Animated stat card with count-up, hover lift
+   - `src/components/ui/section-reveal.tsx` — Scroll-triggered section wrapper
+   - Extended `src/app/globals.css` with new keyframes (slide-in-left, slide-in-right, scale-up, blur-in) and `prefers-reduced-motion` block
+   - Extended `src/components/ui/animate-in.tsx` with blur-in variant and reduced-motion support
+
+2. **Public pages enhanced:** About, FAQ, Terms, Privacy, Contact, Project Detail, Project Card — all wrapped with AnimateIn stagger, hover effects, improved visual hierarchy
+
+3. **Dashboard pages enhanced:** All 13+ dashboard pages — stat cards with stagger, greeting animations, empty states with illustrations, card entrance effects
+
+4. **Auth pages enhanced:** Login and Signup — centered cards with float animation, input focus effects, step progress indicator animation
+
+5. **Admin pages enhanced:** Overview, Users, Projects, Reports — stat cards with colored icon backgrounds, AnimateIn stagger, role/status-specific colored badges, search form layouts, report card hover effects and pulse animations
+
+### Phase B: Legal & Statutory Content
+
+6. **5 new legal pages:**
+   - `src/app/(public)/cookies/page.tsx` — Cookie Policy with cookie table (6 cookies listed), 6 content sections
+   - `src/app/(public)/safeguarding/page.tsx` — Safeguarding & Child Protection Policy, 10 sections covering UK legislation, emergency contact banner
+   - `src/app/(public)/complaints/page.tsx` — Complaints Procedure with 3-stage visual timeline
+   - `src/app/(public)/accessibility/page.tsx` — Accessibility Statement, WCAG 2.1 AA, 9 sections
+   - `src/app/(public)/moderation/page.tsx` — Community & Moderation Policy, 8 sections
+
+7. **Enhanced existing pages:**
+   - Terms: Added 5 new sections (IP, Dispute Resolution, Age Verification, Platform Availability, Changes to Terms)
+   - Privacy: Added 4 new sections (DPO contact, Data Retention periods, International Transfers, Lawful Basis)
+
+8. **Contact form backend:**
+   - `src/app/(public)/contact/actions.ts` — Server action with in-memory rate limiting (3/hour per email), HTML email via Resend, XSS protection
+   - `src/app/(public)/contact/contact-form.tsx` — Client component with loading, error, and success states
+
+9. **Footer & nav updates:**
+   - Footer: Added Help Centre (Support column), Cookie Policy, Safeguarding, Accessibility, Community Guidelines, Complaints (Legal column)
+   - Navbar: Added Help link (desktop + mobile)
+
+### Phase C: Interactive Help Centre
+
+10. **Help content data layer:**
+    - `src/lib/help/categories.ts` — 11 categories with icons, colors, descriptions
+    - `src/lib/help/articles.ts` — ~30 articles with full markdown content, tags, roles, related articles
+    - `src/lib/help/search.ts` — Client-side fuzzy search with term-based scoring
+
+11. **Help centre pages:**
+    - `src/app/(public)/help/page.tsx` — Landing page with hero, search bar, popular topics, category grid
+    - `src/app/(public)/help/[category]/page.tsx` — Category page with sidebar navigation
+    - `src/app/(public)/help/[category]/[slug]/page.tsx` — Article page with markdown rendering, feedback, related articles
+    - `src/app/(public)/help/search/page.tsx` — Search results page with popular fallback
+
+12. **Help centre components:**
+    - `src/components/features/help-search-bar.tsx` — Debounced search with dropdown suggestions
+    - `src/components/features/help-category-card.tsx` — Category card with article count
+    - `src/components/features/help-article-card.tsx` — Compact article card
+    - `src/components/features/help-feedback.tsx` — Thumbs up/down with localStorage
+    - `src/components/features/help-contact-cta.tsx` — Contact banner
+
+13. **Integration:**
+    - Navbar: "Help" link added
+    - FAQ page: Help Centre banner at top
+    - Footer: Help Centre link under Support
+
+### Phase D: Onboarding Walkthrough System
+
+14. **Walkthrough engine:**
+    - `src/components/features/walkthrough/walkthrough-provider.tsx` — Context provider, auto-start for first-time users, localStorage persistence
+    - `src/components/features/walkthrough/walkthrough-overlay.tsx` — Dark backdrop, spotlight cutout on target element, positioned tooltip, keyboard navigation (Escape/Arrow keys)
+    - `src/components/features/walkthrough/walkthrough-tooltip.tsx` — Tooltip with arrow, progress dots, Back/Next/Skip buttons
+    - `src/components/features/walkthrough/use-walkthrough.ts` — Custom hook
+    - `src/lib/walkthrough/types.ts` — WalkthroughStep type definition
+
+15. **Role-specific steps:**
+    - `src/lib/walkthrough/student-steps.ts` — 6 steps: Welcome, My Projects, Learning Hub, Trophy Room, Notifications, Profile
+    - `src/lib/walkthrough/teacher-steps.ts` — 5 steps: Welcome, Verify Projects, Approve Drawdowns, Notifications, Profile
+    - `src/lib/walkthrough/parent-steps.ts` — 6 steps: Welcome, Parent Hub, Consent Requests, Wallet, Notifications, Profile
+
+16. **Dashboard integration:**
+    - `src/app/dashboard/layout.tsx` — Wraps all dashboard pages with WalkthroughProvider
+    - `src/app/dashboard/walkthrough-wrapper.tsx` — Client component connecting provider with step definitions
+    - `src/app/dashboard/take-a-tour-button.tsx` — Client button to re-trigger walkthrough
+    - `src/app/dashboard/page.tsx` — Added data-walkthrough attributes to hero and quick action cards, "Take a Tour" button for all roles
+
+### Phase E: Documentation
+
+17. **Updated:**
+    - `roadmap.md` — Epics 5–8 marked DONE, Epic 8 details added
+    - `build_log.md` — Epics 5–8 entries added
+
+### Verification
+- `npm run build`: **PASS** (zero errors)
+- All new pages render correctly
+- Walkthrough system compiles and integrates with dashboard layout
