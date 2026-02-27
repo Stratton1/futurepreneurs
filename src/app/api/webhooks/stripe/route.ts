@@ -3,6 +3,8 @@ import { stripe, toPounds } from '@/lib/stripe';
 import { createAdminClient } from '@/lib/supabase/server';
 import { awardFullyFunded } from '@/lib/badges';
 import { checkAndMarkMicroGoals } from '@/lib/queries/micro-goals';
+import { checkAndUnlockStretchGoals } from '@/lib/queries/stretch-goals';
+import { processMatchingForBacking } from '@/lib/queries/matching';
 import { incrementClaimedCount } from '@/lib/queries/reward-tiers';
 import Stripe from 'stripe';
 
@@ -98,15 +100,48 @@ export async function POST(request: NextRequest) {
         break;
       }
 
-      const result = Array.isArray(updated) ? updated[0] : updated;
+      // Process matching grants — add matched amount to project total
+      const matchedAmount = await processMatchingForBacking(
+        projectId,
+        backingId,
+        amountPounds
+      );
+
+      if (matchedAmount > 0) {
+        // Add matched amount to project total (no extra backer)
+        await supabase.rpc('increment_project_funding', {
+          p_project_id: projectId,
+          p_amount: matchedAmount,
+          p_backer_increment: 0,
+        });
+        console.log(`Matching: £${matchedAmount.toFixed(2)} added to project ${projectId}`);
+      }
+
+      // Re-read the total after matching to get accurate figure
+      const { data: projectAfterMatch } = matchedAmount > 0
+        ? await supabase
+            .from('projects')
+            .select('total_raised, goal_amount, status, student_id')
+            .eq('id', projectId)
+            .single()
+        : { data: null };
+
+      const result = projectAfterMatch || (Array.isArray(updated) ? updated[0] : updated);
       if (result) {
-        const goalMet = Number(result.new_total) >= Number(result.goal_amount);
+        const currentTotal = Number(projectAfterMatch?.total_raised ?? result.new_total);
+        const goalAmt = Number(projectAfterMatch?.goal_amount ?? result.goal_amount);
+        const currentStatus = projectAfterMatch?.status ?? result.current_status;
+        const studentId = projectAfterMatch?.student_id ?? result.student_id;
+        const goalMet = currentTotal >= goalAmt;
 
         // Check and mark micro-goals as reached
-        await checkAndMarkMicroGoals(projectId, Number(result.new_total));
+        await checkAndMarkMicroGoals(projectId, currentTotal);
+
+        // Check and auto-unlock stretch goals
+        await checkAndUnlockStretchGoals(projectId, currentTotal);
 
         // If goal is met, transition to "funded" and collect all held backings
-        if (goalMet && result.current_status === 'live') {
+        if (goalMet && currentStatus === 'live') {
           await supabase
             .from('projects')
             .update({ status: 'funded' })
@@ -119,8 +154,8 @@ export async function POST(request: NextRequest) {
             .eq('project_id', projectId)
             .eq('status', 'held');
 
-          if (result.student_id) {
-            await awardFullyFunded(result.student_id, projectId);
+          if (studentId) {
+            await awardFullyFunded(studentId, projectId);
           }
         }
       }

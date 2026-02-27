@@ -13,6 +13,7 @@ import { sendNotificationEmail, notificationEmailHtml } from '@/lib/email/resend
 import { awardMilestoneMaster } from '@/lib/badges';
 import { getCustodialAccountForProject } from '@/lib/queries/custodial-accounts';
 import { addFundsToWallet } from '@/lib/queries/wallet-balances';
+import { createAuditEvent } from '@/lib/queries/audit-events';
 
 /** Student creates a drawdown request for a milestone. */
 export async function createDrawdownRequest(
@@ -68,6 +69,12 @@ export async function createDrawdownRequest(
     return { error: 'Failed to create drawdown request' };
   }
 
+  await createAuditEvent(projectId, user.id, 'drawdown_requested', {
+    drawdown_id: drawdown.id,
+    milestone_id: milestoneId,
+    amount,
+  });
+
   if (project.mentor_id) {
     await admin.from('notifications').insert({
       user_id: project.mentor_id,
@@ -118,6 +125,45 @@ export async function approveDrawdownRequest(drawdownId: string) {
     return { error: 'You can only approve drawdowns for projects you mentor' };
   }
 
+  // First-drawdown gate: check if parent has acknowledged
+  const { count: priorApproved } = await admin
+    .from('drawdown_requests')
+    .select('id', { count: 'exact', head: true })
+    .eq('project_id', drawdown.project_id)
+    .eq('status', 'approved');
+
+  if ((priorApproved ?? 0) === 0) {
+    const { data: consent } = await admin
+      .from('parental_consents')
+      .select('first_drawdown_acknowledged, parent_id')
+      .eq('project_id', drawdown.project_id)
+      .eq('status', 'approved')
+      .maybeSingle();
+
+    if (consent && !consent.first_drawdown_acknowledged) {
+      // Notify parent that their acknowledgment is needed
+      if (consent.parent_id) {
+        await admin.from('notifications').insert({
+          user_id: consent.parent_id,
+          type: 'first_drawdown_gate',
+          title: 'First drawdown pending your acknowledgment',
+          message: `Your child has requested their first drawdown for "${project.title}". Please visit the Parent Hub to acknowledge.`,
+          link: '/dashboard/parent-hub',
+        });
+        await sendNotificationEmail(
+          consent.parent_id,
+          `First drawdown pending — ${project.title}`,
+          notificationEmailHtml(
+            'First drawdown pending your acknowledgment',
+            `Your child has requested their first drawdown for "${project.title}". Please visit the Parent Hub to acknowledge before the teacher can approve.`,
+            '/dashboard/parent-hub'
+          )
+        );
+      }
+      return { error: 'The parent must acknowledge the first drawdown before it can be approved. They have been notified.' };
+    }
+  }
+
   const { error: updateError } = await admin
     .from('drawdown_requests')
     .update({
@@ -131,6 +177,11 @@ export async function approveDrawdownRequest(drawdownId: string) {
     console.error('Drawdown approve error:', updateError);
     return { error: 'Failed to approve drawdown' };
   }
+
+  await createAuditEvent(drawdown.project_id, user.id, 'drawdown_approved', {
+    drawdown_id: drawdownId,
+    amount: Number(drawdown.amount),
+  });
 
   // Fund wallet if custodial account exists (Epic 4 integration)
   const custodialAccount = await getCustodialAccountForProject(drawdown.project_id);
@@ -227,6 +278,12 @@ export async function rejectDrawdownRequest(drawdownId: string, reason: string |
     console.error('Drawdown reject error:', updateError);
     return { error: 'Failed to reject drawdown' };
   }
+
+  await createAuditEvent(drawdown.project_id, user.id, 'drawdown_rejected', {
+    drawdown_id: drawdownId,
+    amount: Number(drawdown.amount),
+    reason: reason?.trim() || null,
+  });
 
   const reasonText = reason?.trim() ? `: ${reason.trim()}` : '';
   await admin.from('notifications').insert({

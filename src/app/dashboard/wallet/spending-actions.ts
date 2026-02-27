@@ -8,6 +8,7 @@ import { getSpendingRequestById } from '@/lib/queries/spending-requests';
 import { checkVelocityLimits } from '@/lib/wallet/velocity-limits';
 import { sendNotificationEmail, notificationEmailHtml } from '@/lib/email/resend';
 import { revalidatePath } from 'next/cache';
+import { createAuditEvent } from '@/lib/queries/audit-events';
 
 const COOLING_OFF_HOURS = 1;
 
@@ -126,6 +127,12 @@ export async function createSpendingRequest(data: {
     )
   );
 
+  await createAuditEvent(data.projectId, user.id, 'spending_requested', {
+    request_id: request.id,
+    amount: data.amount,
+    vendor: data.vendorName,
+  });
+
   revalidatePath('/dashboard/wallet');
   return { success: true, requestId: request.id };
 }
@@ -186,6 +193,11 @@ export async function approveSpendingRequest(requestId: string) {
       )
     );
 
+    await createAuditEvent(request.project_id, user.id, 'spending_parent_approved', {
+      request_id: requestId,
+      amount: Number(request.amount),
+    });
+
     revalidatePath('/dashboard/wallet');
     return { success: true };
   }
@@ -233,6 +245,11 @@ export async function approveSpendingRequest(requestId: string) {
         '/dashboard/wallet'
       )
     );
+
+    await createAuditEvent(request.project_id, user.id, 'spending_mentor_approved', {
+      request_id: requestId,
+      amount: Number(request.amount),
+    });
 
     revalidatePath('/dashboard/wallet');
     return { success: true };
@@ -307,6 +324,13 @@ export async function declineSpendingRequest(requestId: string, reason: string) 
       '/dashboard/wallet'
     )
   );
+
+  const auditType = declinedBy === 'parent' ? 'spending_parent_declined' as const : 'spending_mentor_rejected' as const;
+  await createAuditEvent(request.project_id, user.id, auditType, {
+    request_id: requestId,
+    amount: Number(request.amount),
+    reason: reason.trim() || null,
+  });
 
   revalidatePath('/dashboard/wallet');
   return { success: true };

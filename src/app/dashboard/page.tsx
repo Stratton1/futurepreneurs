@@ -14,7 +14,7 @@ import Link from 'next/link';
 import {
   FolderPlus, ClipboardCheck, ShieldCheck, Heart, User, Banknote,
   Eye, Bell, Wallet, Trophy, BookOpen, ArrowRight, GraduationCap,
-  Sparkles, Rocket, TrendingUp, Award,
+  Sparkles, Rocket, TrendingUp, Award, Target,
 } from 'lucide-react';
 
 function getGreeting(): string {
@@ -107,12 +107,14 @@ export default async function DashboardPage() {
   const otherRoleActions: Record<string, { label: string; href: string; icon: typeof FolderPlus; description: string }[]> = {
     teacher: [
       { label: 'Verify Projects', href: '/dashboard/verify', icon: ClipboardCheck, description: 'Review and approve student projects' },
+      { label: 'Moderate Updates', href: '/dashboard/verify-updates', icon: Eye, description: 'Review and approve project updates' },
+      { label: 'Stretch Goals', href: '/dashboard/verify-stretch-goals', icon: Target, description: 'Review and approve stretch goals' },
       { label: 'Drawdown Requests', href: '/dashboard/drawdowns', icon: Banknote, description: 'Approve or reject funding requests' },
       { label: 'Student Spending', href: '/dashboard/wallet/mentor', icon: Wallet, description: 'Review and approve student purchases' },
     ],
     parent: [
+      { label: 'Parent Hub', href: '/dashboard/parent-hub', icon: Eye, description: 'Overview of your children\'s projects and activity' },
       { label: 'Consent Requests', href: '/dashboard/consent', icon: ShieldCheck, description: 'Review and consent to your child\'s projects' },
-      { label: 'Drawdown Activity', href: '/dashboard/drawdowns', icon: Eye, description: 'View your child\'s funding requests and approvals' },
       { label: 'Wallet Management', href: '/dashboard/wallet/parent', icon: Wallet, description: 'Manage wallets and approve purchases' },
     ],
     investor: [

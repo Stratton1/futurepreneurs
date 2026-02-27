@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { Shield, GraduationCap, Target, Users } from 'lucide-react';
+import { GraduationCap, Target, Users, Sparkles } from 'lucide-react';
 import { LogoPreview } from '@/components/features/logo-preview';
 import { getPublicProjectById } from '@/lib/queries/public-projects';
 import { getCurrentUser } from '@/lib/supabase/auth-helpers';
@@ -14,6 +14,14 @@ import { MicroGoalsTracker } from '@/components/features/micro-goals-tracker';
 import { getMicroGoals } from '@/lib/queries/micro-goals';
 import { getApprovedRewardTiers } from '@/lib/queries/reward-tiers';
 import { getProjectCollaborators } from '@/lib/queries/collaborators';
+import { getApprovedUpdatesForProject } from '@/lib/queries/project-updates';
+import { getApprovedStretchGoalsForProject } from '@/lib/queries/stretch-goals';
+import ProjectUpdateCard from '@/components/features/project-update-card';
+import { StretchGoalTracker } from '@/components/features/stretch-goal-tracker';
+import { getMatchingPledgesForProject } from '@/lib/queries/matching';
+import { MatchingBadge } from '@/components/features/matching-badge';
+import { MatchingImpactDisplay } from '@/components/features/matching-impact-display';
+import { VerificationBadge } from '@/components/features/verification-badge';
 import { ReportProjectButton } from './report-project-button';
 import { CURRENCY_SYMBOL } from '@/lib/constants';
 import Link from 'next/link';
@@ -59,13 +67,16 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   // Fetch micro-goals, reward tiers, and collaborators for live/funded/completed projects
   const isPublicStatus = project.status === 'live' || project.status === 'funded' || project.status === 'completed';
   const isGroupProject = project.project_type === 'group';
-  const [microGoals, rewardTiers, collaborators] = isPublicStatus
+  const [microGoals, rewardTiers, collaborators, updates, stretchGoals, matchingPledges] = isPublicStatus
     ? await Promise.all([
         getMicroGoals(id),
         getApprovedRewardTiers(id),
         isGroupProject ? getProjectCollaborators(id) : Promise.resolve([]),
+        getApprovedUpdatesForProject(id),
+        getApprovedStretchGoalsForProject(id),
+        getMatchingPledgesForProject(id),
       ])
-    : [[], [], []];
+    : [[], [], [], [], [], []];
 
   const isFunded = project.status === 'funded' || project.status === 'completed';
   const percentage = project.goal_amount > 0
@@ -121,6 +132,14 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                         <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full inline-flex items-center gap-1">
                           <Users className="h-3 w-3" /> Group Project
                         </span>
+                      )}
+                      {matchingPledges.length > 0 && (
+                        <MatchingBadge
+                          sponsorName={matchingPledges[0].sponsor.name}
+                          sponsorType={matchingPledges[0].sponsor.sponsor_type as 'corporate' | 'grant'}
+                          matchRatio={matchingPledges[0].match_ratio}
+                          size="sm"
+                        />
                       )}
                     </div>
                     <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mt-3">
@@ -179,6 +198,20 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               </div>
             )}
 
+            {/* Stretch Goals */}
+            {stretchGoals.length > 0 && (
+              <div className="bg-white rounded-2xl border border-gray-100 p-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Stretch Goals</h2>
+                <p className="text-sm text-gray-500 mb-4">
+                  Bonus targets beyond the original goal. When funding reaches the target, the goal unlocks!
+                </p>
+                <StretchGoalTracker
+                  goals={stretchGoals}
+                  totalRaised={project.total_raised}
+                />
+              </div>
+            )}
+
             {/* Reward Tiers */}
             {rewardTiers.length > 0 && (
               <div className="bg-white rounded-2xl border border-gray-100 p-6">
@@ -206,6 +239,17 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                         </p>
                       )}
                     </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {/* Project Updates */}
+            {updates.length > 0 && (
+              <div className="bg-white rounded-2xl border border-gray-100 p-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Updates</h2>
+                <div className="space-y-4">
+                  {updates.map((update) => (
+                    <ProjectUpdateCard key={update.id} update={update} />
                   ))}
                 </div>
               </div>
@@ -256,6 +300,14 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                     }
                     rewardTiers={rewardTiers}
                   />
+                  {matchingPledges.length > 0 && (
+                    <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 mt-3 text-center">
+                      <p className="text-sm font-medium text-amber-800">
+                        <Sparkles className="h-3.5 w-3.5 inline mr-1" />
+                        Your donation is {matchingPledges[0].match_ratio}x matched by {matchingPledges[0].sponsor.name}!
+                      </p>
+                    </div>
+                  )}
                   <p className="text-xs text-gray-400 text-center mt-2">
                     All-or-nothing funding. Pay with card, Apple Pay, or Google Pay.
                   </p>
@@ -285,6 +337,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   goalAmount={project.goal_amount}
                 />
               </div>
+            )}
+
+            {/* Matching impact */}
+            {matchingPledges.length > 0 && (
+              <MatchingImpactDisplay pledges={matchingPledges} />
             )}
 
             {/* Student card */}
@@ -319,22 +376,13 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               </div>
             )}
 
-            {/* Trust badge */}
+            {/* Verification badge */}
             {project.mentor && (
-              <div className="bg-blue-50 rounded-2xl border border-blue-100 p-5">
-                <div className="flex items-center gap-2 mb-2">
-                  <Shield className="h-5 w-5 text-blue-500" />
-                  <span className="text-sm font-semibold text-blue-900">Verified project</span>
-                </div>
-                <p className="text-sm text-blue-700">
-                  This project has been reviewed and approved by{' '}
-                  <strong>{project.mentor.full_name}</strong>
-                  {project.student.school?.name && (
-                    <span> at {project.student.school.name}</span>
-                  )}
-                  .
-                </p>
-              </div>
+              <VerificationBadge
+                size="lg"
+                mentorName={project.mentor.full_name}
+                schoolName={project.student?.school?.name}
+              />
             )}
           </div>
         </div>

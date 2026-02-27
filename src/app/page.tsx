@@ -47,6 +47,7 @@ export default async function Home() {
               {featured.map((project: Record<string, unknown>, i: number) => {
                 const student = project.student as Record<string, unknown> | null;
                 const school = student?.school as Record<string, unknown> | null;
+                const mentor = project.mentor as Record<string, unknown> | null;
                 return (
                   <AnimateIn key={project.id as string} delay={i * 100} animation="fade-up">
                     <ProjectCard
@@ -60,6 +61,7 @@ export default async function Home() {
                       images={project.images as string[]}
                       studentName={student?.full_name as string || 'Student'}
                       schoolName={school?.name as string | null}
+                      mentorName={mentor?.full_name as string | null}
                       logoConfig={project.logo_config as import('@/lib/logo-templates').LogoConfig | null}
                       projectType={project.project_type as string}
                       groupName={project.group_name as string | null}
@@ -102,6 +104,7 @@ export default async function Home() {
               {recentOnly.slice(0, 6).map((project: Record<string, unknown>, i: number) => {
                 const student = project.student as Record<string, unknown> | null;
                 const school = student?.school as Record<string, unknown> | null;
+                const mentor = project.mentor as Record<string, unknown> | null;
                 return (
                   <AnimateIn key={project.id as string} delay={i * 100} animation="fade-up">
                     <ProjectCard
@@ -115,6 +118,7 @@ export default async function Home() {
                       images={project.images as string[]}
                       studentName={student?.full_name as string || 'Student'}
                       schoolName={school?.name as string | null}
+                      mentorName={mentor?.full_name as string | null}
                       logoConfig={project.logo_config as import('@/lib/logo-templates').LogoConfig | null}
                       projectType={project.project_type as string}
                       groupName={project.group_name as string | null}

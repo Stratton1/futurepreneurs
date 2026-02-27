@@ -7,6 +7,7 @@ import { revalidatePath } from 'next/cache';
 import { sendNotificationEmail, notificationEmailHtml } from '@/lib/email/resend';
 import { awardFirstProject } from '@/lib/badges';
 import { generateMicroGoals } from '@/lib/queries/micro-goals';
+import { createAuditEvent } from '@/lib/queries/audit-events';
 
 interface MilestoneInput {
   title: string;
@@ -334,6 +335,8 @@ export async function approveProject(projectId: string) {
     }
   }
 
+  await createAuditEvent(projectId, user.id, 'project_verified');
+
   revalidatePath('/dashboard/verify');
   revalidatePath('/dashboard/consent');
   return { success: true };
@@ -394,6 +397,8 @@ export async function requestChanges(projectId: string, feedback: string) {
     )
   );
 
+  await createAuditEvent(projectId, user.id, 'project_changes_requested', { feedback });
+
   revalidatePath('/dashboard/verify');
   revalidatePath('/dashboard/projects');
   return { success: true };
@@ -448,6 +453,8 @@ export async function rejectProject(projectId: string, reason: string) {
       '/dashboard/projects'
     )
   );
+
+  await createAuditEvent(projectId, user.id, 'project_rejected', { reason });
 
   revalidatePath('/dashboard/verify');
   return { success: true };
@@ -542,6 +549,8 @@ export async function giveConsent(projectId: string) {
     );
   }
 
+  await createAuditEvent(projectId, user.id, 'consent_approved');
+
   revalidatePath('/dashboard/consent');
   revalidatePath('/dashboard/projects');
   return { success: true };
@@ -607,6 +616,8 @@ export async function declineConsent(projectId: string, reason: string) {
       '/dashboard/projects'
     )
   );
+
+  await createAuditEvent(projectId, user.id, 'consent_rejected', { reason });
 
   revalidatePath('/dashboard/consent');
   revalidatePath('/dashboard/projects');

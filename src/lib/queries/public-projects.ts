@@ -76,11 +76,12 @@ function normaliseProject(raw: any): any {
 
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
-// Shared select for list queries (no description, video_url, bio, mentor, milestones)
+// Shared select for list queries (no description, video_url, bio, milestones)
 const LIST_SELECT = `
   id, title, short_description, category, goal_amount, total_raised, backer_count,
   images, status, is_featured, logo_config, logo_approved, project_type, group_name, created_at,
-  student:user_profiles!projects_student_id_fkey(id, full_name, avatar_url, school:schools(name, city))
+  student:user_profiles!projects_student_id_fkey(id, full_name, avatar_url, school:schools(name, city)),
+  mentor:user_profiles!projects_mentor_id_fkey(id, full_name)
 `;
 
 // Full select for detail page

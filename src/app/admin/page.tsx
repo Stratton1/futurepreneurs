@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { createAdminClient } from '@/lib/supabase/server';
 import { requireAdmin } from '@/lib/supabase/auth-helpers';
-import { Users, FolderKanban, Flag, Wallet } from 'lucide-react';
+import { Users, FolderKanban, Flag, Wallet, Handshake } from 'lucide-react';
 
 export default async function AdminOverviewPage() {
   await requireAdmin();
@@ -14,6 +14,7 @@ export default async function AdminOverviewPage() {
     { count: fundedCount },
     { count: backingsCount },
     { count: reportsPendingCount },
+    { count: sponsorsCount },
   ] = await Promise.all([
     supabase.from('user_profiles').select('*', { count: 'exact', head: true }),
     supabase.from('projects').select('*', { count: 'exact', head: true }),
@@ -21,6 +22,7 @@ export default async function AdminOverviewPage() {
     supabase.from('projects').select('*', { count: 'exact', head: true }).eq('status', 'funded'),
     supabase.from('backings').select('*', { count: 'exact', head: true }),
     supabase.from('reports').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+    supabase.from('matching_sponsors').select('*', { count: 'exact', head: true }).eq('is_active', true),
   ]);
 
   const cards = [
@@ -30,6 +32,7 @@ export default async function AdminOverviewPage() {
     { label: 'Funded projects', value: fundedCount ?? 0, href: '/admin/projects?status=funded', icon: Wallet },
     { label: 'Backings', value: backingsCount ?? 0, href: '/admin/projects', icon: Wallet },
     { label: 'Reports (pending)', value: reportsPendingCount ?? 0, href: '/admin/reports', icon: Flag },
+    { label: 'Matching Sponsors', value: sponsorsCount ?? 0, href: '/admin/matching', icon: Handshake },
   ];
 
   return (

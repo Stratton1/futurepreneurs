@@ -144,10 +144,23 @@ export interface Report {
   updated_at: string;
 }
 
+export type UpdateType = 'general' | 'impact_report' | 'milestone_complete' | 'thank_you';
+export type UpdateStatus = 'pending' | 'approved' | 'rejected';
+
 export interface ProjectUpdate {
   id: string;
   project_id: string;
+  author_id: string | null;
   title: string;
   content: string;
+  update_type: UpdateType;
+  images: string[];
+  funds_breakdown: { label: string; amount: number }[] | null;
+  learnings: string | null;
+  status: UpdateStatus;
+  rejection_reason: string | null;
+  approved_by: string | null;
+  approved_at: string | null;
   created_at: string;
+  updated_at: string;
 }

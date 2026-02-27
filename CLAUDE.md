@@ -1,6 +1,71 @@
-# CLAUDE.md — Futurepreneurs
+# CLAUDE.md
 
-**Last Updated:** 2026-02-19
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+---
+
+## 0. Developer Quick Reference
+
+### Commands
+
+```bash
+npm run dev          # Dev server at http://localhost:3000
+npm run build        # Production build
+npm run lint         # ESLint
+npm run seed         # Seed test accounts (npx tsx scripts/seed-test-accounts.ts)
+npx playwright test  # Run all E2E tests
+npx playwright test tests/some-test.spec.ts  # Run single test file
+```
+
+No unit test framework — all tests are E2E via Playwright. Test accounts use password `TestPass123!`.
+
+### Architecture Patterns
+
+**Three Supabase clients** (`src/lib/supabase/`):
+- `client.ts` — browser client for `"use client"` components
+- `server.ts` → `createClient()` — server client with cookie-based RLS for Server Components and server actions
+- `server.ts` → `createAdminClient()` — bypasses RLS using SERVICE_ROLE_KEY. **Always call `getCurrentUser()` first** to verify the user's identity before using the admin client in server actions.
+
+**Server actions are the primary mutation pattern.** Files named `actions.ts` are colocated with their pages throughout `src/app/`. They return `{ error?: string; data?: T }` (never throw to client) and call `revalidatePath()` after mutations. Prefer server actions for all new mutations.
+
+**API routes are limited to:** webhooks (`/api/webhooks/stripe*`), cron jobs (`/api/cron/*`), checkout (`/api/checkout`), and a few data-fetching endpoints. Do not add new API routes for mutations.
+
+**Query modules** in `src/lib/queries/` — one file per entity (projects, backings, drawdowns, wallet-balances, spending-requests, collaborators, etc.). Reuse these instead of writing inline Supabase queries.
+
+**Auth helpers** (`src/lib/supabase/auth-helpers.ts`): `getCurrentUser()` returns a `UserProfile` (not just an auth user), `hasRole()`, `requireAdmin()`, `isRegisteredSchoolEmail()`, `getSchools()`.
+
+**Middleware** (`middleware.ts`) refreshes Supabase sessions on every request and protects `/dashboard/*` and `/admin/*` routes. Root layout uses `force-dynamic` to ensure fresh user data.
+
+**Cron jobs** are protected by `Authorization: Bearer $CRON_SECRET` and use `createAdminClient()` for bulk operations.
+
+### Key Conventions
+
+- Path alias: `@/*` → `./src/*`
+- All monetary amounts stored in **pence** (£10 = 1000). Use `toPence()` / `toPounds()` from `src/lib/stripe/index.ts`.
+- UUID primary keys on all tables; `created_at` / `updated_at` timestamps everywhere.
+- RLS enforced at the database layer via nested EXISTS subqueries — never rely solely on app-level access checks.
+- Icons: `lucide-react`. Fonts: Outfit (primary), Geist Mono (code). Styling: Tailwind CSS v4.
+- `"use client"` for interactive components; Server Components for data-fetching pages.
+- Soft deletes preferred (`is_active = false`) over hard deletes.
+
+### Stripe Integration (Three Subsystems)
+
+- **Payments** (`src/lib/stripe/index.ts`) — checkout sessions, platform fee calculation (2.5%)
+- **Connect** (`src/lib/stripe/connect.ts`) — parent connected accounts, KYC onboarding, payouts
+- **Treasury + Issuing** (`src/lib/stripe/treasury.ts`, `src/lib/stripe/issuing.ts`) — financial accounts, card creation/freeze/unfreeze
+- All Stripe operations include `metadata: { projectId, studentId, ... }` for webhook reconciliation.
+
+### Wallet System (Epic 4)
+
+Dual-approval spending flow: student requests → parent approves → mentor approves → cooling-off period → card funded → 30-min spending window → auto-refreeze.
+
+Velocity limits in `src/app/dashboard/wallet/velocity-limits.ts`: daily £50, weekly £200, per-transaction £100.
+
+Wallet balance operations (`src/lib/queries/wallet-balances.ts`): `addFundsToWallet()`, `holdFundsInWallet()`, `releaseHeldFunds()`.
+
+### Database Migrations
+
+Sequential SQL files in `supabase/migrations/` (001–015). Apply via the Supabase MCP `apply_migration` tool or the Supabase dashboard. Never skip or reorder migrations.
 
 ---
 

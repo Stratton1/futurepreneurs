@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { GraduationCap } from 'lucide-react';
 import { FundingProgressBar } from './funding-progress-bar';
 import { LogoPreview } from './logo-preview';
+import { VerificationBadge } from './verification-badge';
 import type { LogoConfig } from '@/lib/logo-templates';
 
 interface ProjectCardProps {
@@ -16,6 +17,7 @@ interface ProjectCardProps {
   images: string[];
   studentName: string;
   schoolName?: string | null;
+  mentorName?: string | null;
   status?: string;
   logoConfig?: LogoConfig | null;
   projectType?: string;
@@ -33,6 +35,7 @@ export function ProjectCard({
   images,
   studentName,
   schoolName,
+  mentorName,
   logoConfig,
   projectType,
   groupName,
@@ -90,16 +93,19 @@ export function ProjectCard({
           )}
 
           {/* Student info */}
-          <div className="flex items-center gap-1.5 mb-4">
-            <div className="w-5 h-5 bg-emerald-100 rounded-full flex items-center justify-center">
-              <span className="text-[10px] font-bold text-emerald-700">
-                {studentName.charAt(0).toUpperCase()}
+          <div className="flex items-center justify-between gap-2 mb-4">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <div className="w-5 h-5 bg-emerald-100 rounded-full flex items-center justify-center flex-shrink-0">
+                <span className="text-[10px] font-bold text-emerald-700">
+                  {studentName.charAt(0).toUpperCase()}
+                </span>
+              </div>
+              <span className="text-xs text-gray-500 truncate">
+                {studentName}
+                {schoolName && <span className="text-gray-400"> at {schoolName}</span>}
               </span>
             </div>
-            <span className="text-xs text-gray-500">
-              {studentName}
-              {schoolName && <span className="text-gray-400"> at {schoolName}</span>}
-            </span>
+            {mentorName && <VerificationBadge mentorName={mentorName} size="sm" />}
           </div>
 
           {/* Funding progress */}
